@@ -1,0 +1,8 @@
+# Class Files #
+*.class
+
+# Package Files #
+*.war
+*.ear
+/ImporterTables/dist/
+/ImporterTables/*.db

@@ -1,0 +1,5 @@
+CREATE TABLE `cwr_gapanalysis`.`temp_countries` (
+  `name` VARCHAR(50) NOT NULL,
+  `iso2` VARCHAR(2) NOT NULL,
+  `iso3` VARCHAR(3) NOT NULL,
+  PRIMARY KEY (`name`));
