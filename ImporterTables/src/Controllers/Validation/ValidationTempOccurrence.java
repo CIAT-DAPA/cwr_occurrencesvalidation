@@ -111,6 +111,7 @@ public class ValidationTempOccurrence extends ValidationBase {
                     "ns,ew, " +
                     "latitude,longitude, " +
                     "taxon_final, " +
+                    "final_iso2, " +
                     "coord_source " +
                     "From temp_occurrences ");
             rCountry=new RepositoryCountry();
@@ -325,8 +326,9 @@ public class ValidationTempOccurrence extends ValidationBase {
                                     throw new Exception("Coords. Not found point in the water database. " + water);
                                 else if(!water.equals(Configuration.getParameter("geocoding_database_world_earth")))
                                     throw new Exception("Coords. Point in the water or boundaries. " + water + " Lat: " + FixData.getValue(this.db.getRecordSet().getDouble("latitude")) + " Lon: " + this.db.getRecordSet().getDouble("longitude"));
+                                //Validation with google
                                 googleReverse=GeocodingGoogle.reverse(this.db.getRecordSet().getDouble("latitude"), this.db.getRecordSet().getDouble("longitude"));
-                                if(googleReverse == null || !googleReverse.get("status").toString().equals("OK") || googleReverse.get("iso") == null || !googleReverse.get("iso").toString().equals(this.db.getRecordSet().getString("final_iso2")))
+                                if(googleReverse == null || !googleReverse.get("status").toString().equals("OK") || !FixData.getValue(googleReverse.get("iso")).toLowerCase().equals(this.db.getRecordSet().getString("final_iso2")))
                                     throw new Exception("Cross check coords error: Country don't match  or not found. Latitude: " + FixData.getValue(this.db.getRecordSet().getString("latitude")) +
                                                 " Longitude: " + FixData.getValue(this.db.getRecordSet().getString("longitude")) +                                                
                                                 (googleReverse == null ? "" : (" Status: " + googleReverse.get("status").toString() + " Iso: " + FixData.getValue(googleReverse.get("iso")))));

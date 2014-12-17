@@ -21,8 +21,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -51,14 +49,15 @@ public class GeocodingGoogle {
             if(a.get("status").toString().equals("OK"))
             {
                 JSONArray results=(JSONArray)google.get("results");
-                JSONObject address_components=(JSONObject)results.get(2);
+                JSONArray address_components=(JSONArray)((JSONObject)results.get(2)).get("address_components");
                 for(int i=0;i<address_components.size();i++)
                 {
-                    JSONArray types=(JSONArray)address_components.get(2);
-                    if(((JSONObject)types.get(0)).toString().equals("country"))
+                    JSONObject items=(JSONObject)address_components.get(i);
+                    //if(((JSONObject)types.get(0)).get("").toString().equals("country"))
+                    if(items.get("types").toString().contains("country"))
                     {
-                        a.put("country",((JSONObject)address_components.get(0)).toString());
-                        a.put("iso",((JSONObject)address_components.get(1)).toString());
+                        a.put("country",items.get("long_name").toString());
+                        a.put("iso",items.get("short_name").toString());
                         break;
                     }
                 }
