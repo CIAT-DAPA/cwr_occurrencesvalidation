@@ -23,3 +23,6 @@ geocoding_database_world_max_column=1000
 geocoding_database_world_table=waterbody
 geocoding_database_world_earth=1
 tnrs_url_base=http://tnrs.iplantc.org/tnrsm-svc/matchNames?
+taxonstand_rscript_path=C:\Program Files\R\R-3.1.2\bin\Rscript.exe
+taxonstand_function_name=TPLck
+taxonstand_function_parameters=,corr=TRUE,

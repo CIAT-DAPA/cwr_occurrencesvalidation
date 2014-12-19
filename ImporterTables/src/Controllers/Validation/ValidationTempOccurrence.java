@@ -1,18 +1,18 @@
- /**
-  * Copyright 2014 International Center for Tropical Agriculture (CIAT).
-  * This file is part of:
-  * Crop Wild Relatives
-  * It is free software: You can redistribute it and/or modify
-  * it under the terms of the GNU General Public License as published by
-  * the Free Software Foundation, either version 3 of the License, or
-  * at your option) any later version.
-  * It is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  * GNU General Public License for more details.
-  *
-  * See <http://www.gnu.org/licenses/>.
-  */
+/**
+ * Copyright 2014 International Center for Tropical Agriculture (CIAT).
+ * This file is part of:
+ * Crop Wild Relatives
+ * It is free software: You can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * at your option) any later version.
+ * It is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * See <http://www.gnu.org/licenses/>.
+ */
 
 package Controllers.Validation;
 
@@ -25,6 +25,7 @@ import Models.DataBase.Geocoding.WaterBody;
 import Models.DataBase.Geocoding.RepositoryCountry;
 import Models.DataBase.MySQL;
 import Models.DataBase.TNRS.TNRS;
+import Models.DataBase.Taxonstand.Taxonstand;
 import Tools.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -85,7 +86,7 @@ public class ValidationTempOccurrence extends ValidationBase {
     public long review()
     {
         int a=0;
-        HashMap googleGeocoding,googleReverse;
+        HashMap googleGeocoding,googleReverse,taxonstand;
         Geocoding geo;
         String header="Update temp_occurencces set ",footer, query;
         String value1, value2;
@@ -124,7 +125,7 @@ public class ValidationTempOccurrence extends ValidationBase {
                     for(Policy p:super.policies)
                     {
                         try
-                        {                           
+                        {
                             //Group Check Part 1
                             //3.1
                             if(p.getTypePolicy()==TypePolicy.CHECK_FIELDS_MANDATORY)
@@ -207,6 +208,29 @@ public class ValidationTempOccurrence extends ValidationBase {
                                     }
                                 }
                             }
+                            //Group Taxonstand
+                            //4.5
+                            else if(p.getTypePolicy()==TypePolicy.TAXONDSTAND_QUERY)
+                            {
+                                name=FixData.concatenate(new String[]{this.db.getRecordSet().getString("x1_genus"),
+                                    this.db.getRecordSet().getString("x1_sp1"),
+                                    this.db.getRecordSet().getString("x1_rank1"),
+                                    this.db.getRecordSet().getString("x1_sp2"),
+                                    this.db.getRecordSet().getString("x1_rank2"),
+                                    this.db.getRecordSet().getString("x1_sp3")}," ");
+                                taxonstand=Taxonstand.get(name);
+                                if(taxonstand==null)
+                                    throw new Exception("Not found taxon in taxonstand");
+                                else
+                                    query+="taxstand_author1='" + taxonstand.get("taxstand_author1").toString() + "',"+
+                                            "taxstand_family='" + taxonstand.get("taxstand_family").toString().replaceAll(" ", "_") + "'," +
+                                            "taxstand_final_taxon='" + FixData.concatenate(new String[]{ taxonstand.get("taxstand_genus").toString(),
+                                                                        taxonstand.get("taxstand_sp1").toString(),
+                                                                        taxonstand.get("taxstand_sp2").toString()}," ")  + "'," +
+                                            "taxstand_genus='" + taxonstand.get("taxstand_genus").toString() + "'," +
+                                            "taxstand_sp1='" + taxonstand.get("taxstand_sp1").toString()  + "'," +
+                                            "taxstand_sp2='" + taxonstand.get("taxstand_sp2").toString()  + "',";
+                            }
                             //Group Geocoding
                             //5.1
                             else if(p.getTypePolicy()==TypePolicy.GEOCODING_VALIDATE_COUNTRY)
@@ -237,10 +261,10 @@ public class ValidationTempOccurrence extends ValidationBase {
                                 }
                                 else
                                     query+="final_iso2='" + country.getIso2() + "',";
-                            }                            
+                            }
                             //5.3.1  5.3.4
                             else if(p.getTypePolicy()==TypePolicy.GEOCODING_VALIDATE_COORDS_GRADS)
-                            {                                
+                            {
                                 if(this.db.getRecordSet().getString("lat_deg") != null && !this.db.getRecordSet().getString("lat_deg").matches(REGEXP_COORDS))
                                     throw new Exception("Error in lat_deg: " + this.db.getRecordSet().getString("lat_deg"));
                                 else if(this.db.getRecordSet().getString("lat_min") != null && !this.db.getRecordSet().getString("lat_min").matches(REGEXP_COORDS))
@@ -257,7 +281,7 @@ public class ValidationTempOccurrence extends ValidationBase {
                                     throw new Exception("Error in latitude: " + this.db.getRecordSet().getString("latitude"));
                                 else if(this.db.getRecordSet().getString("longitude") != null && !this.db.getRecordSet().getString("longitude").matches(REGEXP_COORDS))
                                     throw new Exception("Error in longitude: " + this.db.getRecordSet().getString("longitude"));
-                            }                            
+                            }
                             //5.3.2
                             else if(p.getTypePolicy()==TypePolicy.GEOCODING_VALIDATE_NS_EW)
                             {
@@ -271,7 +295,7 @@ public class ValidationTempOccurrence extends ValidationBase {
                                     throw new Exception("Error in EW with data: " + (this.db.getRecordSet().getString("ew")==null ? "null" : this.db.getRecordSet().getString("ew")));
                                 else if(this.db.getRecordSet().getString("ew")!=null && FixData.containsValue(this.db.getRecordSet().getString("ew"), FixData.toArrayList(GEO_EW)))
                                     query+="final_ew='" + this.db.getRecordSet().getString("ew") + "',";
-                            }                            
+                            }
                             //5.3.3
                             else if(p.getTypePolicy()==TypePolicy.GEOCODING_VALIDATE_COORDS_LAT_LON)
                             {
@@ -279,7 +303,7 @@ public class ValidationTempOccurrence extends ValidationBase {
                                     query+= "latitude='" + FixData.degreesToDecimalDegrees(this.db.getRecordSet().getString("ns").contains("n") , this.db.getRecordSet().getDouble("lat_deg"), this.db.getRecordSet().getDouble("lat_min"), this.db.getRecordSet().getDouble("lat_sec"))  + "',";
                                 if(this.db.getRecordSet().getString("long_deg") != null && this.db.getRecordSet().getString("longitude") == null)
                                     query+= "longitude='" + FixData.degreesToDecimalDegrees(this.db.getRecordSet().getString("ew").contains("e") , this.db.getRecordSet().getDouble("long_deg"), this.db.getRecordSet().getDouble("long_min"), this.db.getRecordSet().getDouble("long_sec"))  + "',";
-                            }                            
+                            }
                             //5.4
                             else if(p.getTypePolicy()==TypePolicy.GEOCODING_INITIAL)
                             {
@@ -292,7 +316,7 @@ public class ValidationTempOccurrence extends ValidationBase {
                                         "distance_georef='" + googleGeocoding.get("distance_georef") + "',";
                                 googleGeocoding=null;
                             }
-                            //Group POST CHECK                                                   
+                            //Group POST CHECK
                             //4.6
                             else if(p.getTypePolicy()==TypePolicy.POSTCHECK_VALIDATE_TAXON)
                             {
@@ -302,7 +326,7 @@ public class ValidationTempOccurrence extends ValidationBase {
                                     this.db.getRecordSet().getString("x1_sp2"),
                                     this.db.getRecordSet().getString("x1_rank2"),
                                     this.db.getRecordSet().getString("x1_sp3")},"_").toLowerCase();
-                                taxon_tnrs_final= this.db.getRecordSet().getString("tnrs_final_taxon") == null ? "" : FixData.removePatternEnd(this.db.getRecordSet().getString("tnrs_final_taxon").toLowerCase(),"_");                                
+                                taxon_tnrs_final= this.db.getRecordSet().getString("tnrs_final_taxon") == null ? "" : FixData.removePatternEnd(this.db.getRecordSet().getString("tnrs_final_taxon").toLowerCase(),"_");
                                 taxon_taxstand_final= this.db.getRecordSet().getString("taxstand_final_taxon") == null ? "" : FixData.removePatternEnd(this.db.getRecordSet().getString("taxstand_final_taxon").toLowerCase(),"_");
                                 if(taxon_final.equals(taxon_tnrs_final) && FixData.hideRank(taxon_final).equals(taxon_taxstand_final))
                                     query+= "taxon_final='" + FixData.toCapitalLetter(taxon_final) + "',";
@@ -330,8 +354,8 @@ public class ValidationTempOccurrence extends ValidationBase {
                                 googleReverse=GeocodingGoogle.reverse(this.db.getRecordSet().getDouble("latitude"), this.db.getRecordSet().getDouble("longitude"));
                                 if(googleReverse == null || !googleReverse.get("status").toString().equals("OK") || !FixData.getValue(googleReverse.get("iso")).toLowerCase().equals(this.db.getRecordSet().getString("final_iso2")))
                                     throw new Exception("Cross check coords error: Country don't match  or not found. Latitude: " + FixData.getValue(this.db.getRecordSet().getString("latitude")) +
-                                                " Longitude: " + FixData.getValue(this.db.getRecordSet().getString("longitude")) +                                                
-                                                (googleReverse == null ? "" : (" Status: " + googleReverse.get("status").toString() + " Iso: " + FixData.getValue(googleReverse.get("iso")))));
+                                            " Longitude: " + FixData.getValue(this.db.getRecordSet().getString("longitude")) +
+                                            (googleReverse == null ? "" : (" Status: " + googleReverse.get("status").toString() + " Iso: " + FixData.getValue(googleReverse.get("iso")))));
                                 else
                                     query+="coord_source='original',final_lat='" + this.db.getRecordSet().getString("latitude") + "',final_lon='" + this.db.getRecordSet().getString("longitude") + "',";
                             }
@@ -339,7 +363,7 @@ public class ValidationTempOccurrence extends ValidationBase {
                             else if(p.getTypePolicy()==TypePolicy.POSTCHECK_GEOCODING_CROSCHECK_GEOREF)
                             {
                                 if(this.db.getRecordSet().getString("coord_source") != null)
-                                    throw new Exception("The register already have cross check. coord_source: " + this.db.getRecordSet().getString("coord_source"));                                
+                                    throw new Exception("The register already have cross check. coord_source: " + this.db.getRecordSet().getString("coord_source"));
                                 water=rWater.getDataFromLatLon(this.db.getRecordSet().getDouble("latitude_georef"),this.db.getRecordSet().getDouble("longitude_georef"));
                                 if(water==null)
                                     throw new Exception("Coords. Not found point in the water database. " + water);
@@ -347,8 +371,8 @@ public class ValidationTempOccurrence extends ValidationBase {
                                     throw new Exception("Georef. Point in the water or boundaries. " + water + " Lat: " + FixData.getValue(this.db.getRecordSet().getDouble("latitude")) + " Lon: " + this.db.getRecordSet().getDouble("longitude"));
                                 if(this.db.getRecordSet().getString("latitude_georef") == null || this.db.getRecordSet().getString("longitude_georef") == null || this.db.getRecordSet().getString("distance_georef") == null)
                                     throw new Exception("Cross check georef error: Data not found. Latitude: " + FixData.getValue(this.db.getRecordSet().getString("latitude_georef")) +
-                                                " Longitude: " + FixData.getValue(this.db.getRecordSet().getString("longitude_georef")) +
-                                                " Distance: " + FixData.getValue(this.db.getRecordSet().getString("distance_georef")));
+                                            " Longitude: " + FixData.getValue(this.db.getRecordSet().getString("longitude_georef")) +
+                                            " Distance: " + FixData.getValue(this.db.getRecordSet().getString("distance_georef")));
                                 else
                                     query+="coord_source='georef',final_lat='" + this.db.getRecordSet().getString("latitude_georef") + "',final_lon='" + this.db.getRecordSet().getString("longitude_georef") + "',";
                             }

@@ -102,7 +102,7 @@ public class FrmDataValidation extends javax.swing.JDialog {
 
         lblStep.setText("Step:");
 
-        cboStep.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Step 1: Cross check data", "Step 2: Taxonomy checks part 1", "Step 4: Geographic checks part 1", "Step 5: Taxonomy checks part 2", "Step 6: Taxonomy checks part 3", "Step 7: Geographic checks coords", "Step 8: Geographic checks georef" }));
+        cboStep.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Step 1: Cross check data", "Step 2: Taxonomy checks part 1", "Step 3: Geographic checks part 1", "Step 4: Taxonomy checks part 2", "Step 5: Taxonomy checks part 3", "Step 6: Geographic checks coords", "Step 7: Geographic checks georef" }));
         cboStep.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cboStepActionPerformed(evt);
@@ -305,27 +305,27 @@ public class FrmDataValidation extends javax.swing.JDialog {
                 break;
             //Step 2: Taxonomy checks part 1
             case 1:
-                setStatusTable(12, 13, true);
+                setStatusTable(12, 14, true);
                 break;
-            //Step 4: Geographic checks part 1
+            //Step 3: Geographic checks part 1
             case 2:
-                setStatusTable(14, 19, true);
+                setStatusTable(15, 20, true);
                 break;
-            //Step 5: Taxonomy checks part 2
+            //Step 4: Taxonomy checks part 2
             case 3:
-                setStatusTable(20, 20, true);
-                break;
-            //Step 6: Taxonomy checks part 3
-            case 4:
                 setStatusTable(21, 21, true);
                 break;
-            //Step 7: Geographic checks coords
-            case 5:
+            //Step 5: Taxonomy checks part 3
+            case 4:
                 setStatusTable(22, 22, true);
                 break;
-            //Step 8: Geographic checks georef
-            case 6:
+            //Step 6: Geographic checks coords
+            case 5:
                 setStatusTable(23, 23, true);
+                break;
+            //Step 7: Geographic checks georef
+            case 6:
+                setStatusTable(24, 24, true);
                 break;
             default:
                 break;

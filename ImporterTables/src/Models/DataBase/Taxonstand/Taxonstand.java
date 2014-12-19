@@ -16,13 +16,20 @@
 
 package Models.DataBase.Taxonstand;
 
-import java.io.FileNotFoundException;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
-import org.renjin.sexp.ListVector;
-
-
+import Tools.Configuration;
+import Tools.FixData;
+import java.io.ByteArrayInputStream;
+import java.util.HashMap;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import rcaller.RCaller;
+import rcaller.RCode;
+//import org.renjin.sexp.ListVector;
 
 /**
  *
@@ -30,22 +37,51 @@ import org.renjin.sexp.ListVector;
  */
 public class Taxonstand {
     
-    public static void query(String taxon) throws Exception
+    public static HashMap get(String taxon)
     {
-        ScriptEngineManager manager = new ScriptEngineManager();
-        ScriptEngine engine = manager.getEngineByName("Renjin");
-        if(engine == null)
-            throw new Exception("Can't connect with R");        
-        try 
+        HashMap a= null;
+        
+        try
         {
-            ListVector res = (ListVector)engine.eval("require(Taxonstand); r1 <- TPL(\"" + taxon + "\", corr=TRUE);");
-            String depthEffective  = res.getElementAsString(0);
-            String organicMaterial = res.getElementAsString(1);
-            String internalDrain   = res.getElementAsString(2);
-            String externalDrain   = res.getElementAsString(3);
-            String[] infoMaterials = organicMaterial.split(",");
+            RCaller caller = new RCaller();
+            caller.setRscriptExecutable(Configuration.getParameter("taxonstand_rscript_path"));
+            RCode code = new RCode();
+            code.clear();
+            code.addRCode("library(Taxonstand)");
+            code.addRCode("r1 <- " + Configuration.getParameter("taxonstand_function_name") + "(\"" + taxon + "\"" +  Configuration.getParameter("taxonstand_function_parameters") + ")");
+            caller.setRCode(code);
+            caller.runAndReturnResult("r1");
+            //Xml
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            //load answer of r
+            Document doc = dBuilder.parse( new InputSource(new ByteArrayInputStream(caller.getParser().getXMLFileAsString().getBytes("utf-8"))));
+            //doc.getDocumentElement().normalize();
+            NodeList nList = doc.getElementsByTagName("variable");
+            Element  var;
+            String value;
+            a=new HashMap();
+            for (int i = 0; i < nList.getLength(); i++) 
+            {
+                var = (Element)nList.item(i);
+                value=var.getTextContent()==null ? "" : var.getTextContent().replaceAll("\n", "").trim();
+                if(var.getAttribute("name").toLowerCase().equals("authority"))
+                    a.put("taxstand_author1",value);
+                else if(var.getAttribute("name").toLowerCase().equals("family"))
+                    a.put("taxstand_family",value);
+                else if(var.getAttribute("name").toLowerCase().equals("new_genus"))
+                    a.put("taxstand_genus",value);
+                else if(var.getAttribute("name").toLowerCase().equals("new_species"))
+                    a.put("taxstand_sp1",value);
+                else if(var.getAttribute("name").toLowerCase().equals("new_infraspecific"))
+                    a.put("taxstand_sp2",value);
+            }
         }
-        catch (ScriptException ex) {
+        catch (Exception ex)
+        {
+            a=null;
+            System.out.println(ex);
         }
+        return a;
     }
 }

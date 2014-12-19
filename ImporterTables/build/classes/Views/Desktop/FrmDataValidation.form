@@ -114,11 +114,11 @@
           <StringArray count="7">
             <StringItem index="0" value="Step 1: Cross check data"/>
             <StringItem index="1" value="Step 2: Taxonomy checks part 1"/>
-            <StringItem index="2" value="Step 4: Geographic checks part 1"/>
-            <StringItem index="3" value="Step 5: Taxonomy checks part 2"/>
-            <StringItem index="4" value="Step 6: Taxonomy checks part 3"/>
-            <StringItem index="5" value="Step 7: Geographic checks coords"/>
-            <StringItem index="6" value="Step 8: Geographic checks georef"/>
+            <StringItem index="2" value="Step 3: Geographic checks part 1"/>
+            <StringItem index="3" value="Step 4: Taxonomy checks part 2"/>
+            <StringItem index="4" value="Step 5: Taxonomy checks part 3"/>
+            <StringItem index="5" value="Step 6: Geographic checks coords"/>
+            <StringItem index="6" value="Step 7: Geographic checks georef"/>
           </StringArray>
         </Property>
       </Properties>
