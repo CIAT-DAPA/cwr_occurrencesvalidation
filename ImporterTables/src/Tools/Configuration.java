@@ -45,7 +45,7 @@ public class Configuration {
                 db.open();
                 while((line=db.readLine())!=null)
                 {
-                    if(!line.equals(""))
+                    if(!line.equals("") && !line.startsWith("#"))
                         Configuration.VARS.put(line.split("=",2)[0].trim(), line.split("=",2)[1].trim());
                 }
                 db.close();
