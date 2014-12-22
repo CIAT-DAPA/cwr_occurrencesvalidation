@@ -18,10 +18,13 @@ import Views.Desktop.FrmImport;
 import Views.Desktop.FrmOptions;
 import Views.Desktop.FrmDataValidation;
 import Controllers.Importers.ImporterBase;
+import Controllers.Update.UpdateBase;
 import Controllers.Validation.ValidationBase;
 import Views.Desktop.FrmConf;
+import Views.Desktop.FrmQuery;
 import java.io.IOException;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -31,6 +34,7 @@ public class Importer {
     
     public static ImporterBase importer;
     public static ValidationBase validation;
+    public static UpdateBase update;
     
     public static void main(String[] args) throws IOException
     {
@@ -41,6 +45,7 @@ public class Importer {
             FrmImport frmImp;
             FrmDataValidation frmData;
             FrmConf frmConf;
+            FrmQuery frmQuery;
             do
             {   
                 if(option==1)
@@ -51,6 +56,7 @@ public class Importer {
                     {
                         Importer.importer=frmImp.getImporter();
                         Importer.importer.start();
+                        message("Importer finished!!!");
                     }
                 }
                 else if(option == 2)
@@ -61,21 +67,42 @@ public class Importer {
                     {
                         validation=frmData.getValidation();
                         validation.review();
+                        message("Validation finished!!!");
                     }
                 }
                 else if(option == 3)
+                {
+                    frmQuery=new FrmQuery(new JFrame(),true);
+                    frmQuery.setVisible(true);
+                    if(!frmQuery.isExit())
+                    {
+                        update=frmQuery.getUpdate();
+                        update.start();
+                        message("Update finished!!!");
+                    }
+                }
+                else if(option == 4)
                 {
                     frmConf=new FrmConf(new JFrame(),true);
                     frmConf.setVisible(true);
                 }
                 frmOpt.setVisible(true);
                 option=frmOpt.getOption();
-            }while(option>=0 && option <4);
+            }while(option>=0 && option <5);
         }
         catch(Exception ex)
         {
             System.out.println("Error app");
             System.out.println(ex);
         }
+    }
+    
+    /**
+     * Method that show message in the window
+     * @param msg message to show
+     */
+    public static void message(String msg)
+    {
+        JOptionPane.showMessageDialog(null, msg);
     }
 }

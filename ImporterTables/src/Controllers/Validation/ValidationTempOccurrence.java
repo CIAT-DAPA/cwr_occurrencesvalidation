@@ -88,7 +88,7 @@ public class ValidationTempOccurrence extends ValidationBase {
         int a=0;
         HashMap googleGeocoding,googleReverse,taxonstand;
         Geocoding geo;
-        String header="Update temp_occurencces set ",footer, query;
+        String header="Update temp_occurrences set ",footer, query;
         String value1, value2;
         String name,taxon_final,taxon_tnrs_final,taxon_taxstand_final;
         TNRS[] tnrs;

@@ -17,14 +17,12 @@
 package Models.DataBase.Taxonstand;
 
 import Tools.Configuration;
-import Tools.FixData;
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import rcaller.RCaller;
@@ -37,12 +35,22 @@ import rcaller.RCode;
  */
 public class Taxonstand {
     
+    public static HashMap db=null;
+    
+    /**
+     * Method that use R for ask to The Planet List about taxon
+     * @param taxon name of taxon
+     * @return 
+     */
     public static HashMap get(String taxon)
     {
         HashMap a= null;
-        
         try
         {
+            if(db==null)
+                db=new HashMap();
+            if(db.containsKey(taxon.replaceAll(" ", "_")))
+                return (HashMap)db.get(taxon.replaceAll(" ", "_"));
             RCaller caller = new RCaller();
             caller.setRscriptExecutable(Configuration.getParameter("taxonstand_rscript_path"));
             RCode code = new RCode();
@@ -76,6 +84,7 @@ public class Taxonstand {
                 else if(var.getAttribute("name").toLowerCase().equals("new_infraspecific"))
                     a.put("taxstand_sp2",value);
             }
+            db.put(taxon.replaceAll(" ", "_"), a);
         }
         catch (Exception ex)
         {

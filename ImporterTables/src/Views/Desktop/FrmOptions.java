@@ -50,6 +50,7 @@ public class FrmOptions extends javax.swing.JDialog {
         cmdExit = new javax.swing.JButton();
         cmdImporter = new javax.swing.JButton();
         cmdDataValidation = new javax.swing.JButton();
+        cmdRunQuery = new javax.swing.JButton();
         cmdConf = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -77,6 +78,13 @@ public class FrmOptions extends javax.swing.JDialog {
             }
         });
 
+        cmdRunQuery.setText("Run Query");
+        cmdRunQuery.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmdRunQueryActionPerformed(evt);
+            }
+        });
+
         cmdConf.setText("Configuration");
         cmdConf.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -91,11 +99,17 @@ public class FrmOptions extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cmdExit, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cmdImporter, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cmdDataValidation, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cmdConf, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(cmdConf, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cmdExit, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cmdImporter, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cmdDataValidation, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cmdRunQuery, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -106,6 +120,8 @@ public class FrmOptions extends javax.swing.JDialog {
                 .addComponent(cmdImporter, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cmdDataValidation, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cmdRunQuery, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cmdConf, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -135,9 +151,15 @@ public class FrmOptions extends javax.swing.JDialog {
 
     private void cmdConfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdConfActionPerformed
         // TODO add your handling code here:
-        option=3;
+        option=4;
         this.setVisible(false);
     }//GEN-LAST:event_cmdConfActionPerformed
+
+    private void cmdRunQueryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdRunQueryActionPerformed
+        // TODO add your handling code here:
+        option=3;
+        this.setVisible(false);
+    }//GEN-LAST:event_cmdRunQueryActionPerformed
 
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -145,5 +167,6 @@ public class FrmOptions extends javax.swing.JDialog {
     private javax.swing.JButton cmdDataValidation;
     private javax.swing.JButton cmdExit;
     private javax.swing.JButton cmdImporter;
+    private javax.swing.JButton cmdRunQuery;
     // End of variables declaration//GEN-END:variables
 }
