@@ -88,8 +88,8 @@ public class ImporterTempOccurrences extends ImporterBase {
             }
             catch(Exception e)
             {
-                Log.register(log,TypeLog.REGISTER_ERROR,values, false);
-                Log.register(log,TypeLog.QUERY_ERROR,String.valueOf(row) + "|" + q, true);
+                Log.register(log,TypeLog.REGISTER_ERROR,e + "|" + values, false);
+                Log.register(log,TypeLog.QUERY_ERROR,String.valueOf(row) + "|" + e + "|" + q, true);
                 errors+=1;
                 System.out.println("Error register: " + row + " " + e);
             }

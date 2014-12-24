@@ -1,8 +1,6 @@
 # README #
 
-This project contains tools for the project Crop Wild Relative. All rights are of CIAT
-
-This README would normally document whatever steps are necessary to get your application up and running.
+This project contains tools for validate occurrences Crop Wild Relative. All rights are of CIAT
 
 ### What is this repository for? ###
 
