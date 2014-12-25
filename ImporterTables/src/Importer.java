@@ -56,7 +56,7 @@ public class Importer {
                     {
                         Importer.importer=frmImp.getImporter();
                         Importer.importer.start();
-                        message("Importer finished!!!");
+                        message("Import finished!!!");
                     }
                 }
                 else if(option == 2)
