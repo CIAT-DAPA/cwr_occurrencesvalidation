@@ -195,6 +195,8 @@ public class ValidationTempOccurrence extends ValidationBase {
                                 tnrs=RepositoryTNRS.get(name, true);
                                 if(tnrs==null)
                                     tnrs=RepositoryTNRS.get(name, false);
+                                if(tnrs==null)
+                                    throw new Exception("Not found taxon in tnrs");
                                 for(TNRS t:tnrs)
                                 {
                                     if(t.acceptedName!=null && !t.acceptedName.equals(""))
@@ -226,7 +228,7 @@ public class ValidationTempOccurrence extends ValidationBase {
                                             "taxstand_family='" + taxonstand.get("taxstand_family").toString().replaceAll(" ", "_") + "'," +
                                             "taxstand_final_taxon='" + FixData.concatenate(new String[]{ taxonstand.get("taxstand_genus").toString(),
                                                                         taxonstand.get("taxstand_sp1").toString(),
-                                                                        taxonstand.get("taxstand_sp2").toString()}," ")  + "'," +
+                                                                        taxonstand.get("taxstand_sp2").toString()}," ").replaceAll(" ", "_")  + "'," +
                                             "taxstand_genus='" + taxonstand.get("taxstand_genus").toString() + "'," +
                                             "taxstand_sp1='" + taxonstand.get("taxstand_sp1").toString()  + "'," +
                                             "taxstand_sp2='" + taxonstand.get("taxstand_sp2").toString()  + "',";
