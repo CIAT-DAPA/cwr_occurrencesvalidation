@@ -1,8 +1,8 @@
 currie_server=curie.ciat.cgiar.org
 currie_schema_base=information_schema
+currie_schema_gapanalysis=cwr_gapanalysis
 currie_user=hsotelo
 currie_password=783836@ciat
-currie_schema_gapanalysis=cwr_gapanalysis
 validation_fields_mandatory=filename,username,provider_institute_id,field_collected_data,data_public_access,citation,source
 validation_content_availability=0,1,null
 validation_content_source=G,H
