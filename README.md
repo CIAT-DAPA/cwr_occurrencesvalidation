@@ -1,5 +1,4 @@
 # OCCURRENCES VALIDATION #
-=======
 
 This project contains tools for validate occurrences of Crop Wild Relative. All rights are of CIAT
 
@@ -19,8 +18,6 @@ This project contains tools for validate occurrences of Crop Wild Relative. All 
 
 * [Crop Wild Relatives](http://www.cwrdiversity.org)
 * [Team](https://github.com/teamcwrciat)
-
-=======
 
 ## Quick summary ##
 
@@ -49,6 +46,20 @@ run for update register in the database
 application with the raster file) and the configuration file.
 
 * Review data of variables in the file called conf.txt (configuration file), because this file have all parameters for that the application can be execute.
+
+## Dependencies
+
+* You should have installed [R](http://www.r-project.org/) in the pc
+* Taxonstand package for R installed
+** In the shield of R you can write the next commands for install the package
+```
+install.packages(Taxonstand);
+```
+* The next libs .jar are include in the folder called Libs
+** [json simple](https://code.google.com/p/json-simple/) 
+** [mysql jdbc](http://www.mysql.com/products/connector/)
+** [RCaller](https://code.google.com/p/rcaller/)
+** [SQLite jdbc](https://bitbucket.org/xerial/sqlite-jdbc)
 
 ## How to run ##
 
