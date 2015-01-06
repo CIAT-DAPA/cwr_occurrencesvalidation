@@ -21,5 +21,6 @@ package Controllers.Importers;
  * @author Steven Sotelo - stevenbetancurt@hotmail.com
  */
 public enum TypeImports {
-    TEMP_OCCURRENCES
+    TEMP_OCCURRENCES,
+    METADATA
 }

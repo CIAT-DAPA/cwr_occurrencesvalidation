@@ -16,6 +16,7 @@
 package Views.Desktop;
 
 import Controllers.Importers.ImporterBase;
+import Controllers.Importers.ImporterMetadata;
 import Controllers.Importers.ImporterTempOccurrences;
 import Controllers.Importers.TypeImports;
 import java.io.File;
@@ -222,6 +223,8 @@ public class FrmImport extends javax.swing.JDialog {
         {
             if((TypeImports)cboTypeImport.getSelectedItem()==TypeImports.TEMP_OCCURRENCES)
                 importer=new ImporterTempOccurrences(txtSource.getText().trim(),txtSplit.getText().trim(),chkClean.isSelected(), txtLog.getText());
+            else if((TypeImports)cboTypeImport.getSelectedItem()==TypeImports.METADATA)
+                importer=new ImporterMetadata(txtSource.getText().trim(),txtSplit.getText().trim(),chkClean.isSelected(), txtLog.getText());
             this.exit=false;            
             this.setVisible(false);
         }

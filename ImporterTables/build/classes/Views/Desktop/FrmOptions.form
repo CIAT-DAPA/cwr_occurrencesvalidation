@@ -28,21 +28,13 @@
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                      <Component id="cmdConf" min="-2" pref="178" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" attributes="0">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="cmdExit" min="-2" pref="178" max="-2" attributes="0"/>
-                          <Component id="cmdImporter" alignment="0" min="-2" pref="178" max="-2" attributes="0"/>
-                          <Component id="cmdDataValidation" alignment="0" min="-2" pref="178" max="-2" attributes="0"/>
-                          <Component id="cmdRunQuery" alignment="0" min="-2" pref="178" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                  </Group>
+                  <Component id="cmdImporter" alignment="0" min="-2" pref="178" max="-2" attributes="0"/>
+                  <Component id="cmdDataValidation" alignment="0" min="-2" pref="178" max="-2" attributes="0"/>
+                  <Component id="cmdRunQuery" alignment="0" min="-2" pref="178" max="-2" attributes="0"/>
+                  <Component id="cmdExit" min="-2" pref="178" max="-2" attributes="0"/>
+                  <Component id="cmdConf" alignment="0" min="-2" pref="178" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -52,13 +44,13 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="cmdExit" min="-2" pref="42" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
+              <Component id="cmdConf" min="-2" pref="42" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Component id="cmdImporter" min="-2" pref="42" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="cmdDataValidation" min="-2" pref="42" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="cmdRunQuery" min="-2" pref="42" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="cmdConf" min="-2" pref="42" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>

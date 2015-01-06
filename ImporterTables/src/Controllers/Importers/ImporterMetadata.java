@@ -1,18 +1,18 @@
-/**
- * Copyright 2014 International Center for Tropical Agriculture (CIAT).
- * This file is part of:
- * Crop Wild Relatives
- * It is free software: You can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * at your option) any later version.
- * It is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * See <http://www.gnu.org/licenses/>.
- */
+ /**
+  * Copyright 2014 International Center for Tropical Agriculture (CIAT).
+  * This file is part of:
+  * Crop Wild Relatives
+  * It is free software: You can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+  * the Free Software Foundation, either version 3 of the License, or
+  * at your option) any later version.
+  * It is distributed in the hope that it will be useful,
+  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  * GNU General Public License for more details.
+  *
+  * See <http://www.gnu.org/licenses/>.
+  */
 
 package Controllers.Importers;
 
@@ -28,7 +28,7 @@ import java.util.ArrayList;
  *
  * @author Steven Sotelo - stevenbetancurt@hotmail.com
  */
-public class ImporterTempOccurrences extends ImporterBase {
+public class ImporterMetadata extends ImporterBase {
     
     /*Methods*/
     /**
@@ -38,22 +38,22 @@ public class ImporterTempOccurrences extends ImporterBase {
      * @param clean Specific if the data should cleaner
      * @param log Path to log
      */
-    public ImporterTempOccurrences(String filePath, String fileSplit, boolean clean, String log)
+    public ImporterMetadata(String filePath, String fileSplit, boolean clean, String log)
     {        
         super(new MySQL(Configuration.getParameter("currie_server"),Configuration.getParameter("currie_schema_base"),Configuration.getParameter("currie_user"), Configuration.getParameter("currie_password")),fileSplit,filePath,clean,log);
         try {
             //Load fields from database
             super.db.getResults( "Select lower(COLUMN_NAME) as COLUMN_NAME " +
                     "From COLUMNS " +
-                    "Where TABLE_NAME = 'temp_occurrences' and Table_schema = '" + Configuration.getParameter("currie_schema_gapanalysis") + "';");
+                    "Where TABLE_NAME = 'metadata' and Table_schema = '" + Configuration.getParameter("currie_schema_gapanalysis") + "';");
             ArrayList<String> destination=new ArrayList<String>();
             while(super.db.getRecordSet().next())
                 destination.add(super.db.getRecordSet().getString(1));
             init(destination);
         } catch (SQLException ex) {
-            System.out.println("Error in load temp_occurrences in the database " + ex);
+            System.out.println("Error in load metadata in the database " + ex);
         } catch (Exception ex) {
-            System.out.println("Error in load temp_occurrences " + ex);
+            System.out.println("Error in load metadata " + ex);
         }
     }
     
@@ -64,7 +64,7 @@ public class ImporterTempOccurrences extends ImporterBase {
         System.out.println("Start process to import");
         //Changed database
         super.db=new MySQL(Configuration.getParameter("currie_server"),Configuration.getParameter("currie_schema_gapanalysis"), Configuration.getParameter("currie_user"), Configuration.getParameter("currie_password"));
-        String header="INSERT INTO temp_occurrences (" + super.singleSource() + ") VALUES (";
+        String header="INSERT INTO metadata (" + super.singleSource() + ") VALUES (";
         String values, q="";
         int affected, row=0;
         while((values=file.readLine()) != null)
@@ -97,4 +97,5 @@ public class ImporterTempOccurrences extends ImporterBase {
         System.out.println("End process");
         return errors;
     }
+
 }
