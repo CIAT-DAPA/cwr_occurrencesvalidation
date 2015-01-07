@@ -23,7 +23,6 @@ package Tools;
 public enum TypeLog {
     REGISTER_OK("REGISTER_OK"),
     REGISTER_ERROR("REGISTER_ERROR"),
-    LOG("LOG"),
     QUERY_ERROR("QUERY_ERROR");
     
     private final String name;       
