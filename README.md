@@ -38,7 +38,7 @@ run for update register in the database
 * Configuration File (conf.txt)
 * Raster file of the world with the sea, land and coast or database already processed (waterbody.db)
 * [R](http://www.r-project.org/)
-* Taxonstand package for R installed
+* [MySQL](http://dev.mysql.com/downloads/mysql/)
 
 ## Configuration ##
 
@@ -49,17 +49,17 @@ application with the raster file) and the configuration file.
 
 ## Dependencies
 
-* You should have installed [R](http://www.r-project.org/) in the pc
-* Taxonstand package for R installed
-** In the shield of R you can write the next commands for install the package
+* [MySQL](http://dev.mysql.com/downloads/mysql/)
+* [R](http://www.r-project.org/) 
+    * Taxonstand package for R installed. In the shield of R you can write the next commands for install the package
 ```
 install.packages(Taxonstand);
 ```
 * The next libs .jar are include in the folder called Libs
-** [json simple](https://code.google.com/p/json-simple/) 
-** [mysql jdbc](http://www.mysql.com/products/connector/)
-** [RCaller](https://code.google.com/p/rcaller/)
-** [SQLite jdbc](https://bitbucket.org/xerial/sqlite-jdbc)
+* [json simple](https://code.google.com/p/json-simple/). 
+    * [mysql jdbc](http://www.mysql.com/products/connector/).
+    * [SQLite jdbc](https://bitbucket.org/xerial/sqlite-jdbc).
+    * [RCaller](https://code.google.com/p/rcaller/).
 
 ## How to run ##
 
