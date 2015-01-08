@@ -6,3 +6,4 @@
 *.ear
 /ImporterTables/dist/
 /ImporterTables/*.db
+/ImporterTables/conf.txt
