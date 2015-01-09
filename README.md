@@ -55,8 +55,8 @@ application with the raster file) and the configuration file.
 ```
 install.packages(Taxonstand);
 ```
-* The next libs .jar are include in the folder called Libs
-* [json simple](https://code.google.com/p/json-simple/). 
+* The next libs .jar are include in the folder called "Libs"
+    * [json simple](https://code.google.com/p/json-simple/). 
     * [mysql jdbc](http://www.mysql.com/products/connector/).
     * [SQLite jdbc](https://bitbucket.org/xerial/sqlite-jdbc).
     * [RCaller](https://code.google.com/p/rcaller/).
