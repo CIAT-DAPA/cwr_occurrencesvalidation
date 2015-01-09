@@ -19,7 +19,7 @@ geocoding_google_key=Qcx8oSMdJjJzPgNHcy_91yErynY=
 geocoding_google_client=gme-centrointernacional
 geocoding_database_world=waterbody.db
 geocoding_database_world_conf=conf
-geocoding_database_world_max_column=1000
+geocoding_database_world_max_column=100000
 geocoding_database_world_table=waterbody
 geocoding_database_world_earth=1
 tnrs_url_base=http://tnrs.iplantc.org/tnrsm-svc/matchNames?

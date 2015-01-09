@@ -208,11 +208,16 @@ public class Geocoding {
                         a.put("longitude_georef", coordValues[1]);
                         a.put("distance_georef", distance);
                     } 
+                    else
+                        throw new Exception("Exceede uncertainty. " + "Uncertainty: " + distance + " THRESHOLD: " + THRESHOLD);
+                        
                 } 
             }
         } catch (NoSuchAlgorithmException | InvalidKeyException | 
                 URISyntaxException | IOException | 
                 ParserConfigurationException | SAXException ex ) {
+            System.out.println(ex);
+        } catch (Exception ex) {
             System.out.println(ex);
         }
         return a;
