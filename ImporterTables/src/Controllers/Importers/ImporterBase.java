@@ -68,7 +68,7 @@ public abstract class ImporterBase {
     {
         for(String s: source)
         {
-            if(!destination.contains(s))
+            if(!destination.contains(s.toLowerCase().trim()))
             {
                 System.out.println("Field didn't find in the database " + s);
                 return false;

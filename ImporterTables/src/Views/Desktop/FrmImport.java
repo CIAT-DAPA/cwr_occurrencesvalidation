@@ -21,6 +21,7 @@ import Controllers.Importers.ImporterTempOccurrences;
 import Controllers.Importers.TypeImports;
 import java.io.File;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -230,7 +231,7 @@ public class FrmImport extends javax.swing.JDialog {
         }
         catch(Exception ex)
         {
-            System.out.println("Error start");
+            JOptionPane.showMessageDialog(this, ex);
             System.out.println(ex);
         }
     }//GEN-LAST:event_cmdStartImportActionPerformed

@@ -96,6 +96,8 @@ public class ValidationTempOccurrence extends ValidationBase {
         Country country;
         WaterBody rWater;
         String water;
+        String temp_country,temp_adm1,temp_adm2,temp_adm3,temp_local_area,temp_locality;
+        int timesGeo;
         try
         {
             rWater=new WaterBody(Configuration.getParameter("geocoding_database_world"));
@@ -310,14 +312,37 @@ public class ValidationTempOccurrence extends ValidationBase {
                             //5.4
                             else if(p.getTypePolicy()==TypePolicy.GEOCODING_INITIAL)
                             {
-                                geo=new Geocoding(this.db.getRecordSet().getString("country"),this.db.getRecordSet().getString("adm1"),this.db.getRecordSet().getString("adm2"),this.db.getRecordSet().getString("adm3"),this.db.getRecordSet().getString("local_area"),this.db.getRecordSet().getString("locality"));
-                                googleGeocoding=geo.georenferencing();
+                                googleGeocoding=null;
+                                temp_country=this.db.getRecordSet().getString("country");
+                                temp_adm1=this.db.getRecordSet().getString("adm1");
+                                temp_adm2=this.db.getRecordSet().getString("adm2");
+                                temp_adm3=this.db.getRecordSet().getString("adm3");
+                                temp_local_area=this.db.getRecordSet().getString("local_area");
+                                temp_locality=this.db.getRecordSet().getString("locality");
+                                geo=new Geocoding(temp_country,temp_adm1,temp_adm2,temp_adm3,temp_local_area,temp_locality);
+                                timesGeo=0;
+                                while(googleGeocoding==null)
+                                {         
+                                    timesGeo+=1;
+                                    googleGeocoding=geo.georenferencing();
+                                    if(googleGeocoding != null || (timesGeo > 5 && googleGeocoding==null))
+                                        break;
+                                    else if(timesGeo==1)
+                                        geo=new Geocoding(temp_country,temp_adm1,temp_adm2,temp_adm3,temp_local_area,"");
+                                    /*else if(timesGeo==2)
+                                        geo=new Geocoding(temp_country,temp_adm1,temp_adm2,temp_adm3,"","");
+                                    else if(timesGeo==3)
+                                        geo=new Geocoding(temp_country,temp_adm1,temp_adm2,"","","");
+                                    else if(timesGeo==4)
+                                        geo=new Geocoding(temp_country,temp_adm1,"","","","");
+                                    else if(timesGeo==5)
+                                        geo=new Geocoding(temp_country,"","","","","");*/
+                                }
                                 if(googleGeocoding==null)
                                     throw new Exception("Can't geocoding register " + geo.getData());
                                 query+= "latitude_georef='" + googleGeocoding.get("latitude_georef") + "'," +
                                         "longitude_georef='" + googleGeocoding.get("longitude_georef") + "'," +
-                                        "distance_georef='" + googleGeocoding.get("distance_georef") + "',";
-                                googleGeocoding=null;
+                                        "distance_georef='" + googleGeocoding.get("distance_georef") + "',";                                
                             }
                             //Group POST CHECK
                             //4.6

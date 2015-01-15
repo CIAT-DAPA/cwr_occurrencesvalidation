@@ -38,7 +38,7 @@ public class ImporterMetadata extends ImporterBase {
      * @param clean Specific if the data should cleaner
      * @param log Path to log
      */
-    public ImporterMetadata(String filePath, String fileSplit, boolean clean, String log)
+    public ImporterMetadata(String filePath, String fileSplit, boolean clean, String log) throws Exception
     {        
         super(new MySQL(Configuration.getParameter("currie_server"),Configuration.getParameter("currie_schema_base"),Configuration.getParameter("currie_user"), Configuration.getParameter("currie_password")),fileSplit,filePath,clean,log);
         try {
@@ -51,9 +51,9 @@ public class ImporterMetadata extends ImporterBase {
                 destination.add(super.db.getRecordSet().getString(1));
             init(destination);
         } catch (SQLException ex) {
-            System.out.println("Error in load metadata in the database " + ex);
+            throw new Exception("Error in load metadata in the database " + ex);
         } catch (Exception ex) {
-            System.out.println("Error in load metadata " + ex);
+            throw new Exception("Error in load metadata " + ex);
         }
     }
     
