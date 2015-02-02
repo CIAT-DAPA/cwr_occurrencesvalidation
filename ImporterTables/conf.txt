@@ -27,7 +27,7 @@ validation_content_ew=E,W,null
 #Regular expression for validate coordinates
 validation_content_regexp_coords=(-)?(\d)+(.(\d)+)?
 #maximum value uncertainty for geocoding
-geocoding_threshold=99999
+geocoding_threshold=1000
 #Url for Google Maps API in xml format
 geocoding_google_url_send_xml=https://maps.googleapis.com/maps/api/geocode/xml?sensor=false&
 #Url for Google Maps API in json format

@@ -57,6 +57,7 @@ public class Taxonstand {
             code.clear();
             code.addRCode("library(Taxonstand)");
             code.addRCode("r1 <- " + Configuration.getParameter("taxonstand_function_name") + "(\"" + taxon + "\"" +  Configuration.getParameter("taxonstand_function_parameters") + ")");
+            code.addRCode("r1$Authority<-gsub(\"&\", \"y\", r1$Authority)");
             caller.setRCode(code);
             caller.runAndReturnResult("r1");
             //Xml

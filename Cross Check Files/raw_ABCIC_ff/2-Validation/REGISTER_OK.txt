@@ -1,0 +1,10 @@
+Update temp_occurrences set coord_source='georef',final_lat='-13.2543',final_lon='34.3015' Where id=113;
+Update temp_occurrences set coord_source='georef',final_lat='-13.2543',final_lon='34.3015' Where id=114;
+Update temp_occurrences set coord_source='georef',final_lat='1.37333',final_lon='32.2903' Where id=233;
+Update temp_occurrences set coord_source='georef',final_lat='-13.2543',final_lon='34.3015' Where id=296;
+Update temp_occurrences set coord_source='georef',final_lat='-13.2543',final_lon='34.3015' Where id=298;
+Update temp_occurrences set coord_source='georef',final_lat='-13.2543',final_lon='34.3015' Where id=299;
+Update temp_occurrences set coord_source='georef',final_lat='1.37333',final_lon='32.2903' Where id=345;
+Update temp_occurrences set coord_source='georef',final_lat='1.37333',final_lon='32.2903' Where id=346;
+Update temp_occurrences set coord_source='georef',final_lat='1.37333',final_lon='32.2903' Where id=351;
+Update temp_occurrences set coord_source='georef',final_lat='1.37333',final_lon='32.2903' Where id=542;
