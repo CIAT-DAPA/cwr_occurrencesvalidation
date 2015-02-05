@@ -18,6 +18,8 @@ validation_content_source=G,H
 validation_content_cult=weedy,cultivated,wild,null
 #List of values allowed in the field origin
 validation_content_origin=native,non-native,introduced,null
+#List of translate for origin stat
+validation_translate_origin=introduced|non-native
 #List of values allowed in the field is_hybrid
 validation_content_hybrid=0,1,null
 #List of values allowed in the field ns

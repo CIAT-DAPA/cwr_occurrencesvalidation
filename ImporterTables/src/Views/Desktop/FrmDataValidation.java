@@ -130,7 +130,7 @@ public class FrmDataValidation extends javax.swing.JDialog {
 
             },
             new String [] {
-                "Check", "Policy", "Values"
+                "Check", "Validation processes", "Values"
             }
         ) {
             Class[] types = new Class [] {

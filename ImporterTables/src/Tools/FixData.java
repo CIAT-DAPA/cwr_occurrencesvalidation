@@ -38,7 +38,7 @@ public class FixData {
     {
         ArrayList<String> arrLis = new ArrayList<String>();
         for(String temp: line.split(pattern))
-            arrLis.add(temp);
+            arrLis.add(temp.trim());
         return arrLis;
     }
     
@@ -259,5 +259,35 @@ public class FixData {
     public static String getValue(Object field)
     {
         return field==null ? "null" : FixData.getValue(field.toString());
+    }
+    
+    /**
+     * Method that search a data in a specify list and return the value
+     * @param type indicate the place to search
+     * @param data value to search
+     * @return String with the other value, on the other hand the same data
+     */
+    public static String translate(int type,String data)
+    {
+        String a=null;
+        if(type==1)
+            a=FixData.searchTranslate(Configuration.getParameter("validation_translate_origin"), data);
+        return a==null ? data: a;
+    }
+    
+    /**
+     * Method that search value for change by other value
+     * @param listValues List of values, splits by comma
+     * @param value value to search
+     * @return String with the other value, on the other hand null
+     */
+    public static String searchTranslate(String listValues,String value)
+    {
+        for(String d : listValues.split(","))
+        {
+            if(d.startsWith(value + "|"))
+                return d.split("|")[1];
+        }
+        return null;
     }
 }

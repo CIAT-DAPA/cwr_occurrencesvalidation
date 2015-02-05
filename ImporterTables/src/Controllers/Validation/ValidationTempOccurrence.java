@@ -164,7 +164,9 @@ public class ValidationTempOccurrence extends ValidationBase {
                                 query+= "final_cult_stat=" + ((this.db.getRecordSet().getString("cult_stat") != null && FixData.containsValue(this.db.getRecordSet().getString("cult_stat"), FixData.toArrayList(CONTENT_CULT))) ? "'" + this.db.getRecordSet().getString("cult_stat") + "'" : "null" ) + ",";
                             //3.5
                             else if(p.getTypePolicy()==TypePolicy.FINAL_ORIGIN)
-                                query+= "final_origin_stat=" + ((this.db.getRecordSet().getString("origin_stat") != null && FixData.containsValue(this.db.getRecordSet().getString("origin_stat"), FixData.toArrayList(CONTENT_ORIGIN))) ? "'" + this.db.getRecordSet().getString("origin_stat") + "'" : "null" ) + ",";
+                            {
+                                query+= "final_origin_stat=" + ((this.db.getRecordSet().getString("origin_stat") != null && FixData.containsValue(this.db.getRecordSet().getString("origin_stat"), FixData.toArrayList(CONTENT_ORIGIN))) ? "'" + FixData.translate(1, this.db.getRecordSet().getString("origin_stat"))  + "'" : "null" ) + ",";
+                            }
                             //Group Add
                             else if(p.getTypePolicy()==TypePolicy.ADD_AVAILABILITY && p.getValues().get(0) != null)
                                 query+="AVAILABILITY='" + p.getValues().get(0) + "',";
