@@ -34,15 +34,17 @@ public class Log {
      * @param type Type Log
      * @param line line to write
      * @param addDate True if you want add date and time for register, false otherwise
+     * @param prefix Name for begin the file name
+     * @param ext Extension file
      * @return 
      */
-    public static boolean register(String path,TypeLog type,String line, boolean addDate)
+    public static boolean register(String path,TypeLog type,String line, boolean addDate, String prefix,String ext)
     {
         boolean a=false;
         PrintWriter writer = null;
         try 
         {
-            writer = new PrintWriter(new BufferedWriter(new FileWriter((path.endsWith("\\") ? path+type.name() : path +"\\" + type.name()) + ".txt", true)));
+            writer = new PrintWriter(new BufferedWriter(new FileWriter((path.endsWith("\\") ? path+ prefix + type.name() : path +"\\" + prefix + type.name()) + "." + ext, true)));
             writer.println((addDate ? FixData.getDateTime() + "|" : "") + line);
             writer.close();
             a=true;
@@ -61,11 +63,12 @@ public class Log {
      * Method that valid if a log exist
      * @param path path to search log file
      * @param type type log
+     * @param prefix prefix file
      * @return 
      */
-    public static boolean existLog(String path,TypeLog type)
+    public static boolean existLog(String path,TypeLog type, String prefix)
     {
-       return new File((path.endsWith("\\") ? path+type.name() : path +"\\" + type.name()) + ".txt").exists();
+       return new File((path.endsWith("\\") ? path + prefix +type.name() : path +"\\" + prefix + type.name()) + ".txt").exists();
     }
     
 }

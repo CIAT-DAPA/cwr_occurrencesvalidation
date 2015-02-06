@@ -154,9 +154,9 @@ public class FixData {
         else
         {
             if(removeAccents && lower)
-                return field + "='" + FixData.deleteAccent(value).toLowerCase() + "',";
+                return field + "='" + FixData.deleteAccent(value).toLowerCase().trim() + "',";
             else if(removeAccents && !lower)
-                return field + "='" + FixData.deleteAccent(value) + "',";
+                return field + "='" + FixData.deleteAccent(value).trim() + "',";
             else
                 return field + "='" + value + "',";
         }
@@ -261,6 +261,11 @@ public class FixData {
         return field==null ? "null" : FixData.getValue(field.toString());
     }
     
+    public static String getValueImaginary(String field)
+    {
+        return field == null ? "" : field;
+    }
+    
     /**
      * Method that search a data in a specify list and return the value
      * @param type indicate the place to search
@@ -289,5 +294,25 @@ public class FixData {
                 return d.split("|")[1];
         }
         return null;
+    }
+    
+    /**
+     * Method that get distance between two coordinates
+     * @param coord1 Coordinates Northeast 
+     * @param coord2 Coordinates Southwest
+     * @return 
+     */
+    public static double getDistance(double[] coord1, double[] coord2) {
+        if (coord1.length == 2 && coord2.length == 2) {
+            double LatA = (coord1[0] * Math.PI) / 180;
+            double LatB = (coord2[0] * Math.PI) / 180;
+            double LngA = (coord1[1] * Math.PI) / 180;
+            double LngB = (coord2[1] * Math.PI) / 180;
+            // Retorna la distancia en kilometros
+            return 6371 * Math.acos(Math.cos(LatA) * Math.cos(LatB) * Math.cos(LngB - LngA) + Math.sin(LatA) * Math.sin(LatB));
+        } else {
+            System.out.println("Error: coord length is not correct");
+            return -1;
+        }
     }
 }

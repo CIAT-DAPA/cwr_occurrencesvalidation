@@ -36,6 +36,7 @@ import rcaller.RCode;
 public class Taxonstand {
     
     public static HashMap db=null;
+    public final static String HEADER="Genus|Species|Abbrev|Infraspecific|ID|Plant_Name_Index|TPL_version|Taxonomic_status|Family|New_Genus|New_Hybrid_marker|New_Species|New_Infraspecific|Authority|New_ID|Typo|WFormat|";
     
     /**
      * Method that use R for ask to The Planet List about taxon
@@ -57,7 +58,7 @@ public class Taxonstand {
             code.clear();
             code.addRCode("library(Taxonstand)");
             code.addRCode("r1 <- " + Configuration.getParameter("taxonstand_function_name") + "(\"" + taxon + "\"" +  Configuration.getParameter("taxonstand_function_parameters") + ")");
-            code.addRCode("r1$Authority<-gsub(\"&\", \"y\", r1$Authority)");
+            code.addRCode("r1$Authority<-gsub(\"&\", \"&amp;\", r1$Authority)");
             caller.setRCode(code);
             caller.runAndReturnResult("r1");
             //Xml
@@ -65,15 +66,18 @@ public class Taxonstand {
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             //load answer of r
             Document doc = dBuilder.parse( new InputSource(new ByteArrayInputStream(caller.getParser().getXMLFileAsString().getBytes("utf-8"))));
+            //Document doc = dBuilder.parse(caller.getParser().getXMLFile());
             //doc.getDocumentElement().normalize();
             NodeList nList = doc.getElementsByTagName("variable");
             Element  var;
             String value;
             a=new HashMap();
+            String toString="";
             for (int i = 0; i < nList.getLength(); i++) 
             {
-                var = (Element)nList.item(i);
+                var = (Element)nList.item(i);                
                 value=var.getTextContent()==null ? "" : var.getTextContent().replaceAll("\n", "").trim();
+                toString += value + "|";
                 if(var.getAttribute("name").toLowerCase().equals("authority"))
                     a.put("taxstand_author1",value);
                 else if(var.getAttribute("name").toLowerCase().equals("family"))
@@ -85,6 +89,7 @@ public class Taxonstand {
                 else if(var.getAttribute("name").toLowerCase().equals("new_infraspecific"))
                     a.put("taxstand_sp2",value);
             }
+            a.put("toString",toString);
             db.put(taxon.replaceAll(" ", "_"), a);
         }
         catch (Exception ex)

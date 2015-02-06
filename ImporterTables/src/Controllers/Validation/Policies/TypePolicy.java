@@ -32,18 +32,17 @@ public enum TypePolicy {
     FINAL_ORIGIN,                                   //8
     ADD_AVAILABILITY,                               //9        
     ADD_SOURCE,                                     //10
-    ADD_CULT,                                       //11
-    TAXON_DATA_FINAL,                               //12
-    TNRS_QUERY,                                     //13    
-    TAXONDSTAND_QUERY,                              //14
-    GEOCODING_VALIDATE_COUNTRY,                     //15
-    GEOCODING_VALIDATE_ISO2,                        //16
-    GEOCODING_VALIDATE_COORDS_GRADS,                //17
-    GEOCODING_VALIDATE_NS_EW,                       //18
-    GEOCODING_VALIDATE_COORDS_LAT_LON,              //19    
-    GEOCODING_INITIAL,                              //20
-    POSTCHECK_VALIDATE_TAXON,                       //21    
-    POSTCHECK_VALIDATE_TAXON_MANDATORY,             //22
-    POSTCHECK_GEOCODING_CROSCHECK_COORDS,           //23
-    POSTCHECK_GEOCODING_CROSCHECK_GEOREF,           //24
+    ADD_CULT,                                       //11    
+    TNRS_QUERY,                                     //12    
+    TAXONDSTAND_QUERY,                              //13
+    GEOCODING_VALIDATE_COUNTRY,                     //14
+    GEOCODING_VALIDATE_ISO2,                        //15
+    GEOCODING_VALIDATE_COORDS_GRADS,                //16
+    GEOCODING_VALIDATE_NS_EW,                       //17
+    GEOCODING_VALIDATE_COORDS_LAT_LON,              //18    
+    GEOCODING_INITIAL,                              //19
+    POSTCHECK_VALIDATE_TAXON,                       //20    
+    POSTCHECK_VALIDATE_TAXON_MANDATORY,             //21
+    POSTCHECK_GEOCODING_CROSCHECK_COORDS,           //22
+    POSTCHECK_GEOCODING_CROSCHECK_GEOREF,           //23
 }

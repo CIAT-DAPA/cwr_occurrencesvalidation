@@ -29,7 +29,7 @@ validation_content_ew=E,W,null
 #Regular expression for validate coordinates
 validation_content_regexp_coords=(-)?(\d)+(.(\d)+)?
 #maximum value uncertainty for geocoding
-geocoding_threshold=1000
+geocoding_threshold=5000
 #Url for Google Maps API in xml format
 geocoding_google_url_send_xml=https://maps.googleapis.com/maps/api/geocode/xml?sensor=false&
 #Url for Google Maps API in json format
@@ -56,3 +56,7 @@ taxonstand_rscript_path=C:\Program Files\R\R-3.1.2\bin\Rscript.exe
 taxonstand_function_name=TPLck
 #Start parameters for the function of taxonstand
 taxonstand_function_parameters=,corr=TRUE,
+#Extension log for review data
+log_ext_review=csv
+#Extension log for querys
+log_ext_sql=txt

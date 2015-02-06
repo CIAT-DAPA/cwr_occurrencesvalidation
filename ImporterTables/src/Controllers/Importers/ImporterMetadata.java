@@ -81,15 +81,15 @@ public class ImporterMetadata extends ImporterBase {
                 q=header +
                         super.separateByCharacter(FixData.lineSplit(values,file.getSplit()), ",", "'",null,super.source.size(),"''") +
                         ")";
-                Log.register(log,TypeLog.REGISTER_OK,String.valueOf(row) + "|" + values, true);
+                Log.register(log,TypeLog.REGISTER_OK,String.valueOf(row) + "|" + values, true,"Metadata",Configuration.getParameter("log_ext_review"));
                 System.out.println(q);
                 affected=db.update(q);
                 System.out.println("Row: " + row + " Affected: " + affected);
             }
             catch(Exception e)
             {
-                Log.register(log,TypeLog.REGISTER_ERROR,e + "|" + values, false);
-                Log.register(log,TypeLog.QUERY_ERROR,String.valueOf(row) + "|" + e + "|" + q, true);
+                Log.register(log,TypeLog.REGISTER_ERROR,e + "|" + values, false,"Metadata",Configuration.getParameter("log_ext_review"));
+                Log.register(log,TypeLog.QUERY_ERROR,String.valueOf(row) + "|" + e + "|" + q, true,"Metadata",Configuration.getParameter("log_ext_review"));
                 errors+=1;
                 System.out.println("Error register: " + row + " " + e);
             }

@@ -17,9 +17,9 @@
 package Controllers.Validation;
 
 import Models.DataBase.TNRS.RepositoryTNRS;
-import Models.DataBase.Geocoding.Geocoding;
 import Controllers.Validation.Policies.*;
 import Models.DataBase.Geocoding.Country;
+import Models.DataBase.Geocoding.GeocodingGeolocate;
 import Models.DataBase.Geocoding.GeocodingGoogle;
 import Models.DataBase.Geocoding.WaterBody;
 import Models.DataBase.Geocoding.RepositoryCountry;
@@ -83,11 +83,10 @@ public class ValidationTempOccurrence extends ValidationBase {
     
     
     @Override
-    public long review()
+    public long review(int step)
     {
         int a=0;
-        HashMap googleGeocoding,googleReverse,taxonstand;
-        Geocoding geo;
+        HashMap googleGeocoding,googleReverse,taxonstand,geolocateGeocoding;
         String header="Update temp_occurrences set ",footer, query;
         String value1, value2;
         String name,taxon_final,taxon_tnrs_final,taxon_taxstand_final;
@@ -97,9 +96,13 @@ public class ValidationTempOccurrence extends ValidationBase {
         WaterBody rWater;
         String water;
         String temp_country,temp_adm1,temp_adm2,temp_adm3,temp_local_area,temp_locality;
-        int timesGeo;
+        String review_data;
         try
         {
+            if(step==2)
+                Log.register(super.log, TypeLog.REVIEW_DATA, "id|x1_genus|x1_sp1|x1_rank1|x1_sp2|x1_rank2|x1_sp3|" + TNRS.HEADER + Taxonstand.HEADER, false,"TempOccuReview" + String.valueOf(step),Configuration.getParameter("log_ext_review"));
+            else if(step==3)
+                Log.register(super.log, TypeLog.REVIEW_DATA, "id|country|adm1|adm2|adm3|local_area|locality|" + GeocodingGoogle.HEADER + GeocodingGeolocate.HEADER, false,"TempOccuReview" + String.valueOf(step),Configuration.getParameter("log_ext_review"));
             rWater=new WaterBody(Configuration.getParameter("geocoding_database_world"));
             long row=0, countRows=countRegister();
             this.db.getResults("Select id,old_id,availability,cult_stat,source,origin_stat,is_hybrid,filename, " +
@@ -121,6 +124,7 @@ public class ValidationTempOccurrence extends ValidationBase {
             rCountry=new RepositoryCountry();
             while(this.db.getRecordSet().next())
             {
+                review_data = this.db.getRecordSet().getString("id") + "|";
                 query=header;
                 row+=1;
                 try
@@ -174,20 +178,7 @@ public class ValidationTempOccurrence extends ValidationBase {
                                 query+="cult_stat='" + p.getValues().get(0) + "',";
                             else if(p.getTypePolicy()==TypePolicy.ADD_SOURCE  && p.getValues().get(0) != null)
                                 query+="source='" + p.getValues().get(0) + "',";
-                            //Group TNRS
-                            else if(p.getTypePolicy()==TypePolicy.TAXON_DATA_FINAL)
-                            {
-                                //4.1
-                                value1=FixData.validateRank(this.db.getRecordSet().getString("x1_rank1"));
-                                query+=value1==null || value1.equals("") ? "" : "f_x1_rank1='" + value1 + "'";
-                                value2=FixData.validateRank(this.db.getRecordSet().getString("x1_rank2"));
-                                query+=value2==null || value2.equals("") ? "" : "f_x1_rank2='" + value2 + "'";
-                                //4.2 4.3
-                                query+=FixData.prepareUpdate("f_x1_genus", FixData.toCapitalLetter(this.db.getRecordSet().getString("x1_genus")) , true, false) +
-                                        FixData.prepareUpdate("f_x1_sp1", this.db.getRecordSet().getString("x1_sp1"), true, true) +
-                                        FixData.prepareUpdate("f_x1_sp2", this.db.getRecordSet().getString("x1_sp2"), true, true) +
-                                        FixData.prepareUpdate("f_x1_sp3", this.db.getRecordSet().getString("x1_sp3"), true, true);
-                            }
+                            //Group TNRS                            
                             //4.4
                             else if(p.getTypePolicy()==TypePolicy.TNRS_QUERY)
                             {
@@ -197,15 +188,22 @@ public class ValidationTempOccurrence extends ValidationBase {
                                     this.db.getRecordSet().getString("x1_sp2"),
                                     this.db.getRecordSet().getString("x1_rank2"),
                                     this.db.getRecordSet().getString("x1_sp3")}," ");
+                                review_data += FixData.getValue(this.db.getRecordSet().getString("x1_genus")) + "|" +
+                                        FixData.getValue(this.db.getRecordSet().getString("x1_sp1")) + "|" +
+                                        FixData.getValue(this.db.getRecordSet().getString("x1_rank1")) + "|" +
+                                        FixData.getValue(this.db.getRecordSet().getString("x1_sp2")) + "|" +
+                                        FixData.getValue(this.db.getRecordSet().getString("x1_rank2")) + "|" +
+                                        FixData.getValue(this.db.getRecordSet().getString("x1_sp3")) + "|" ;
                                 tnrs=RepositoryTNRS.get(name, true);
                                 if(tnrs==null)
                                     tnrs=RepositoryTNRS.get(name, false);
                                 if(tnrs==null)
                                     throw new Exception("Not found taxon in tnrs");
                                 for(TNRS t:tnrs)
-                                {
+                                {                                    
                                     if(t.acceptedName!=null && !t.acceptedName.equals(""))
-                                    {
+                                    { 
+                                        review_data+=t.toString();
                                         query+="tnrs_author1='" + t.authorAttributed + "',"+
                                                 "tnrs_final_taxon='" + t.acceptedName.replaceAll(" ", "_") + "'," +
                                                 "tnrs_overall_score='" + String.valueOf(t.overall)  + "'," +
@@ -218,7 +216,7 @@ public class ValidationTempOccurrence extends ValidationBase {
                             //Group Taxonstand
                             //4.5
                             else if(p.getTypePolicy()==TypePolicy.TAXONDSTAND_QUERY)
-                            {
+                            {                                
                                 name=FixData.concatenate(new String[]{this.db.getRecordSet().getString("x1_genus"),
                                     this.db.getRecordSet().getString("x1_sp1"),
                                     this.db.getRecordSet().getString("x1_rank1"),
@@ -229,6 +227,8 @@ public class ValidationTempOccurrence extends ValidationBase {
                                 if(taxonstand==null)
                                     throw new Exception("Not found taxon in taxonstand");
                                 else
+                                {
+                                    review_data+=taxonstand.get("toString").toString();
                                     query+="taxstand_author1='" + taxonstand.get("taxstand_author1").toString() + "',"+
                                             "taxstand_family='" + taxonstand.get("taxstand_family").toString().replaceAll(" ", "_") + "'," +
                                             "taxstand_final_taxon='" + FixData.concatenate(new String[]{ taxonstand.get("taxstand_genus").toString(),
@@ -237,6 +237,7 @@ public class ValidationTempOccurrence extends ValidationBase {
                                             "taxstand_genus='" + taxonstand.get("taxstand_genus").toString() + "'," +
                                             "taxstand_sp1='" + taxonstand.get("taxstand_sp1").toString()  + "'," +
                                             "taxstand_sp2='" + taxonstand.get("taxstand_sp2").toString()  + "',";
+                                }
                             }
                             //Group Geocoding
                             //5.1
@@ -314,34 +315,17 @@ public class ValidationTempOccurrence extends ValidationBase {
                             //5.4
                             else if(p.getTypePolicy()==TypePolicy.GEOCODING_INITIAL)
                             {
-                                googleGeocoding=null;
-                                temp_country=this.db.getRecordSet().getString("country");
-                                temp_adm1=this.db.getRecordSet().getString("adm1");
-                                temp_adm2=this.db.getRecordSet().getString("adm2");
-                                temp_adm3=this.db.getRecordSet().getString("adm3");
-                                temp_local_area=this.db.getRecordSet().getString("local_area");
-                                temp_locality=this.db.getRecordSet().getString("locality");
-                                geo=new Geocoding(temp_country,temp_adm1,temp_adm2,temp_adm3,temp_local_area,temp_locality);
-                                timesGeo=0;
-                                while(googleGeocoding==null)
-                                {         
-                                    timesGeo+=1;
-                                    googleGeocoding=geo.georenferencing();
-                                    if(googleGeocoding != null || (timesGeo > 5 && googleGeocoding==null))
-                                        break;
-                                    else if(timesGeo==1)
-                                        geo=new Geocoding(temp_country,temp_adm1,temp_adm2,temp_adm3,temp_local_area,"");
-                                    /*else if(timesGeo==2)
-                                        geo=new Geocoding(temp_country,temp_adm1,temp_adm2,temp_adm3,"","");
-                                    else if(timesGeo==3)
-                                        geo=new Geocoding(temp_country,temp_adm1,temp_adm2,"","","");
-                                    else if(timesGeo==4)
-                                        geo=new Geocoding(temp_country,temp_adm1,"","","","");
-                                    else if(timesGeo==5)
-                                        geo=new Geocoding(temp_country,"","","","","");*/
-                                }
-                                if(googleGeocoding==null)
-                                    throw new Exception("Can't geocoding register " + geo.getData());
+                                temp_country=FixData.getValueImaginary(this.db.getRecordSet().getString("country"));
+                                temp_adm1=FixData.getValueImaginary(this.db.getRecordSet().getString("adm1"));
+                                temp_adm2=FixData.getValueImaginary(this.db.getRecordSet().getString("adm2"));
+                                temp_adm3=FixData.getValueImaginary(this.db.getRecordSet().getString("adm3"));
+                                temp_local_area=FixData.getValueImaginary(this.db.getRecordSet().getString("local_area"));
+                                temp_locality=FixData.getValueImaginary(this.db.getRecordSet().getString("locality"));
+                                googleGeocoding=GeocodingGoogle.georenferencing(temp_country,temp_adm1,temp_adm2,temp_adm3,temp_local_area,temp_locality);
+                                geolocateGeocoding = GeocodingGeolocate.georenferencing(temp_country,temp_adm1,temp_adm2,temp_adm3,temp_local_area,temp_locality);
+                                
+                                if(googleGeocoding==null && geolocateGeocoding==null)
+                                    throw new Exception("Can't geocoding register "/* + geo.getData()*/);
                                 query+= "latitude_georef='" + googleGeocoding.get("latitude_georef") + "'," +
                                         "longitude_georef='" + googleGeocoding.get("longitude_georef") + "'," +
                                         "distance_georef='" + googleGeocoding.get("distance_georef") + "',";                                
@@ -359,7 +343,19 @@ public class ValidationTempOccurrence extends ValidationBase {
                                 taxon_tnrs_final= this.db.getRecordSet().getString("tnrs_final_taxon") == null ? "" : FixData.removePatternEnd(this.db.getRecordSet().getString("tnrs_final_taxon").toLowerCase(),"_");
                                 taxon_taxstand_final= this.db.getRecordSet().getString("taxstand_final_taxon") == null ? "" : FixData.removePatternEnd(this.db.getRecordSet().getString("taxstand_final_taxon").toLowerCase(),"_");
                                 if(taxon_final.equals(taxon_tnrs_final) && FixData.hideRank(taxon_final).equals(taxon_taxstand_final))
+                                {
                                     query+= "taxon_final='" + FixData.toCapitalLetter(taxon_final) + "',";
+                                    //4.1
+                                    value1=FixData.validateRank(this.db.getRecordSet().getString("x1_rank1"));
+                                    query+=value1==null || value1.equals("") ? "" : "f_x1_rank1='" + value1 + "'";
+                                    value2=FixData.validateRank(this.db.getRecordSet().getString("x1_rank2"));
+                                    query+=value2==null || value2.equals("") ? "" : "f_x1_rank2='" + value2 + "'";
+                                    //4.2 4.3
+                                    query+=FixData.prepareUpdate("f_x1_genus", FixData.toCapitalLetter(this.db.getRecordSet().getString("x1_genus")) , true, false) +
+                                            FixData.prepareUpdate("f_x1_sp1", this.db.getRecordSet().getString("x1_sp1"), true, true) +
+                                            FixData.prepareUpdate("f_x1_sp2", this.db.getRecordSet().getString("x1_sp2"), true, true) +
+                                            FixData.prepareUpdate("f_x1_sp3", this.db.getRecordSet().getString("x1_sp3"), true, true);
+                                }
                                 else if(taxon_final.equals(taxon_tnrs_final) && !FixData.hideRank(taxon_final).equals(taxon_taxstand_final))
                                     throw new Exception("Semaphore yellow. Taxstands different. Taxon: " + taxon_final + " Taxstand: " +  taxon_taxstand_final);
                                 else if(!taxon_final.equals(taxon_tnrs_final) && FixData.hideRank(taxon_final).equals(taxon_taxstand_final))
@@ -417,35 +413,38 @@ public class ValidationTempOccurrence extends ValidationBase {
                             a+=1;
                             googleGeocoding=null;
                             googleReverse=null;
-                            geo=null;
+                            geolocateGeocoding=null;
                             StackTraceElement[] frames = e.getStackTrace();
                             String msgE="";
                             for(StackTraceElement frame : frames)
                                 msgE += frame.getClassName() + "-" + frame.getMethodName() + "-" + String.valueOf(frame.getLineNumber());
                             System.out.println(e + msgE);
-                            Log.register(super.log, TypeLog.REGISTER_ERROR, this.db.getRecordSet().getString("id") + "|" + e.toString() + "|" + e.getMessage() + "|" + msgE, true);
+                            Log.register(super.log, TypeLog.REGISTER_ERROR, this.db.getRecordSet().getString("id") + "|" + e.toString() + "|" + e.getMessage() + "|" + msgE, true, "TempOccuStep" + String.valueOf(step),Configuration.getParameter("log_ext_review") );
                         }
                     }
                     footer=" Where id=" +this.db.getRecordSet().getString("id") + ";" ;
                     //Validate that have
                     if(!query.endsWith("set "))
-                        Log.register(super.log, TypeLog.REGISTER_OK, query.substring(0, query.length()-1) + footer, false);
+                        Log.register(super.log, TypeLog.REGISTER_OK, query.substring(0, query.length()-1) + footer, false,"TempOccuStep" + String.valueOf(step),Configuration.getParameter("log_ext_sql"));
                 }
                 catch(Exception exc)
                 {
                     a+=1;
                     googleGeocoding=null;
                     googleReverse=null;
-                    geo=null;
-                    Log.register(super.log, TypeLog.REGISTER_ERROR, this.db.getRecordSet().getString("id") + "|" + exc.toString() + "|" + exc.getMessage(), true);
+                    geolocateGeocoding=null;
+                    Log.register(super.log, TypeLog.REGISTER_ERROR, this.db.getRecordSet().getString("id") + "|" + exc.toString() + "|" + exc.getMessage(), true,"TempOccuStep" + String.valueOf(step),Configuration.getParameter("log_ext_review"));
                 }
-                System.out.println(FixData.toPercent(countRows, row) + "% Row " + row + " From " + countRows);
+                if(step==2)
+                    Log.register(super.log, TypeLog.REVIEW_DATA, review_data, false,"TempOccuReview" + String.valueOf(step),Configuration.getParameter("log_ext_review"));
+                
+                System.out.println(FixData.toPercent(countRows, row) + "% row " + row + " of " + countRows);
             }
         }
         catch(Exception ex)
         {
             System.out.println("Error in the connection with database " + ex);
-            Log.register(super.log, TypeLog.REGISTER_ERROR, "Error in the connection with database " + ex, true);
+            Log.register(super.log, TypeLog.REGISTER_ERROR, "Error in the connection with database " + ex, true,"TempOccuStep" + String.valueOf(step),Configuration.getParameter("log_ext_review"));
         }
         return a;
     }

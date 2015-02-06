@@ -48,7 +48,8 @@ public abstract class ValidationBase {
     
     /**
      * Method that review every row from table and apply policies 
+     * @param step step to run
      * @return 
      */
-    public abstract long review();
+    public abstract long review(int step);
 }

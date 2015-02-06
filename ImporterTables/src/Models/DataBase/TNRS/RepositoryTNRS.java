@@ -20,6 +20,7 @@ import Tools.Configuration;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.HashMap;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
@@ -30,6 +31,7 @@ import org.json.simple.JSONValue;
  */
 public class RepositoryTNRS {
     /*Members class*/
+    public static HashMap db=null;
     
     /**
      * Method that consuming web services from tnrs and get results
@@ -42,6 +44,10 @@ public class RepositoryTNRS {
         TNRS[] a=null;
         try
         {            
+            if(db==null)
+                db=new HashMap();
+            if(db.containsKey(name.replaceAll(" ", "_")))
+                return (TNRS[])db.get(name.replaceAll(" ", "_"));
             URL url=new URL(Configuration.getParameter("tnrs_url_base") + (best?"retrieve=best":"retrieve=all") + "&names=" + name.replaceAll(" ","%20"));
             BufferedReader lector=new BufferedReader(new InputStreamReader(url.openStream()));
             String textJson=lector.readLine();
@@ -51,6 +57,7 @@ public class RepositoryTNRS {
             a=new TNRS[jsNames.size()];
             for(int i=0; i < a.length;i++)
                 a[i]=new TNRS((JSONObject)jsNames.get(i));
+            db.put(name.replaceAll(" ", "_"), a);
         }
         catch(Exception ex)
         {

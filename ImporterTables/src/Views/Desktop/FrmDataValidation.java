@@ -70,6 +70,15 @@ public class FrmDataValidation extends javax.swing.JDialog {
         //Steps
         setPoliciesByStep(cboStep.getSelectedIndex());
     }
+    
+    /**
+     * Method that return the current step selected
+     * @return int
+     */
+    public int getStep()
+    {
+        return cboStep.getSelectedIndex() + 1;
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -252,7 +261,7 @@ public class FrmDataValidation extends javax.swing.JDialog {
         // TODO add your handling code here:
         try
         {
-            if(Log.existLog(txtLog.getText(), TypeLog.REGISTER_OK) || Log.existLog(txtLog.getText(), TypeLog.REGISTER_ERROR))
+            if(Log.existLog(txtLog.getText(), TypeLog.REGISTER_OK,"TempOccuStep" + String.valueOf(getStep())) || Log.existLog(txtLog.getText(), TypeLog.REGISTER_ERROR,"TempOccuStep" + String.valueOf(getStep())))
                 JOptionPane.showMessageDialog(this, "Already exist file log. Please delete it and try again.\n" + txtLog.getText());
             else if((TypeDataValidation)cboSource.getSelectedItem()==TypeDataValidation.TEMP_OCCURRENCES)
             {
@@ -305,27 +314,27 @@ public class FrmDataValidation extends javax.swing.JDialog {
                 break;
             //Step 2: Taxonomy checks part 1
             case 1:
-                setStatusTable(12, 14, true);
+                setStatusTable(12, 13, true);
                 break;
             //Step 3: Geographic checks part 1
             case 2:
-                setStatusTable(15, 20, true);
+                setStatusTable(14, 19, true);
                 break;
             //Step 4: Taxonomy checks part 2
             case 3:
-                setStatusTable(21, 21, true);
+                setStatusTable(20, 20, true);
                 break;
             //Step 5: Taxonomy checks part 3
             case 4:
-                setStatusTable(22, 22, true);
+                setStatusTable(21, 21, true);
                 break;
             //Step 6: Geographic checks coords
             case 5:
-                setStatusTable(23, 23, true);
+                setStatusTable(22, 22, true);
                 break;
             //Step 7: Geographic checks georef
             case 6:
-                setStatusTable(24, 24, true);
+                setStatusTable(23, 23, true);
                 break;
             default:
                 break;

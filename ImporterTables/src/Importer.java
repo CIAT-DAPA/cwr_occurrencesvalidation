@@ -66,7 +66,7 @@ public class Importer {
                     if(!frmData.isExit())
                     {
                         validation=frmData.getValidation();
-                        validation.review();
+                        validation.review(frmData.getStep());
                         message("Validation finished!!!");
                     }
                 }

@@ -55,7 +55,7 @@ public class UpdateTempOccurrences extends UpdateBase
                 catch(Exception ex)
                 {
                     System.out.println(ex);
-                    Log.register(log,TypeLog.QUERY_ERROR, line + "|" + ex.toString(), true);
+                    Log.register(log,TypeLog.QUERY_ERROR, line + "|" + ex.toString(), true,"TempOccuUpdate",Configuration.getParameter("log_ext_review"));
                 }
             }
         }
