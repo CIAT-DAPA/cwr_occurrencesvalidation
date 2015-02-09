@@ -323,12 +323,21 @@ public class ValidationTempOccurrence extends ValidationBase {
                                 temp_locality=FixData.getValueImaginary(this.db.getRecordSet().getString("locality"));
                                 googleGeocoding=GeocodingGoogle.georenferencing(temp_country,temp_adm1,temp_adm2,temp_adm3,temp_local_area,temp_locality);
                                 geolocateGeocoding = GeocodingGeolocate.georenferencing(temp_country,temp_adm1,temp_adm2,temp_adm3,temp_local_area,temp_locality);
+                                //Review data
+                                review_data+= temp_country + "|" + temp_adm1 + "|" + temp_adm2 + "|" + temp_adm3 + "|" + temp_local_area + "|" + temp_locality + "|";                                
+                                review_data+= googleGeocoding != null ? googleGeocoding.get("latitude").toString()+ "|" + googleGeocoding.get("longitude").toString() + "|" + googleGeocoding.get("distance").toString() + "|":"|||";
+                                review_data+= geolocateGeocoding != null ? geolocateGeocoding.get("latitude").toString() + "|" + geolocateGeocoding.get("longitude").toString() + "|" + geolocateGeocoding.get("precision").toString() + "|" + geolocateGeocoding.get("uncertainty").toString() + "|":"||||";
                                 
-                                if(googleGeocoding==null && geolocateGeocoding==null)
-                                    throw new Exception("Can't geocoding register "/* + geo.getData()*/);
-                                query+= "latitude_georef='" + googleGeocoding.get("latitude_georef") + "'," +
-                                        "longitude_georef='" + googleGeocoding.get("longitude_georef") + "'," +
-                                        "distance_georef='" + googleGeocoding.get("distance_georef") + "',";                                
+                                if(googleGeocoding != null)
+                                    query+= "latitude_georef='" + googleGeocoding.get("latitude") + "'," +
+                                        "longitude_georef='" + googleGeocoding.get("longitude") + "'," +
+                                        "distance_georef='" + googleGeocoding.get("distance") + "',";                                
+                                else if(geolocateGeocoding != null)
+                                    query+= "latitude_georef='" + geolocateGeocoding.get("latitude") + "'," +
+                                        "longitude_georef='" + geolocateGeocoding.get("longitude") + "'," +
+                                        "distance_georef='" + geolocateGeocoding.get("uncertainty") + "',";                                
+                                else
+                                    throw new Exception("Can't geocoding register " + temp_country + "," + temp_adm1 + "," + temp_adm2 + "," + temp_adm3 + "," + temp_local_area + "," + temp_locality);
                             }
                             //Group POST CHECK
                             //4.6
@@ -419,7 +428,7 @@ public class ValidationTempOccurrence extends ValidationBase {
                             for(StackTraceElement frame : frames)
                                 msgE += frame.getClassName() + "-" + frame.getMethodName() + "-" + String.valueOf(frame.getLineNumber());
                             System.out.println(e + msgE);
-                            Log.register(super.log, TypeLog.REGISTER_ERROR, this.db.getRecordSet().getString("id") + "|" + e.toString() + "|" + e.getMessage() + "|" + msgE, true, "TempOccuStep" + String.valueOf(step),Configuration.getParameter("log_ext_review") );
+                            Log.register(super.log, TypeLog.REGISTER_ERROR, this.db.getRecordSet().getString("id") + "|" + e.toString() + "|" + msgE, true, "TempOccuStep" + String.valueOf(step),Configuration.getParameter("log_ext_review") );
                         }
                     }
                     footer=" Where id=" +this.db.getRecordSet().getString("id") + ";" ;
@@ -435,9 +444,10 @@ public class ValidationTempOccurrence extends ValidationBase {
                     geolocateGeocoding=null;
                     Log.register(super.log, TypeLog.REGISTER_ERROR, this.db.getRecordSet().getString("id") + "|" + exc.toString() + "|" + exc.getMessage(), true,"TempOccuStep" + String.valueOf(step),Configuration.getParameter("log_ext_review"));
                 }
-                if(step==2)
+                //Log for review data
+                if(step==2 || step == 3)
                     Log.register(super.log, TypeLog.REVIEW_DATA, review_data, false,"TempOccuReview" + String.valueOf(step),Configuration.getParameter("log_ext_review"));
-                
+                //Percent of progress
                 System.out.println(FixData.toPercent(countRows, row) + "% row " + row + " of " + countRows);
             }
         }

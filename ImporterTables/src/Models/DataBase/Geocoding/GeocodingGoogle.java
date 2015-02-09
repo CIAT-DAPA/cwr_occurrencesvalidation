@@ -45,8 +45,7 @@ import org.xml.sax.SAXException;
  *
  * @author Steven Sotelo - stevenbetancurt@hotmail.com
  */
-public class GeocodingGoogle {
-    
+public class GeocodingGoogle {    
     /*Const*/
     public final static String HEADER ="google_latitude|google_longitude|google_distance|";
     
@@ -183,9 +182,9 @@ public class GeocodingGoogle {
                     if (distance <= Double.parseDouble(Configuration.getParameter("geocoding_threshold"))) 
                     { 
                         a=new HashMap();
-                        a.put("latitude_georef", coordValues[0]);
-                        a.put("longitude_georef", coordValues[1]);
-                        a.put("distance_georef", distance);
+                        a.put("latitude", coordValues[0]);
+                        a.put("longitude", coordValues[1]);
+                        a.put("distance", distance);
                     } 
                     else
                         throw new Exception("Exceede uncertainty. " + "Uncertainty: " + distance + " THRESHOLD: " + Configuration.getParameter("geocoding_threshold"));
@@ -213,14 +212,16 @@ public class GeocodingGoogle {
         HashMap a=new HashMap();
         try
         {
-            
-            URL url=new URL(Configuration.getParameter("geocoding_google_url_send_json") + "latlng=" + String.valueOf(latitude) + "," + String.valueOf(longitude));            
-            BufferedReader lector=new BufferedReader(new InputStreamReader(url.openStream()));
+            //URL url=new URL(Configuration.getParameter("geocoding_google_url_send_json") + "latlng=" + String.valueOf(latitude) + "," + String.valueOf(longitude));            
+            URL url = new URL(Configuration.getParameter("geocoding_google_url_send_json") + "latlng=" + String.valueOf(latitude) + "," + String.valueOf(longitude));
+            URL file_url = new URL(url.getProtocol() + "://" + url.getHost() + signRequest(url.getPath(), url.getQuery()));
+            //BufferedReader lector=new BufferedReader(new InputStreamReader(url.openStream()));
+            BufferedReader lector=new BufferedReader(new InputStreamReader(file_url.openStream()));
             String textJson="",tempJs;
             while((tempJs=lector.readLine()) != null)
                 textJson+=tempJs;
             if(textJson==null)
-                throw new Exception("Don't found item " );
+                throw new Exception("Don't found item" );
             JSONObject google=((JSONObject)JSONValue.parse(textJson));            
             a.put("status", google.get("status").toString());
             if(a.get("status").toString().equals("OK"))
