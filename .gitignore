@@ -4,6 +4,8 @@
 # Package Files #
 *.war
 *.ear
-/ImporterTables/dist/
-/ImporterTables/*.db
-/ImporterTables/*.txt
+/OccurrencesValidation/*.db
+/OccurrencesValidation/dist
+/OccurrencesValidation/*.txt
+/OccurrencesValidation/nbproject/private/
+/OccurrencesValidation/build/

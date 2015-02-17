@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
+    <system systemId="http://www.museum.tulane.edu/webservices/geolocatesvcv2/geolocatesvc.asmx?WSDL" uri="xml-resources/web-service-references/geolocatesvc/wsdl/www.museum.tulane.edu/webservices/geolocatesvcv2/geolocatesvc.asmx.wsdl"/>
+</catalog>
