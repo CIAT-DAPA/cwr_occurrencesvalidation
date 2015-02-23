@@ -20,7 +20,6 @@ import Models.DataBase.MySQL;
 import Models.DataBase.ResultQuery;
 import Models.Occurrences.Source.BaseTable;
 import Tools.Configuration;
-import Tools.ExceptionValues;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -68,28 +67,23 @@ public abstract class BaseRepository {
      * @param fields list of fields for check with table
      * @return List values
      * @throws SQLException Error with connection to the database
-     * @throws ExceptionValues Exception
      */
-    public ArrayList<String> validateFields(ArrayList<String> fields) throws SQLException, ExceptionValues{
-        ArrayList<String> a=new ArrayList<String>();
-        ExceptionValues ev=new ExceptionValues("Some fields did not find into table \"" + getTable() + "\", check the list.");
-        //fix fields to lower
-        for(String f : fields)
-            a.add(f.trim().toLowerCase());
+    public ArrayList<String> validateFields(ArrayList<String> fields) throws SQLException, Exception{        
+        String listFields="";
+        for(String f: fields)
+            listFields+="'" +f +"'," ;
         //query to database
-        dbInformationSchema.getResults("Select COLUMN_NAME as COLUMN_NAME " +
+        dbInformationSchema.getResults("Select count(COLUMN_NAME) as count " +
                                         "From COLUMNS " +
-                                        "Where TABLE_NAME = '" + getTable() +"' and Table_schema = '" + Configuration.getParameter("currie_schema_gapanalysis") + "';");
-        String field;
-        while(dbInformationSchema.getRecordSet().next())
+                                        "Where TABLE_NAME = '" + getTable() +"' and Table_schema = '" + Configuration.getParameter("currie_schema_gapanalysis") + "'" +
+                                            "and COLUMN_NAME in (" + listFields.substring(0, listFields.length()-1) + ");");
+        if(dbInformationSchema.getRecordSet().next())
         {
-            field=dbInformationSchema.getRecordSet().getString(1);
-            if(!a.contains(field.toLowerCase().trim()))
-                ev.addValue(field);
+            int count=dbInformationSchema.getRecordSet().getInt(1);
+            if(count < fields.size())
+                throw new Exception("Some fields did not find into table \"" + getTable() + "\". Count table: " + String.valueOf(count) + ", Count fields file: "+ String.valueOf(fields.size()));
         }
-        if(ev.getValues().size() > 0)
-            throw ev;
-        return a;
+        return fields;
     }
     
     /**

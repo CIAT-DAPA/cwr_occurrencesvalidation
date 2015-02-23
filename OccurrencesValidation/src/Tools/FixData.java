@@ -43,6 +43,20 @@ public class FixData {
     }
     
     /**
+     * Method that split line by pattern
+     * @param line line to split
+     * @param pattern pattern with which you want to split line
+     * @return
+     */
+    public static ArrayList<String> lineSplitLower(String line,String pattern)
+    {
+        ArrayList<String> arrLis = new ArrayList<String>();
+        for(String temp: line.split(pattern))
+            arrLis.add(temp.trim().toLowerCase());
+        return arrLis;
+    }
+    
+    /**
      * Method that delete all '
      * @param input String to cleaner
      * @return

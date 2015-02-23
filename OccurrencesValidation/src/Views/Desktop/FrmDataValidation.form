@@ -32,10 +32,12 @@
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="lblLog" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="txtLog" max="32767" attributes="0"/>
+                      <Component id="txtLog" min="-2" pref="186" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="cmdLog" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="chkReviewData" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                       <Component id="cmdCountries" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
@@ -76,6 +78,7 @@
                   <Component id="txtLog" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="cmdLog" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="cmdCountries" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="chkReviewData" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="scpPolicies" pref="276" max="32767" attributes="0"/>
@@ -195,6 +198,12 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cmdSelectActionPerformed"/>
       </Events>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="chkReviewData">
+      <Properties>
+        <Property name="selected" type="boolean" value="true"/>
+        <Property name="text" type="java.lang.String" value="Review data"/>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>

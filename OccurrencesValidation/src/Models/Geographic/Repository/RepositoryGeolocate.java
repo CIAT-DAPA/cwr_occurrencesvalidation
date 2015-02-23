@@ -25,8 +25,6 @@ import Models.Geographic.Source.LocationGeolocate;
  * @author Steven Sotelo - stevenbetancurt@hotmail.com
  */
 public class RepositoryGeolocate {
-
-    public final static String HEADER ="geolocate_latitude|geolocate_longitude|geolocate_uncertainty|geolocate_precision|";
     
     /**
      * Method that geocoding a address from geolocate api

@@ -130,10 +130,11 @@ public class CTempOccurrences extends BaseController {
      * @param step
      * @param policies
      * @param log
+     * @param reviewdata
      * @return
      * @throws SQLException
      */
-    public long crossCheck(int step,ArrayList<Policy> policies, String log) throws SQLException{
+    public long crossCheck(int step,ArrayList<Policy> policies, String log, boolean reviewdata) throws SQLException{
         int a=0;
         String header="Update " + getRepository().getTable() + " set ",footer, query;
         TNRS[] tnrs;
@@ -143,6 +144,7 @@ public class CTempOccurrences extends BaseController {
         TempCountries country;
         
         HashMap googleReverse;
+        String fullAddress;
         String value1, value2;
         String name,taxon_final,taxon_tnrs_final,taxon_taxstand_final;
         
@@ -152,10 +154,10 @@ public class CTempOccurrences extends BaseController {
         String review_data;
         long row=0, countRows;
         TempOccurrences entity=new TempOccurrences();
-        if(step==2)
-            Log.register(log, TypeLog.REVIEW_DATA, "id|x1_genus|x1_sp1|x1_rank1|x1_sp2|x1_rank2|x1_sp3|" + RepositoryTNRS.HEADER + RepositoryTaxonstand.HEADER, false,PREFIX_CROSSCHECK + String.valueOf(step),Configuration.getParameter("log_ext_review"));
-        else if(step==3)
-            Log.register(log, TypeLog.REVIEW_DATA, "id|country|adm1|adm2|adm3|local_area|locality|" + RepositoryGoogle.HEADER + RepositoryGeolocate.HEADER, false,PREFIX_CROSSCHECK + String.valueOf(step),Configuration.getParameter("log_ext_review"));
+        //Headers for log of review data
+        if(reviewdata)
+            Log.register(log,TypeLog.REVIEW_DATA, step==2? "id|x1_genus|x1_sp1|x1_rank1|x1_sp2|x1_rank2|x1_sp3|" + RepositoryTNRS.HEADER + RepositoryTaxonstand.HEADER :
+                    (step==3 || step==6 || step==7 ? "id|" + RepositoryGoogle.HEADER : ""), false,PREFIX_CROSSCHECK + String.valueOf(step),Configuration.getParameter("log_ext_review"));
         rWater=new RepositoryWaterBody(Configuration.getParameter("geocoding_database_world"));
         countRows=repository.count();
         getRepository().listCrossCheck();
@@ -350,9 +352,13 @@ public class CTempOccurrences extends BaseController {
                         lGoogle= RepositoryGoogle.georenferencing(temp_country,temp_adm1,temp_adm2,temp_adm3,temp_local_area,temp_locality);
                         lGeolocate = RepositoryGeolocate.georenferencing(temp_country,temp_adm1,temp_adm2,temp_adm3,temp_local_area,temp_locality);
                         //Review data
-                        review_data+= temp_country + "|" + temp_adm1 + "|" + temp_adm2 + "|" + temp_adm3 + "|" + temp_local_area + "|" + temp_locality + "|";
-                        review_data+= lGoogle != null ? lGoogle.toString():"|||";
-                        review_data+= lGeolocate != null ? ((LocationGeolocate)lGeolocate).toString():"||||";
+                        if(lGoogle == null && lGeolocate == null)
+                            review_data="";
+                        else{
+                            fullAddress=temp_country + "-" + temp_adm1 + "-" + temp_adm2 + "-" + temp_adm3 + "-" + temp_local_area + "-" + temp_locality;
+                            review_data+= lGoogle != null ? "0|" + lGoogle.toString() + " Google " + fullAddress +"||" + (lGeolocate==null?"":"\n") :"" ;
+                            review_data+= lGeolocate != null ? (lGoogle==null? "" : entity.getString("id") + "|" ) + "2|" + lGeolocate.toString() + " Geolocate " + fullAddress + "||\n":"";
+                        }
                         
                         if(lGoogle != null)
                             query+= "latitude_georef='" + String.valueOf(lGoogle.getLatitude()) + "'," +
@@ -412,7 +418,10 @@ public class CTempOccurrences extends BaseController {
                             if(water==null)
                                 throw new Exception("Coords. Not found point in the water database. " + water);
                             else if(!water.equals(Configuration.getParameter("geocoding_database_world_earth")))
+                            {
+                                review_data += String.valueOf(water) + "|" + entity.get("latitude") +"|" + entity.get("longitude") + "||" + String.valueOf(water) + "|";
                                 throw new Exception("Coords. Point in the water or boundaries. " + water + " Lat: " + FixData.getValue(entity.getDouble("latitude")) + " Lon: " + entity.getDouble("longitude"));
+                            }
                             //Validation with google
                             googleReverse=RepositoryGoogle.reverse(entity.getDouble("latitude"), entity.getDouble("longitude"));
                             if(googleReverse == null || !googleReverse.get("status").toString().equals("OK") || !FixData.getValue(googleReverse.get("iso")).toLowerCase().equals(FixData.getValue(entity.getString("final_iso2")).toLowerCase()))
@@ -434,7 +443,10 @@ public class CTempOccurrences extends BaseController {
                             if(water==null)
                                 throw new Exception("Coords. Not found point in the water database. " + water);
                             else if(!water.equals(Configuration.getParameter("geocoding_database_world_earth")))
+                            {
+                                review_data += String.valueOf(water) + "|" + entity.get("latitude") +"|" + entity.get("longitude") + "||" + String.valueOf(water) + "|";
                                 throw new Exception("Georef. Point in the water or boundaries. " + water + " Lat: " + FixData.getValue(entity.getDouble("latitude")) + " Lon: " + entity.getDouble("longitude"));
+                            }
                             if(entity.getString("latitude_georef") == null || entity.getString("longitude_georef") == null)
                                 throw new Exception("Cross check georef error: Data not found. Latitude: " + FixData.getValue(entity.getString("latitude_georef")) +
                                         " Longitude: " + FixData.getValue(entity.getString("longitude_georef")));
@@ -463,7 +475,7 @@ public class CTempOccurrences extends BaseController {
                 Log.register(log, TypeLog.REGISTER_OK, query.substring(0, query.length()-1) + footer, false,PREFIX_CROSSCHECK + String.valueOf(step),Configuration.getParameter("log_ext_sql"));
             
             //Log for review data
-            if(step==2 || step == 3)
+            if(reviewdata && !review_data.equals("") && (step==2 || step == 3 || step == 6 || step == 7))
                 Log.register(log, TypeLog.REVIEW_DATA, review_data, false,PREFIX_CROSSCHECK + String.valueOf(step),Configuration.getParameter("log_ext_review"));
             //Percent of progress
             System.out.println(FixData.toPercent(countRows, row) + "% row " + row + " of " + countRows);

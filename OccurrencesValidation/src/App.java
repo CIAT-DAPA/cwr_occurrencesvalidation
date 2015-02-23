@@ -72,7 +72,7 @@ public class App {
                     if(!frmData.isExit())
                     {
                         cTempOccurrences=frmData.getCTO();
-                        cTempOccurrences.crossCheck(frmData.getStep(), frmData.getPolicies(), frmData.getLog());
+                        cTempOccurrences.crossCheck(frmData.getStep(), frmData.getPolicies(), frmData.getLog(),frmData.getReviewData());
                         message("Validation finished!!!");
                     }
                 }

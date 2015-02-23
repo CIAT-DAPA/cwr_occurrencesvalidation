@@ -65,7 +65,7 @@ public abstract class BaseController {
         //Load Header
         dbFile.open();
         if(dbFile.isOpen())
-            fields=dbFile.readLineSplit();
+            fields=dbFile.readLineSplitLower();
         else
             throw new Exception("Error when it tryed to open file. Path: " + filePath );
         //Validation fields

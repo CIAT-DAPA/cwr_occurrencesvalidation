@@ -44,7 +44,8 @@ public class Log {
         PrintWriter writer = null;
         try 
         {
-            writer = new PrintWriter(new BufferedWriter(new FileWriter((path.endsWith("\\") ? path+ prefix + type.name() : path +"\\" + prefix + type.name()) + "." + ext, true)));
+            String realPrefix=prefix.equals("") ? "" : prefix + "_";
+            writer = new PrintWriter(new BufferedWriter(new FileWriter((path.endsWith("\\") ? path+ realPrefix + type.name() : path +"\\" + realPrefix + type.name()) + "." + ext, true)));
             writer.println((addDate ? FixData.getDateTime() + "|" : "") + line);
             writer.close();
             a=true;

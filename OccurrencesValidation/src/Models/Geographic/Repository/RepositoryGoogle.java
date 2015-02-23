@@ -48,7 +48,7 @@ import org.xml.sax.SAXException;
  */
 public class RepositoryGoogle {
 /*Const*/
-    public final static String HEADER ="google_latitude|google_longitude|google_distance|";
+    public final static String HEADER ="group|latitude|longitude|text|value";
     
     /**
      * Create a string URL with the corresponding signature code and client id.

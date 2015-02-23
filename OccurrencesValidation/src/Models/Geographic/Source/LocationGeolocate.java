@@ -36,12 +36,7 @@ public class LocationGeolocate extends Location {
     public LocationGeolocate(double latitude, double longitude, double uncertainty, double precision) {
         super(latitude, longitude, uncertainty);
         this.precision=precision;
-    }
-    
-    @Override
-    public String toString(){
-        return super.toString() + String.valueOf(precision) + "|";
-    }
+    }    
     
     /*Propeties*/
     /**

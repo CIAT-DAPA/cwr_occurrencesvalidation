@@ -176,4 +176,21 @@ public class DBFile {
             return null;
         }
     }
+    
+    /**
+     * Method that read line from file, split and lower it
+     * @return 
+     */
+    public ArrayList<String> readLineSplitLower()
+    {
+        try
+        {
+            return FixData.lineSplitLower(reader.readLine(), split);
+        }
+        catch(IOException ex)
+        {
+            System.out.println(ex);
+            return null;
+        }
+    }
 }

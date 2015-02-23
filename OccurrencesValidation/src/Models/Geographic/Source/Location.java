@@ -42,7 +42,7 @@ public class Location {
     
     @Override
     public String toString(){
-        return String.valueOf(latitude) + "|" + String.valueOf(longitude) + "|" + String.valueOf(uncertainty) + "|";
+        return String.valueOf(latitude) + "|" + String.valueOf(longitude) + "|" + String.valueOf(uncertainty) ;
     }
 
     /*Properties*/
