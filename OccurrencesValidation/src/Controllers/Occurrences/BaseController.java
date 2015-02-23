@@ -16,6 +16,7 @@
 
 package Controllers.Occurrences;
 
+import Models.DataBase.BaseUpdate;
 import Models.DataBase.DBFile;
 import Models.DataBase.ResultQuery;
 import Models.Occurrences.Repository.BaseRepository;
@@ -156,7 +157,7 @@ public abstract class BaseController {
         return errors;
     }
 
-        /**
+    /**
      * Method that import file to database
      * @param filePath Path of source file
      * @param log Path to log
@@ -200,6 +201,31 @@ public abstract class BaseController {
         return errors;
     }
 
+    /**
+     * Method that update fields of table into database
+     * @param updates updates to do
+     * @param log directory of log
+     * @param prefixLog prefix to log file
+     */
+    protected void updateFields(ArrayList<BaseUpdate> updates, String log, String prefixLog)
+    {
+        int i=1;
+        ResultQuery temp;
+        Log.register(log,TypeLog.REGISTER_OK,"update|query|rows", false,prefixLog,Configuration.getParameter("log_ext_review"));
+        for(BaseUpdate bu : updates)
+        {
+            try
+            {
+                temp=repository.update(bu);
+                Log.register(log,TypeLog.REGISTER_OK,String.valueOf(i) + "|" + temp.getQuery() + "|" + String.valueOf(temp.getAffected()), false,prefixLog,Configuration.getParameter("log_ext_review"));
+            }
+            catch(Exception ex)
+            {
+                Log.register(log,TypeLog.REGISTER_ERROR,String.valueOf(i) + "|" + ex + "|" + bu.toString(), false,prefixLog,Configuration.getParameter("log_ext_review"));
+            }
+        }
+    }
+    
     /**
      * Method that delete a entity from database
      * @param field name field for delete

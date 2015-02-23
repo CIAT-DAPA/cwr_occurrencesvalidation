@@ -21,6 +21,7 @@ import Controllers.Occurrences.CMetadata;
 import Controllers.Occurrences.CTempOccurrences;
 import Views.Desktop.FrmConf;
 import Views.Desktop.FrmUpdate;
+import Views.Desktop.FrmUpdateFields;
 import java.io.IOException;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -44,6 +45,7 @@ public class App {
             FrmDataValidation frmData;
             FrmConf frmConf;
             FrmUpdate frmUpdate;
+            FrmUpdateFields frmUpdateFields;
             do
             {   
                 if(option==1)
@@ -96,9 +98,24 @@ public class App {
                     frmConf=new FrmConf(new JFrame(),true);
                     frmConf.setVisible(true);
                 }
+                else if(option == 5)
+                {
+                    frmUpdateFields=new FrmUpdateFields(new JFrame(),true);
+                    frmUpdateFields.setVisible(true);
+                    if(!frmUpdateFields.isExit())
+                    {
+                        if(frmUpdateFields.getCBase() instanceof CTempOccurrences){
+                            cTempOccurrences=(CTempOccurrences)frmUpdateFields.getCBase();
+                            cTempOccurrences.updateFields(frmUpdateFields.getUpdates(), frmUpdateFields.getLog());
+                        }
+                        else
+                            message("Type don't support");
+                        message("Update finished!!!");
+                    }
+                }
                 frmOpt.setVisible(true);
                 option=frmOpt.getOption();
-            }while(option>=0 && option <5);
+            }while(option>=0 && option <6);
         }
         catch(Exception ex)
         {

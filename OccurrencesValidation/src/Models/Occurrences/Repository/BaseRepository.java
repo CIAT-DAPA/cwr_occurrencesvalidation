@@ -16,6 +16,7 @@
 
 package Models.Occurrences.Repository;
 
+import Models.DataBase.BaseUpdate;
 import Models.DataBase.MySQL;
 import Models.DataBase.ResultQuery;
 import Models.Occurrences.Source.BaseTable;
@@ -124,6 +125,17 @@ public abstract class BaseRepository {
             }            
         }
         query=query.substring(0, query.length()-1) + " where " + field + "='" +entity.get(field) + "'";
+        return new ResultQuery(query, db.update(query));
+    }
+    
+    /**
+     * Method that update tables into database
+     * @param change change to do
+     * @return Result of execute query
+     * @throws SQLException 
+     */
+    public ResultQuery update(BaseUpdate change) throws SQLException{
+        String query="update " + getTable() + " set " + change.getField() + "='" + change.getValue() + "' " + (change.getValue().equals("") ? "": "where " + change.getValue());
         return new ResultQuery(query, db.update(query));
     }
     

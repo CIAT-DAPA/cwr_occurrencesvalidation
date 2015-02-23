@@ -18,11 +18,11 @@ package Controllers.Occurrences;
 
 import Controllers.Tools.Validation.Policy;
 import Controllers.Tools.Validation.TypePolicy;
+import Models.DataBase.BaseUpdate;
 import Models.Geographic.Repository.RepositoryWaterBody;
 import Models.Geographic.Repository.RepositoryGeolocate;
 import Models.Geographic.Repository.RepositoryGoogle;
 import Models.Geographic.Source.Location;
-import Models.Geographic.Source.LocationGeolocate;
 import Models.Occurrences.Repository.RepositoryTempCountries;
 import Models.Occurrences.Repository.RepositoryTempOccurrences;
 import Models.Occurrences.Source.TempCountries;
@@ -123,6 +123,17 @@ public class CTempOccurrences extends BaseController {
      */
     public long updateFileQuery(String filePath, String log) throws SQLException, Exception{
         return super.updateFileQuery(filePath, log, PREFIX_UPDATE);
+    }
+    
+    /**
+     * Method that update fields of table into database
+     * @param updates updates to do
+     * @param log directory of log
+     * @param prefixLog prefix to log file
+     */
+    public void updateFields(ArrayList<BaseUpdate> updates, String log)
+    {
+        super.updateFields(updates, log, PREFIX_UPDATE);
     }
     
     /**
@@ -407,51 +418,49 @@ public class CTempOccurrences extends BaseController {
                     //4.6.3
                     else if(p.getTypePolicy()==TypePolicy.POSTCHECK_VALIDATE_TAXON_MANDATORY && (entity.getString("taxon_final") == null || entity.getString("taxon_final").equals("")))
                         throw new Exception("Taxon final miss");
-                    //5.3.6 - 5.3.7
-                    else if(p.getTypePolicy()==TypePolicy.POSTCHECK_GEOCODING_CROSCHECK_COORDS)
+                    //5.3.6 - 5.3.7 - 5.4.1
+                    else if(p.getTypePolicy()==TypePolicy.POSTCHECK_GEOCODING_CROSCHECK_COORDS || p.getTypePolicy()==TypePolicy.POSTCHECK_GEOCODING_CROSCHECK_GEOREF)
                     {
                         if(entity.getString("coord_source") != null)
                             System.out.println("The register already have cross check. coord_source: " + entity.getString("coord_source"));
                         else
                         {
-                            water=rWater.getDataFromLatLon(entity.getDouble("latitude"),entity.getDouble("longitude"));
-                            if(water==null)
-                                throw new Exception("Coords. Not found point in the water database. " + water);
-                            else if(!water.equals(Configuration.getParameter("geocoding_database_world_earth")))
+                            boolean origin=p.getTypePolicy()==TypePolicy.POSTCHECK_GEOCODING_CROSCHECK_COORDS ? true : false;
+                            double lat,lon;
+                            if(origin)
                             {
-                                review_data += String.valueOf(water) + "|" + entity.get("latitude") +"|" + entity.get("longitude") + "||" + String.valueOf(water) + "|";
-                                throw new Exception("Coords. Point in the water or boundaries. " + water + " Lat: " + FixData.getValue(entity.getDouble("latitude")) + " Lon: " + entity.getDouble("longitude"));
+                                lat=entity.getDouble("latitude");
+                                lon=entity.getDouble("longitude");
                             }
-                            //Validation with google
-                            googleReverse=RepositoryGoogle.reverse(entity.getDouble("latitude"), entity.getDouble("longitude"));
-                            if(googleReverse == null || !googleReverse.get("status").toString().equals("OK") || !FixData.getValue(googleReverse.get("iso")).toLowerCase().equals(FixData.getValue(entity.getString("final_iso2")).toLowerCase()))
-                                throw new Exception("Cross check coords error: Country don't match  or not found. Latitude: " + FixData.getValue(entity.getString("latitude")) +
-                                        " Longitude: " + FixData.getValue(entity.getString("longitude")) +
-                                        (googleReverse == null ? "" : (" Status: " + googleReverse.get("status").toString() + " Iso: " + FixData.getValue(googleReverse.get("iso")))));
                             else
-                                query+="coord_source='original',final_lat='" + entity.getString("latitude") + "',final_lon='" + entity.getString("longitude") + "',";
-                        }
-                    }
-                    //5.4.1
-                    else if(p.getTypePolicy()==TypePolicy.POSTCHECK_GEOCODING_CROSCHECK_GEOREF)
-                    {
-                        if(entity.getString("coord_source") != null)
-                            System.out.println("The register already have cross check. coord_source: " + entity.getString("coord_source"));
-                        else
-                        {
-                            water=rWater.getDataFromLatLon(entity.getDouble("latitude_georef"),entity.getDouble("longitude_georef"));
-                            if(water==null)
-                                throw new Exception("Coords. Not found point in the water database. " + water);
-                            else if(!water.equals(Configuration.getParameter("geocoding_database_world_earth")))
                             {
-                                review_data += String.valueOf(water) + "|" + entity.get("latitude") +"|" + entity.get("longitude") + "||" + String.valueOf(water) + "|";
-                                throw new Exception("Georef. Point in the water or boundaries. " + water + " Lat: " + FixData.getValue(entity.getDouble("latitude")) + " Lon: " + entity.getDouble("longitude"));
+                                lat=entity.getDouble("latitude_georef");
+                                lon=entity.getDouble("longitude_georef");
                             }
-                            if(entity.getString("latitude_georef") == null || entity.getString("longitude_georef") == null)
-                                throw new Exception("Cross check georef error: Data not found. Latitude: " + FixData.getValue(entity.getString("latitude_georef")) +
-                                        " Longitude: " + FixData.getValue(entity.getString("longitude_georef")));
+                            water=rWater.getDataFromLatLon(lat,lon);
+                            review_data+= water != null ? water+"|" + String.valueOf(lat) + "|" + String.valueOf(lon) + "|" + (origin? "origin" : "georef") + "|" + water   :"4|" + String.valueOf(lat) + "|" + String.valueOf(lon) + "|No value|-1|";
+                            country=rTCountries.searchIso2(entity.getString("final_iso2"));
+                            if(water==null)
+                                throw new Exception("Not found point in the water database. " + water);
+                            //It is not earth
+                            else if(!water.equals(Configuration.getParameter("geocoding_database_world_earth")))
+                                throw new Exception("Point in the water or boundaries. " + water + " Lat: " + String.valueOf(lat) + " Lon: " + String.valueOf(lon));
+                            else if(country != null && country.getDouble("lat")==lat && country.getDouble("lon")==lon)
+                                throw new Exception("Point in the center country. " + " Lat: " + String.valueOf(lat) + " Lon: " + String.valueOf(lon));
+                            else if(origin)
+                            {
+                                googleReverse=RepositoryGoogle.reverse(lat, lon);
+                                if(googleReverse == null || !googleReverse.get("status").toString().equals("OK") || !FixData.getValue(googleReverse.get("iso")).toLowerCase().equals(FixData.getValue(entity.get("final_iso2")).toLowerCase()))
+                                    throw new Exception("Cross check coords error: Country don't match  or not found. Latitude: " + String.valueOf(lat) +
+                                            " Longitude: " + String.valueOf(lon) +
+                                            (googleReverse == null ? "" : (" Status: " + googleReverse.get("status").toString() + " Iso: " + FixData.getValue(googleReverse.get("iso")))));
+                                else
+                                    query+="coord_source='georef',final_lat='" + String.valueOf(lat) + "',final_lon='" + String.valueOf(lon) + "',";
+                            }
+                            else if(!origin)
+                                query+="coord_source='original',final_lat='" + String.valueOf(lat) + "',final_lon='" + String.valueOf(lon) + "',";
                             else
-                                query+="coord_source='georef',final_lat='" + entity.getString("latitude_georef") + "',final_lon='" + entity.getString("longitude_georef") + "',";
+                                throw new Exception("Erro. " + water);
                         }
                     }
                 }

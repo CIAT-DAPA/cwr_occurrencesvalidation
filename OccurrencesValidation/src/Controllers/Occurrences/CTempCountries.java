@@ -78,11 +78,13 @@ public class CTempCountries extends BaseController {
      * @param name name country
      * @param iso2 code iso2
      * @param iso3 code iso3
+     * @param lat latitude country's center
+     * @param lon longitude country's center
      * @return Entity temp countries
      */
-    public TempCountries generateEntity(String name,String iso2, String iso3){
+    public TempCountries generateEntity(String name,String iso2, String iso3,double lat,double lon){
         TempCountries a=new TempCountries();
-        a.load(new ArrayList<>(Arrays.asList("name","iso2","iso3")),new ArrayList<>(Arrays.asList(name,iso2,iso3)));
+        a.load(new ArrayList<>(Arrays.asList("name","iso2","iso3","lat","lon")),new ArrayList<>(Arrays.asList(name,iso2,iso3,String.valueOf(lat),String.valueOf(lon))));
         return a;
     }
     
@@ -101,11 +103,13 @@ public class CTempCountries extends BaseController {
      * @param name name country
      * @param iso2 code iso2
      * @param iso3 code iso3
+     * @param lat latitude country's center
+     * @param lon longitude country's center
      * @return True if save, otherwise false
      * @throws SQLException 
      */
-    public boolean add(String name,String iso2, String iso3) throws SQLException{
-        return add(generateEntity(name, iso2, iso3)).getAffected() > 0;
+    public boolean add(String name,String iso2, String iso3, double lat,double lon) throws SQLException{
+        return add(generateEntity(name, iso2, iso3, lat, lon)).getAffected() > 0;
     }
     
 }
