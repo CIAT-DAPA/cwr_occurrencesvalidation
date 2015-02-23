@@ -169,6 +169,8 @@ public class FrmOptions extends javax.swing.JDialog {
 
     private void cmdUpdateFieldsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdUpdateFieldsActionPerformed
         // TODO add your handling code here:
+        option=5;
+        this.setVisible(false);
     }//GEN-LAST:event_cmdUpdateFieldsActionPerformed
 
     

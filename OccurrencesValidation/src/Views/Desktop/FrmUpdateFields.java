@@ -31,6 +31,9 @@ public class FrmUpdateFields extends javax.swing.JDialog {
     public FrmUpdateFields(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        for(TypeImports value: TypeImports.values())
+            cboTypeImport.addItem(value);
+        txtLog.setText(System.getProperty("user.home"));
     }
 
     /**
@@ -52,8 +55,9 @@ public class FrmUpdateFields extends javax.swing.JDialog {
         txtLog = new javax.swing.JTextField();
         cmdLog = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Update directly");
+        setResizable(false);
 
         lblTypeImport.setText("Type:");
 
@@ -159,6 +163,7 @@ public class FrmUpdateFields extends javax.swing.JDialog {
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void cmdRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdRunActionPerformed

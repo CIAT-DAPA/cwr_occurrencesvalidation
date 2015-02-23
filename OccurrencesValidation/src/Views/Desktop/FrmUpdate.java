@@ -10,7 +10,6 @@ import Controllers.Occurrences.BaseController;
 import Controllers.Occurrences.CMetadata;
 import Controllers.Occurrences.CTempOccurrences;
 import Controllers.Tools.Importer.TypeImports;
-import Models.DataBase.BaseUpdate;
 import java.io.File;
 import javax.swing.JFileChooser;
 
