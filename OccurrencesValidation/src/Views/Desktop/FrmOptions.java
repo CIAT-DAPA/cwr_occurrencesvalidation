@@ -53,6 +53,7 @@ public class FrmOptions extends javax.swing.JDialog {
         cmdRunQuery = new javax.swing.JButton();
         cmdConf = new javax.swing.JButton();
         cmdUpdateFields = new javax.swing.JButton();
+        cmdSummary = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Options");
@@ -100,6 +101,13 @@ public class FrmOptions extends javax.swing.JDialog {
             }
         });
 
+        cmdSummary.setText("Summary");
+        cmdSummary.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmdSummaryActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -112,7 +120,8 @@ public class FrmOptions extends javax.swing.JDialog {
                     .addComponent(cmdRunQuery, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cmdExit, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cmdConf, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cmdUpdateFields, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cmdUpdateFields, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cmdSummary, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -130,7 +139,9 @@ public class FrmOptions extends javax.swing.JDialog {
                 .addComponent(cmdRunQuery, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cmdUpdateFields, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cmdSummary, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -173,6 +184,12 @@ public class FrmOptions extends javax.swing.JDialog {
         this.setVisible(false);
     }//GEN-LAST:event_cmdUpdateFieldsActionPerformed
 
+    private void cmdSummaryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdSummaryActionPerformed
+        // TODO add your handling code here:
+        option=6;
+        this.setVisible(false);
+    }//GEN-LAST:event_cmdSummaryActionPerformed
+
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton cmdConf;
@@ -180,6 +197,7 @@ public class FrmOptions extends javax.swing.JDialog {
     private javax.swing.JButton cmdExit;
     private javax.swing.JButton cmdImporter;
     private javax.swing.JButton cmdRunQuery;
+    private javax.swing.JButton cmdSummary;
     private javax.swing.JButton cmdUpdateFields;
     // End of variables declaration//GEN-END:variables
 }

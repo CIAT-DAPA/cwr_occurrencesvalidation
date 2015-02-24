@@ -46,9 +46,10 @@ import java.util.HashMap;
 public class CTempOccurrences extends BaseController {
     
     /*Const*/
-    private final String PREFIX_IMPORT = "TOI";
-    private final String PREFIX_CROSSCHECK = "TOC";
-    private final String PREFIX_UPDATE = "TOU";
+    private final String PREFIX_IMPORT = "TO_IMP";
+    private final String PREFIX_CROSSCHECK = "TO_CRC";
+    private final String PREFIX_UPDATE = "TO_UPD";
+    private final String PREFIX_REPORT = "TO_REP";
     /*Members Class*/
     private String[] FIELDS_MANDATORY;
     private String[] CONTENT_AVAILABILITY;
@@ -492,4 +493,20 @@ public class CTempOccurrences extends BaseController {
         return a;
     }
     
+    /**
+     * Method that generate a summary of values into table temp
+     * @param log path log
+     */
+    public void generateReport(String log)
+    {
+        try
+        {
+            
+            Log.register(log, TypeLog.REGISTER_OK,"", false,PREFIX_REPORT,Configuration.getParameter("log_ext_review"));
+        }
+        catch(Exception ex)
+        {
+            
+        }
+    }
 }

@@ -20,6 +20,7 @@ import Views.Desktop.FrmDataValidation;
 import Controllers.Occurrences.CMetadata;
 import Controllers.Occurrences.CTempOccurrences;
 import Views.Desktop.FrmConf;
+import Views.Desktop.FrmReport;
 import Views.Desktop.FrmUpdate;
 import Views.Desktop.FrmUpdateFields;
 import java.io.IOException;
@@ -46,6 +47,7 @@ public class App {
             FrmConf frmConf;
             FrmUpdate frmUpdate;
             FrmUpdateFields frmUpdateFields;
+            FrmReport frmReport;
             do
             {   
                 if(option==1)
@@ -113,9 +115,19 @@ public class App {
                         message("Update finished!!!");
                     }
                 }
+                else if(option == 6)
+                {
+                    frmReport=new FrmReport(new JFrame(), true);
+                    frmReport.setVisible(true);
+                    if(!frmReport.isExit())
+                    {
+                        cTempOccurrences=new CTempOccurrences();
+                        cTempOccurrences.generateReport(frmReport.getDestination());
+                    }
+                }
                 frmOpt.setVisible(true);
                 option=frmOpt.getOption();
-            }while(option>=0 && option <6);
+            }while(option>=0 && option <7);
         }
         catch(Exception ex)
         {
