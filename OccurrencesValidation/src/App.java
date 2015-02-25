@@ -19,6 +19,7 @@ import Views.Desktop.FrmOptions;
 import Views.Desktop.FrmDataValidation;
 import Controllers.Occurrences.CMetadata;
 import Controllers.Occurrences.CTempOccurrences;
+import Tools.Configuration;
 import Views.Desktop.FrmConf;
 import Views.Desktop.FrmReport;
 import Views.Desktop.FrmUpdate;
@@ -34,7 +35,7 @@ import javax.swing.JOptionPane;
 public class App {
         
     public static CMetadata cMetadata;
-    public static CTempOccurrences cTempOccurrences;
+    public static CTempOccurrences cTempOccurrences;    
     
     public static void main(String[] args) throws IOException
     {
@@ -54,6 +55,7 @@ public class App {
                 {
                     frmImp=new FrmImport(new JFrame(),true);
                     frmImp.setVisible(true);
+                    changeDirectory(frmImp.getLog());
                     if(!frmImp.isExit())
                     {
                         if(frmImp.getCBase() instanceof CTempOccurrences){
@@ -73,6 +75,7 @@ public class App {
                 {
                     frmData=new FrmDataValidation(new JFrame(),true);
                     frmData.setVisible(true);
+                    changeDirectory(frmData.getLog());
                     if(!frmData.isExit())
                     {
                         cTempOccurrences=frmData.getCTO();
@@ -84,6 +87,7 @@ public class App {
                 {
                     frmUpdate=new FrmUpdate(new JFrame(),true);
                     frmUpdate.setVisible(true);
+                    changeDirectory(frmUpdate.getLog());
                     if(!frmUpdate.isExit())
                     {
                         if(frmUpdate.getCBase() instanceof CTempOccurrences){
@@ -104,6 +108,7 @@ public class App {
                 {
                     frmUpdateFields=new FrmUpdateFields(new JFrame(),true);
                     frmUpdateFields.setVisible(true);
+                    changeDirectory(frmUpdateFields.getLog());
                     if(!frmUpdateFields.isExit())
                     {
                         if(frmUpdateFields.getCBase() instanceof CTempOccurrences){
@@ -119,10 +124,12 @@ public class App {
                 {
                     frmReport=new FrmReport(new JFrame(), true);
                     frmReport.setVisible(true);
+                    changeDirectory(frmReport.getDestination());
                     if(!frmReport.isExit())
                     {
                         cTempOccurrences=new CTempOccurrences();
                         cTempOccurrences.generateReport(frmReport.getDestination());
+                        message("Summary finished!!!");
                     }
                 }
                 frmOpt.setVisible(true);
@@ -134,6 +141,15 @@ public class App {
             System.out.println("Error app");
             System.out.println(ex);
         }
+    }
+    
+    /**
+     * Method that change the value of default directory
+     * @param log 
+     */
+    public static void changeDirectory(String log)
+    {
+        Configuration.DIRECTORY_DEFAULT = log;
     }
     
     /**

@@ -27,6 +27,7 @@ public class Configuration {
     
     public static String PATH_FILE="conf.txt";
     public static HashMap VARS;
+    public static String DIRECTORY_DEFAULT=System.getProperty("user.home");
     
     /**
      * Method that return value for configuration all app

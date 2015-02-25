@@ -46,10 +46,11 @@ import java.util.HashMap;
 public class CTempOccurrences extends BaseController {
     
     /*Const*/
-    private final String PREFIX_IMPORT = "TO_IMP";
-    private final String PREFIX_CROSSCHECK = "TO_CRC";
-    private final String PREFIX_UPDATE = "TO_UPD";
-    private final String PREFIX_REPORT = "TO_REP";
+    private final String PREFIX_IMPORT = "TO_IMPORT_";
+    private final String PREFIX_CROSSCHECK = "TO_CROSSCHECK_";
+    private final String PREFIX_UPDATE = "TO_UPDATE_";
+    private final String PREFIX_REPORT = "TO_REPORT_";
+    private final String PREFIX_UPDATE_QUERY = "TO_UPDATE_QUERY_";
     /*Members Class*/
     private String[] FIELDS_MANDATORY;
     private String[] CONTENT_AVAILABILITY;
@@ -123,14 +124,13 @@ public class CTempOccurrences extends BaseController {
      * @throws Exception
      */
     public long updateFileQuery(String filePath, String log) throws SQLException, Exception{
-        return super.updateFileQuery(filePath, log, PREFIX_UPDATE);
+        return super.updateFileQuery(filePath, log, PREFIX_UPDATE_QUERY);
     }
     
     /**
      * Method that update fields of table into database
      * @param updates updates to do
      * @param log directory of log
-     * @param prefixLog prefix to log file
      */
     public void updateFields(ArrayList<BaseUpdate> updates, String log)
     {
@@ -166,6 +166,9 @@ public class CTempOccurrences extends BaseController {
         String review_data;
         long row=0, countRows;
         TempOccurrences entity=new TempOccurrences();
+        
+        boolean origin;
+        double lat,lon;
         //Headers for log of review data
         if(reviewdata)
             Log.register(log,TypeLog.REVIEW_DATA, step==2? "id|x1_genus|x1_sp1|x1_rank1|x1_sp2|x1_rank2|x1_sp3|" + RepositoryTNRS.HEADER + RepositoryTaxonstand.HEADER :
@@ -200,10 +203,10 @@ public class CTempOccurrences extends BaseController {
                         throw new Exception("Source not correct: " + entity.getString("source"));
                     //3.4
                     else if(p.getTypePolicy()==TypePolicy.CHECK_CULT && !FixData.containsValue(entity.getString("cult_stat"), FixData.toArrayList(CONTENT_CULT)))
-                        throw new Exception("Cult not correct: " + entity.getString("cult_stat"));
+                        throw new Exception("Cult stat not correct: " + entity.getString("cult_stat"));
                     //3.5
                     else if(p.getTypePolicy()==TypePolicy.CHECK_ORIGIN_STAT && !FixData.containsValue(entity.getString("origin_stat"), FixData.toArrayList(CONTENT_ORIGIN)))
-                        throw new Exception("Origin Stat not correct: " + entity.getString("origin_stat"));
+                        throw new Exception("Origin stat not correct: " + entity.getString("origin_stat"));
                     //3.6
                     else if(p.getTypePolicy()==TypePolicy.CHECK_IS_HYBRID && !FixData.containsValue(entity.getString("is_hybrid"), FixData.toArrayList(CONTENT_HYBRID)))
                         throw new Exception("Is hybrid not correct: " + entity.getString("is_hybrid"));
@@ -238,7 +241,7 @@ public class CTempOccurrences extends BaseController {
                         if(tnrs==null)
                             tnrs=RepositoryTNRS.get(name, false);
                         if(tnrs==null)
-                            throw new Exception("Not found taxon in tnrs");
+                            throw new Exception("Taxon not found in tnrs");
                         for(TNRS t:tnrs)
                         {
                             if(t.finalTaxon!=null && !t.finalTaxon.equals(""))
@@ -265,7 +268,7 @@ public class CTempOccurrences extends BaseController {
                             entity.getString("x1_sp3")}," ");
                         taxonstand=RepositoryTaxonstand.get(name);
                         if(taxonstand==null)
-                            throw new Exception("Not found taxon in taxonstand");
+                            throw new Exception("Taxon not found in taxonstand");
                         else
                         {
                             review_data+=taxonstand.toString();
@@ -335,12 +338,12 @@ public class CTempOccurrences extends BaseController {
                     {
                         //ns
                         if(!FixData.containsValue(entity.getString("ns"), FixData.toArrayList(GEO_NS)))
-                            throw new Exception("Error in NS with data: " + (entity.getString("ns")==null ? "null" : entity.getString("ns")));
+                            throw new Exception("Error in NS: " + (entity.getString("ns")==null ? "null" : entity.getString("ns")));
                         else if(entity.getString("ns")!= null && FixData.containsValue(entity.getString("ns"), FixData.toArrayList(GEO_NS)))
                             query+="final_ns='" + entity.getString("ns") + "',";
                         //ew
                         if(!FixData.containsValue(entity.getString("ew"), FixData.toArrayList(GEO_EW)))
-                            throw new Exception("Error in EW with data: " + (entity.getString("ew")==null ? "null" : entity.getString("ew")));
+                            throw new Exception("Error in EW: " + (entity.getString("ew")==null ? "null" : entity.getString("ew")));
                         else if(entity.getString("ew")!=null && FixData.containsValue(entity.getString("ew"), FixData.toArrayList(GEO_EW)))
                             query+="final_ew='" + entity.getString("ew") + "',";
                     }
@@ -381,7 +384,7 @@ public class CTempOccurrences extends BaseController {
                                     "longitude_georef='" + String.valueOf(lGeolocate.getLongitude()) + "'," +
                                     "distance_georef='" + String.valueOf(lGeolocate.getUncertainty()) + "',";
                         else
-                            throw new Exception("Can't geocoding register " + temp_country + "," + temp_adm1 + "," + temp_adm2 + "," + temp_adm3 + "," + temp_local_area + "," + temp_locality);
+                            throw new Exception("Can't geocode record " + temp_country + "," + temp_adm1 + "," + temp_adm2 + "," + temp_adm3 + "," + temp_local_area + "," + temp_locality);
                     }
                     //Group POST CHECK
                     //4.6
@@ -410,11 +413,11 @@ public class CTempOccurrences extends BaseController {
                                     FixData.prepareUpdate("f_x1_sp3", entity.getString("x1_sp3"), true, true);
                         }
                         else if(taxon_final.equals(taxon_tnrs_final) && !FixData.hideRank(taxon_final).equals(taxon_taxstand_final))
-                            throw new Exception("Semaphore yellow. Taxstands different. Taxon: " + taxon_final + " Taxstand: " +  taxon_taxstand_final);
+                            throw new Exception("Traffic light yellow. Taxstand is different. Taxon: " + taxon_final + " Taxstand: " +  taxon_taxstand_final);
                         else if(!taxon_final.equals(taxon_tnrs_final) && FixData.hideRank(taxon_final).equals(taxon_taxstand_final))
-                            throw new Exception("Semaphore yellow. TNRS different. Taxon: " + taxon_final + " TNRS: " +  taxon_tnrs_final);
+                            throw new Exception("Traffic light yellow. TNRS is different. Taxon: " + taxon_final + " TNRS: " +  taxon_tnrs_final);
                         else
-                            throw new Exception("Semaphore Red. All differents. Taxon: " + taxon_final + " TNRS: " +  taxon_tnrs_final + " Taxstand: " + taxon_taxstand_final);
+                            throw new Exception("Traffic light Red. All differents. Taxon: " + taxon_final + " TNRS: " +  taxon_tnrs_final + " Taxstand: " + taxon_taxstand_final);
                     }
                     //4.6.3
                     else if(p.getTypePolicy()==TypePolicy.POSTCHECK_VALIDATE_TAXON_MANDATORY && (entity.getString("taxon_final") == null || entity.getString("taxon_final").equals("")))
@@ -423,11 +426,10 @@ public class CTempOccurrences extends BaseController {
                     else if(p.getTypePolicy()==TypePolicy.POSTCHECK_GEOCODING_CROSCHECK_COORDS || p.getTypePolicy()==TypePolicy.POSTCHECK_GEOCODING_CROSCHECK_GEOREF)
                     {
                         if(entity.getString("coord_source") != null)
-                            System.out.println("The register already have cross check. coord_source: " + entity.getString("coord_source"));
+                            System.out.println("The record has already been crosschecked. coord_source: " + entity.getString("coord_source"));
                         else
                         {
-                            boolean origin=p.getTypePolicy()==TypePolicy.POSTCHECK_GEOCODING_CROSCHECK_COORDS ? true : false;
-                            double lat,lon;
+                            origin=p.getTypePolicy()==TypePolicy.POSTCHECK_GEOCODING_CROSCHECK_COORDS ? true : false;                            
                             if(origin)
                             {
                                 lat=entity.getDouble("latitude");
@@ -442,24 +444,24 @@ public class CTempOccurrences extends BaseController {
                             review_data+= water != null ? water+"|" + String.valueOf(lat) + "|" + String.valueOf(lon) + "|" + (origin? "origin" : "georef") + "|" + water   :"4|" + String.valueOf(lat) + "|" + String.valueOf(lon) + "|No value|-1|";
                             country=rTCountries.searchIso2(entity.getString("final_iso2"));
                             if(water==null)
-                                throw new Exception("Not found point in the water database. " + water);
+                                throw new Exception("Point not found in the water database. " + water);
                             //It is not earth
                             else if(!water.equals(Configuration.getParameter("geocoding_database_world_earth")))
                                 throw new Exception("Point in the water or boundaries. " + water + " Lat: " + String.valueOf(lat) + " Lon: " + String.valueOf(lon));
                             else if(country != null && country.getDouble("lat")==lat && country.getDouble("lon")==lon)
-                                throw new Exception("Point in the center country. " + " Lat: " + String.valueOf(lat) + " Lon: " + String.valueOf(lon));
+                                throw new Exception("Point in the centroid of country. " + " Lat: " + String.valueOf(lat) + " Lon: " + String.valueOf(lon));
                             else if(origin)
                             {
                                 googleReverse=RepositoryGoogle.reverse(lat, lon);
                                 if(googleReverse == null || !googleReverse.get("status").toString().equals("OK") || !FixData.getValue(googleReverse.get("iso")).toLowerCase().equals(FixData.getValue(entity.get("final_iso2")).toLowerCase()))
-                                    throw new Exception("Cross check coords error: Country don't match  or not found. Latitude: " + String.valueOf(lat) +
+                                    throw new Exception("Cross check coords error: Country doesn't match  or not found. Latitude: " + String.valueOf(lat) +
                                             " Longitude: " + String.valueOf(lon) +
                                             (googleReverse == null ? "" : (" Status: " + googleReverse.get("status").toString() + " Iso: " + FixData.getValue(googleReverse.get("iso")))));
                                 else
-                                    query+="coord_source='georef',final_lat='" + String.valueOf(lat) + "',final_lon='" + String.valueOf(lon) + "',";
+                                    query+="coord_source='original',final_lat='" + String.valueOf(lat) + "',final_lon='" + String.valueOf(lon) + "',";
                             }
                             else if(!origin)
-                                query+="coord_source='original',final_lat='" + String.valueOf(lat) + "',final_lon='" + String.valueOf(lon) + "',";
+                                query+="coord_source='georef',final_lat='" + String.valueOf(lat) + "',final_lon='" + String.valueOf(lon) + "',";
                             else
                                 throw new Exception("Erro. " + water);
                         }
@@ -501,12 +503,19 @@ public class CTempOccurrences extends BaseController {
     {
         try
         {
+            HashMap report=getRepository().summary(), temp;
             
-            Log.register(log, TypeLog.REGISTER_OK,"", false,PREFIX_REPORT,Configuration.getParameter("log_ext_review"));
+            Log.register(log, TypeLog.REGISTER_OK,"FIELD|VALUE|COUNT", false,PREFIX_REPORT,Configuration.getParameter("log_ext_review"));
+            for(Object k1:report.keySet().toArray())
+            {
+                temp=(HashMap)report.get(k1.toString());
+                for(Object k2:temp.keySet().toArray())
+                    Log.register(log, TypeLog.REGISTER_OK,k1.toString()+"|" + k2.toString() + "|" + temp.get(k2.toString()), false,PREFIX_REPORT,Configuration.getParameter("log_ext_review"));
+            }
         }
         catch(Exception ex)
         {
-            
+            Log.register(log, TypeLog.REGISTER_ERROR, ex.toString() , true, PREFIX_REPORT ,Configuration.getParameter("log_ext_review") );
         }
     }
 }

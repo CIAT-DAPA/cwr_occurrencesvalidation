@@ -30,7 +30,7 @@ import javax.swing.table.DefaultTableModel;
 public class CTempCountries extends BaseController {
 
     /*Const*/
-    private final String PREFIX_IMPORT = "TCI";
+    private final String PREFIX_IMPORT = "TC_IMPORT_";
     
     /*Properties*/
     /**
@@ -70,7 +70,7 @@ public class CTempCountries extends BaseController {
     public void fillTableAll(DefaultTableModel model){
         ArrayList<TempCountries> countries= getRepository().list();
         for(int i=0;i<countries.size();i++)
-            model.addRow(new Object[]{countries.get(i).getString("id"),countries.get(i).getString("name"),countries.get(i).getString("iso2"),countries.get(i).getString("iso3")});
+            model.addRow(new Object[]{countries.get(i).getString("id"),countries.get(i).getString("name"),countries.get(i).getString("iso2"),countries.get(i).getString("iso3"),countries.get(i).getString("lat"),countries.get(i).getString("lon")});
     }
     
     /**

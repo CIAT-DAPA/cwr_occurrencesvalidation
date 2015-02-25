@@ -140,7 +140,7 @@ public abstract class BaseController {
                 entity.load(fields, FixData.lineSplit(line,dbFile.getSplit()));
                 result=repository.update(entity, field);
                 if(result.getAffected() > 0)
-                    Log.register(log,TypeLog.REGISTER_OK,result.getQuery(), true,prefixLog,Configuration.getParameter("log_ext_sql"));
+                    Log.register(log,TypeLog.REGISTER_OK,result.getQuery(), true,prefixLog,Configuration.getParameter("log_ext_review"));
                 else
                     throw new Exception("Rows not affected");
             }
@@ -180,11 +180,11 @@ public abstract class BaseController {
                 row+=1;
                 System.out.println("Row: " + row);
                 //Save into database
-                if(line.toLowerCase().startsWith("update " + repository.getTable().toLowerCase()))
+                if(!line.toLowerCase().startsWith("update " + repository.getTable().toLowerCase()))
                     throw new Exception("This query don't update the " + repository.getTable() + " table");
                                
                 if(repository.executeQuery(line) > 0)
-                    Log.register(log,TypeLog.REGISTER_OK,line, true,prefixLog,Configuration.getParameter("log_ext_sql"));
+                    Log.register(log,TypeLog.REGISTER_OK,line, true,prefixLog,Configuration.getParameter("log_ext_review"));
                 else
                     throw new Exception("Rows not affected");
             }
@@ -211,18 +211,20 @@ public abstract class BaseController {
     {
         int i=1;
         ResultQuery temp;
-        Log.register(log,TypeLog.REGISTER_OK,"update|query|rows", false,prefixLog,Configuration.getParameter("log_ext_review"));
+        Log.register(log,TypeLog.REGISTER_OK,"update|query|rows", false,prefixLog,Configuration.getParameter("log_ext_review"));        
         for(BaseUpdate bu : updates)
         {
             try
             {
-                temp=repository.update(bu);
+                temp=repository.update(bu);                                
                 Log.register(log,TypeLog.REGISTER_OK,String.valueOf(i) + "|" + temp.getQuery() + "|" + String.valueOf(temp.getAffected()), false,prefixLog,Configuration.getParameter("log_ext_review"));
             }
             catch(Exception ex)
             {
                 Log.register(log,TypeLog.REGISTER_ERROR,String.valueOf(i) + "|" + ex + "|" + bu.toString(), false,prefixLog,Configuration.getParameter("log_ext_review"));
             }
+            i+=1;
+            System.out.println("Update: " + i + " of " + updates.size());
         }
     }
     

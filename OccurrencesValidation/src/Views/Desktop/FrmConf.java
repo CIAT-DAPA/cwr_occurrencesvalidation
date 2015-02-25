@@ -6,6 +6,7 @@
 package Views.Desktop;
 
 import Controllers.Configuration.RasterFile;
+import Tools.Configuration;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -24,6 +25,7 @@ public class FrmConf extends javax.swing.JDialog {
     public FrmConf(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        txtRaster.setText(Configuration.DIRECTORY_DEFAULT);
     }
 
     /**
@@ -97,7 +99,7 @@ public class FrmConf extends javax.swing.JDialog {
         {
             JFileChooser fc=new JFileChooser();            
             fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            fc.setCurrentDirectory(new File(System.getProperty("user.home")));
+            fc.setCurrentDirectory(new File(txtRaster.getText()));
             if(fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION)
                 txtRaster.setText(fc.getSelectedFile().getAbsolutePath());
         }

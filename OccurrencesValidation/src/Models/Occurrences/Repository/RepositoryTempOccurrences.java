@@ -18,7 +18,10 @@ package Models.Occurrences.Repository;
 
 import Models.DataBase.ResultQuery;
 import Models.Occurrences.Source.TempOccurrences;
+import Tools.Configuration;
+import Tools.FixData;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 
 /**
@@ -60,5 +63,32 @@ public class RepositoryTempOccurrences extends BaseRepository {
                     "coord_source, " +
                     "latitude_georef,longitude_georef " +
                     "From temp_occurrences ");
+    }
+    
+    /**
+     * Method that genera a special table with information of occurrences
+     * @return HashMap of HashMap's
+     * @throws SQLException 
+     */
+    public HashMap summary() throws SQLException{
+        HashMap a=new HashMap(), temp;
+        String field;
+        dbInformationSchema.getResults("Select COLUMN_NAME " +
+                                       "From COLUMNS " +
+                                       "Where TABLE_NAME = '" + getTable() +"' and Table_schema = '" + Configuration.getParameter("currie_schema_gapanalysis") + "' and (" + 
+                                           "COLUMN_NAME like 'final%' or COLUMN_NAME like 'f_x%' "+ ");");
+        while(dbInformationSchema.getRecordSet().next())
+        {
+            field=dbInformationSchema.getRecordSet().getString("COLUMN_NAME");
+            temp=new HashMap();
+            db.getResults("Select distinct " + field + ", count(*) as count " +
+                          "From " + getTable() + " " +
+                          "Group by " + field + " " +
+                          "Order by " + field + ";");
+            while(db.getRecordSet().next())
+                temp.put(FixData.getValue(db.getRecordSet().getString(field)), db.getRecordSet().getString("count"));
+            a.put(field, temp);
+        }
+        return a;
     }
 }

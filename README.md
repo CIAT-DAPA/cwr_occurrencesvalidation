@@ -13,11 +13,13 @@ This project contains tools for validate occurrences of Crop Wild Relative. All 
 * Configuration
 * Dependencies
 * How to run
+* [Wiki](https://github.com/teamcwrciat/occurrencesvalidation/wiki)
 
 ### Who do I talk to? ###
 
-* [Crop Wild Relatives](http://www.cwrdiversity.org)
 * [Team](https://github.com/teamcwrciat)
+* [CIAT](http://ciat.cgiar.org/)
+* [Crop Wild Relatives](http://www.cwrdiversity.org)
 
 ## Quick summary ##
 
@@ -34,7 +36,7 @@ run for update register in the database
 
 ## Summary of set up ##
 
-* Last release (ImporterTables.jar)
+* Last release (OccurrencesValidation.jar)
 * Configuration File (conf.txt)
 * Raster file of the world with the sea, land and coast or database already processed (waterbody.db)
 * [R](http://www.r-project.org/)
@@ -42,7 +44,7 @@ run for update register in the database
 
 ## Configuration ##
 
-* You need have in the same folder the ImporterTables.jar, folder lib, database of land's point (if you don't have it you may generate another from 
+* You need have in the same folder the OccurrencesValidation.jar, folder lib, database of land's point (if you don't have it you may generate another from 
 application with the raster file) and the configuration file.
 
 * Review data of variables in the file called conf.txt (configuration file), because this file have all parameters for that the application can be execute.
@@ -64,5 +66,5 @@ install.packages(Taxonstand);
 ## How to run ##
 
 ```
-$ java -jar ImporterTables.jar
+$ java -jar OccurrencesValidation.jar
 ```

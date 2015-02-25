@@ -20,6 +20,7 @@ import Controllers.Occurrences.CTempOccurrences;
 import Controllers.Tools.Validation.Policy;
 import Controllers.Tools.Validation.TypePolicy;
 import Controllers.Tools.Validation.TypeDataValidation;
+import Tools.Configuration;
 import java.io.File;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
@@ -42,7 +43,7 @@ public class FrmDataValidation extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         exit=false;
-        txtLog.setText(System.getProperty("user.home"));
+        txtLog.setText(Configuration.DIRECTORY_DEFAULT);
         for(TypeDataValidation value: TypeDataValidation.values())
             cboSource.addItem(value);
         //Fill table
@@ -270,7 +271,7 @@ public class FrmDataValidation extends javax.swing.JDialog {
         {
             JFileChooser fc=new JFileChooser();
             fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            fc.setCurrentDirectory(new File(System.getProperty("user.home")));
+            fc.setCurrentDirectory(new File(txtLog.getText()));
             if(fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION)
                 txtLog.setText(fc.getSelectedFile().getAbsolutePath());
         }

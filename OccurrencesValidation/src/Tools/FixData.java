@@ -19,6 +19,7 @@ package Tools;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 
 /**
@@ -110,7 +111,7 @@ public class FixData {
      */
     public static boolean containsValue(String data,ArrayList<String> values)
     {
-        return values.contains(data) || (data==null && values.contains("null"));
+        return values.contains(data) || (data==null && values.contains("null")) || (values.contains(""));
     }
     
     /**
@@ -183,7 +184,7 @@ public class FixData {
      */
     public static String valueParameter(String value)
     {
-        return (value== null || value.trim().equals("null") ? null : value.trim());
+        return value== null || value.trim().equals("null") ? null : value.trim();
     }
     
     /**
@@ -207,7 +208,12 @@ public class FixData {
      */
     public static String[] valueParameterSplit(String line)
     {
-        String[] values=line.split(",");
+        String[] values=line.split(","); 
+        if(line.endsWith(","))
+        {
+            values=Arrays.copyOf(values, values.length+1);
+            values[values.length-1]="";
+        }
         for(String v : values)
             v=FixData.valueParameter(v.trim());
         return values;
@@ -275,9 +281,24 @@ public class FixData {
         return field==null ? "null" : FixData.getValue(field.toString());
     }
     
+    /**
+     * Method that return the content field of empty if it is null
+     * @param field
+     * @return 
+     */
     public static String getValueImaginary(String field)
     {
         return field == null ? "" : field;
+    }
+    
+    /**
+     * Method that return the content field of empty if it is null
+     * @param field
+     * @return 
+     */
+    public static String getValueImaginary(Object field)
+    {
+        return field == null ? "" : field.toString();
     }
     
     /**

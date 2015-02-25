@@ -6,6 +6,7 @@
 package Views.Desktop;
 
 import Controllers.Occurrences.CTempOccurrences;
+import Tools.Configuration;
 import java.io.File;
 import javax.swing.JFileChooser;
 
@@ -24,7 +25,7 @@ public class FrmReport extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         exit=false;
-        txtDestination.setText(System.getProperty("user.home"));
+        txtDestination.setText(Configuration.DIRECTORY_DEFAULT);
     }
 
     /**
@@ -43,7 +44,7 @@ public class FrmReport extends javax.swing.JDialog {
         cmdExit = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Report");
+        setTitle("Summary");
         setResizable(false);
 
         lblDestination.setText("Destination:");
@@ -113,9 +114,9 @@ public class FrmReport extends javax.swing.JDialog {
         {
             JFileChooser fc=new JFileChooser();
             fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            fc.setCurrentDirectory(new File(System.getProperty("user.home")));
+            fc.setCurrentDirectory(new File(txtDestination.getText()));
             if(fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION)
-            txtDestination.setText(fc.getSelectedFile().getAbsolutePath());
+                txtDestination.setText(fc.getSelectedFile().getAbsolutePath());
         }
         catch(Exception ex)
         {

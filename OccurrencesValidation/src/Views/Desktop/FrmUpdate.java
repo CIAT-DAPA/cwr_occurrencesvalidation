@@ -10,6 +10,7 @@ import Controllers.Occurrences.BaseController;
 import Controllers.Occurrences.CMetadata;
 import Controllers.Occurrences.CTempOccurrences;
 import Controllers.Tools.Importer.TypeImports;
+import Tools.Configuration;
 import java.io.File;
 import javax.swing.JFileChooser;
 
@@ -38,7 +39,7 @@ public class FrmUpdate extends javax.swing.JDialog {
         // Add
         for(TypeImports value: TypeImports.values())
             cboTypeImport.addItem(value);
-        txtLog.setText(System.getProperty("user.home"));
+        txtLog.setText(Configuration.DIRECTORY_DEFAULT);
     }
     
     /**
@@ -188,7 +189,7 @@ public class FrmUpdate extends javax.swing.JDialog {
         {
             JFileChooser fc=new JFileChooser();            
             fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            fc.setCurrentDirectory(new File(System.getProperty("user.home")));
+            fc.setCurrentDirectory(new File(txtFile.getText().equals("") ? System.getProperty("user.home") : txtFile.getText()));
             if(fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION)
                 txtFile.setText(fc.getSelectedFile().getAbsolutePath());
         }
@@ -221,7 +222,7 @@ public class FrmUpdate extends javax.swing.JDialog {
         {
             JFileChooser fc=new JFileChooser();            
             fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            fc.setCurrentDirectory(new File(System.getProperty("user.home")));
+            fc.setCurrentDirectory(new File(txtLog.getText()));
             if(fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION)
                 txtLog.setText(fc.getSelectedFile().getAbsolutePath());
         }

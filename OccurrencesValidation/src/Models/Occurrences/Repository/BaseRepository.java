@@ -32,7 +32,7 @@ public abstract class BaseRepository {
     /*Members Class*/
     protected MySQL db;
     private String table;
-    private MySQL dbInformationSchema;
+    protected MySQL dbInformationSchema;
     
     /**
      * @return the table
@@ -135,7 +135,7 @@ public abstract class BaseRepository {
      * @throws SQLException 
      */
     public ResultQuery update(BaseUpdate change) throws SQLException{
-        String query="update " + getTable() + " set " + change.getField() + "='" + change.getValue() + "' " + (change.getValue().equals("") ? "": "where " + change.getValue());
+        String query="update " + getTable() + " set " + change.getField() + "=" + change.getValue() + " " + (change.getCondition().equals("") ? "": "where " + change.getCondition());
         return new ResultQuery(query, db.update(query));
     }
     

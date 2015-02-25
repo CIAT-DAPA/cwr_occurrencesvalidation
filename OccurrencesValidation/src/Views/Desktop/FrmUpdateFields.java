@@ -10,6 +10,8 @@ import Controllers.Occurrences.CMetadata;
 import Controllers.Occurrences.CTempOccurrences;
 import Controllers.Tools.Importer.TypeImports;
 import Models.DataBase.BaseUpdate;
+import Tools.Configuration;
+import Tools.FixData;
 import java.io.File;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
@@ -33,7 +35,7 @@ public class FrmUpdateFields extends javax.swing.JDialog {
         initComponents();
         for(TypeImports value: TypeImports.values())
             cboTypeImport.addItem(value);
-        txtLog.setText(System.getProperty("user.home"));
+        txtLog.setText(Configuration.DIRECTORY_DEFAULT);
     }
 
     /**
@@ -171,15 +173,16 @@ public class FrmUpdateFields extends javax.swing.JDialog {
         try
         {
             TypeImports tImport=(TypeImports)cboTypeImport.getSelectedItem();
-            if(JOptionPane.showConfirmDialog(this, "confirm that you want to make changes into database?")== JOptionPane.YES_OPTION)
+            if(JOptionPane.showConfirmDialog(this, "confirm that you want to make changes in database?","Alert",JOptionPane.YES_NO_OPTION)== JOptionPane.YES_OPTION)
             {
                 cBase=tImport==TypeImports.TEMP_OCCURRENCES ? new CTempOccurrences() : 
                     (tImport==TypeImports.METADATA ? new CMetadata() : null);
-                updates=new ArrayList<>();
+                updates=new ArrayList<>();                 
                 for(int i=0;i<tblUpdates.getRowCount();i++)
                 {
-                    if(!tblUpdates.getValueAt(i, 0).toString().equals("") && !tblUpdates.getValueAt(i, 1).toString().equals(""))
-                        getUpdates().add( new BaseUpdate(tblUpdates.getValueAt(i, 0).toString(), tblUpdates.getValueAt(i, 1).toString(), tblUpdates.getValueAt(i, 2).toString()) );
+                    String field=FixData.getValueImaginary(tblUpdates.getValueAt(i, 0)),value=FixData.getValueImaginary(tblUpdates.getValueAt(i, 1)),condition=FixData.getValueImaginary(tblUpdates.getValueAt(i, 2));
+                    if(!field.equals("") && !value.equals(""))
+                        updates.add( new BaseUpdate(field, value, condition) );
                 }
                 this.exit=false;
                 this.setVisible(false);
@@ -189,6 +192,7 @@ public class FrmUpdateFields extends javax.swing.JDialog {
         {
             System.out.println("Error start");
             System.out.println(ex);
+            System.out.println(ex.toString());
         }
     }//GEN-LAST:event_cmdRunActionPerformed
 
@@ -204,7 +208,7 @@ public class FrmUpdateFields extends javax.swing.JDialog {
         {
             JFileChooser fc=new JFileChooser();
             fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            fc.setCurrentDirectory(new File(System.getProperty("user.home")));
+            fc.setCurrentDirectory(new File(txtLog.getText()));
             if(fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION)
                 txtLog.setText(fc.getSelectedFile().getAbsolutePath());
         }
