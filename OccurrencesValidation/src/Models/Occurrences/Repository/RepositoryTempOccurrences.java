@@ -72,11 +72,37 @@ public class RepositoryTempOccurrences extends BaseRepository {
      */
     public HashMap summary() throws SQLException{
         HashMap a=new HashMap(), temp;
-        String field;
+        String field, listFields="";        
+        // nulls
+        for(String f : FixData.valueParameterSplit(Configuration.getParameter("summary_fields_nulls")))
+            listFields+="'" + f + "',";
         dbInformationSchema.getResults("Select COLUMN_NAME " +
                                        "From COLUMNS " +
-                                       "Where TABLE_NAME = '" + getTable() +"' and Table_schema = '" + Configuration.getParameter("currie_schema_gapanalysis") + "' and (" + 
-                                           "COLUMN_NAME like 'final%' or COLUMN_NAME like 'f_x%' "+ ");");
+                                       "Where TABLE_NAME = '" + getTable() +"' and Table_schema = '" + Configuration.getParameter("currie_schema_gapanalysis") + "' and " + 
+                                           "COLUMN_NAME in (" + listFields.substring(0,listFields.length()-1) + ") ;" );
+        while(dbInformationSchema.getRecordSet().next())
+        {
+            field=dbInformationSchema.getRecordSet().getString("COLUMN_NAME");
+            temp=new HashMap();
+            db.getResults("Select 'null', count(*) " +
+                            "From " + getTable() + " " +
+                            "where " + field +" is null " +
+                            "Union " +
+                            "Select 'not null', count(*) " +
+                            "From " + getTable() + " " +
+                            "where " + field +" is not null; " );
+            while(db.getRecordSet().next())
+                temp.put(FixData.getValue(db.getRecordSet().getString(1)), db.getRecordSet().getString(2));
+            a.put(field, temp);
+        }
+        // values
+        listFields="";
+        for(String f : FixData.valueParameterSplit(Configuration.getParameter("summary_fields_values")))
+            listFields+="'" + f + "',";
+        dbInformationSchema.getResults("Select COLUMN_NAME " +
+                                       "From COLUMNS " +
+                                       "Where TABLE_NAME = '" + getTable() +"' and Table_schema = '" + Configuration.getParameter("currie_schema_gapanalysis") + "' and " + 
+                                           "COLUMN_NAME in (" + listFields.substring(0,listFields.length()-1) + ") ;" );
         while(dbInformationSchema.getRecordSet().next())
         {
             field=dbInformationSchema.getRecordSet().getString("COLUMN_NAME");
