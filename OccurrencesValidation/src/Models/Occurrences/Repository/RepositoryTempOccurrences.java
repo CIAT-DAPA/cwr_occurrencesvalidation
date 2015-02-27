@@ -90,7 +90,11 @@ public class RepositoryTempOccurrences extends BaseRepository {
                             "Union " +
                             "Select 'not null', count(*) " +
                             "From " + getTable() + " " +
-                            "where " + field +" is not null; " );
+                            "where " + field +" is not null " +
+                            "Union " +
+                            "Select 'Blank', count(*) " +
+                            "From " + getTable() + " " +
+                            "where " + field +" = ''; ");
             while(db.getRecordSet().next())
                 temp.put(FixData.getValue(db.getRecordSet().getString(1)), db.getRecordSet().getString(2));
             a.put(field, temp);
