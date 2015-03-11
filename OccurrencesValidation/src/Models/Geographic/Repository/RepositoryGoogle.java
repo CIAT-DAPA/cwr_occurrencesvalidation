@@ -91,6 +91,22 @@ public class RepositoryGoogle {
      */
     public static Location georenferencing(String country,String adm1, String adm2, String adm3,String local_area,String locality)
     {
+        return RepositoryGoogle.georenferencing(country, adm1, adm2, adm3, local_area, locality,Double.parseDouble(Configuration.getParameter("geocoding_threshold")));
+    }
+    
+    /**
+     * Method that geocoding a address from google api
+     * @param country
+     * @param adm1
+     * @param adm2
+     * @param adm3
+     * @param local_area
+     * @param locality
+     * @param uncertainty
+     * @return 
+     */
+    public static Location georenferencing(String country,String adm1, String adm2, String adm3,String local_area,String locality,double uncertainty)
+    {
         Location a=null;
         try {
             String data=(!country.equals("") ? country + "+,+" : "")+(!adm1.equals("") ? adm1 + "+,+" : "")+(!adm2.equals("") ? adm2 + "+,+" : "")+(!adm3.equals("") ? adm3 + "+,+" : "")+(!local_area.equals("") ? local_area + "+,+" : "")+(!locality.equals("") ? locality : "");
@@ -155,7 +171,7 @@ public class RepositoryGoogle {
                     double[] coordValuesSouthwest = new double[]{Double.parseDouble(lat_southwest.getTextContent()), Double.parseDouble(lng_southwest.getTextContent())} ;
                     double distance = FixData.getDistance(coordValuesNortheast, coordValuesSouthwest); 
                     // Distance - km between Northeast and Southeast                    
-                    if (distance <= Double.parseDouble(Configuration.getParameter("geocoding_threshold"))) 
+                    if (distance <= uncertainty) 
                     { 
                         a=new Location(coordValues[0], coordValues[1], distance);
                     } 

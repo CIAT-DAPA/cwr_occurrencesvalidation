@@ -16,6 +16,9 @@
 
 package Controllers.Occurrences;
 
+import Models.DataBase.BaseUpdate;
+import Models.Geographic.Repository.RepositoryGoogle;
+import Models.Geographic.Source.Location;
 import Models.Occurrences.Repository.RepositoryTempCountries;
 import Models.Occurrences.Source.TempCountries;
 import java.sql.SQLException;
@@ -31,6 +34,7 @@ public class CTempCountries extends BaseController {
 
     /*Const*/
     private final String PREFIX_IMPORT = "TC_IMPORT_";
+    private final String PREFIX_UPDATE = "TC_UPDATE_";
     
     /*Properties*/
     /**
@@ -110,6 +114,23 @@ public class CTempCountries extends BaseController {
      */
     public boolean add(String name,String iso2, String iso3, double lat,double lon) throws SQLException{
         return add(generateEntity(name, iso2, iso3, lat, lon)).getAffected() > 0;
+    }
+    
+    /**
+     * This method search the latitude and longitude for every country in google maps and update de center maps coordinates
+     * @param log path to save the log file
+     */
+    public void findCenterPointCountry(String log){
+        Location l;
+        ArrayList<BaseUpdate> updates= new ArrayList<BaseUpdate>();
+        for(TempCountries tc: getRepository().list()){
+            l = RepositoryGoogle.georenferencing(tc.getString("name"),"","","","","",99999);
+            if(l != null){
+                updates.add(new BaseUpdate("lat", String.valueOf(l.getLatitude()),"id='" + tc.getString("id") + "'"));
+                updates.add(new BaseUpdate("lon", String.valueOf(l.getLongitude()),"id='" + tc.getString("id") + "'"));
+            }
+        }
+        super.updateFields(updates, log, PREFIX_UPDATE);
     }
     
 }

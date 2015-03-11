@@ -441,7 +441,8 @@ public class CTempOccurrences extends BaseController {
                                 lon=entity.getDouble("longitude_georef");
                             }
                             water=rWater.getDataFromLatLon(lat,lon);
-                            review_data+= water != null ? water+"|" + String.valueOf(lat) + "|" + String.valueOf(lon) + "|" + (origin? "origin" : "georef") + "|" + water   :"4|" + String.valueOf(lat) + "|" + String.valueOf(lon) + "|No value|-1|";
+                            review_data+= water != null ? water+"|" + String.valueOf(lat) + "|" + String.valueOf(lon) + "|Id: " + entity.getString("id") + "<br />Where: " + (origin? "origin" : "georef") + "<br />Value Water: " + water + "|" + water   :
+                                                           "4|" + String.valueOf(lat) + "|" + String.valueOf(lon) + "|Id: " + entity.getString("id") + "<br />Not found in water database|-1";
                             country=rTCountries.searchIso2(entity.getString("final_iso2"));
                             if(water==null)
                                 throw new Exception("Point not found in the water database. " + water);
@@ -487,7 +488,7 @@ public class CTempOccurrences extends BaseController {
                 Log.register(log, TypeLog.REGISTER_OK, query.substring(0, query.length()-1) + footer, false,PREFIX_CROSSCHECK + String.valueOf(step),Configuration.getParameter("log_ext_sql"));
             
             //Log for review data
-            if(reviewdata && !review_data.equals("") && (step==2 || step == 3 || step == 6 || step == 7))
+            if(reviewdata && !review_data.equals("") && !review_data.equals(entity.getString("id") + "|") && (step==2 || step == 3 || step == 6 || step == 7))
                 Log.register(log, TypeLog.REVIEW_DATA, review_data, false,PREFIX_CROSSCHECK + String.valueOf(step),Configuration.getParameter("log_ext_review"));
             //Percent of progress
             System.out.println(FixData.toPercent(countRows, row) + "% row " + row + " of " + countRows);

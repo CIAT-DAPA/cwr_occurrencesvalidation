@@ -7,8 +7,11 @@ package Views.Desktop;
 
 
 import Controllers.Occurrences.CTempCountries;
+import Tools.Configuration;
 import java.awt.HeadlessException;
+import java.io.File;
 import java.sql.SQLException;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -66,6 +69,7 @@ public class FrmCountries extends javax.swing.JDialog {
         txtLat = new javax.swing.JTextField();
         lblLon = new javax.swing.JLabel();
         txtLon = new javax.swing.JTextField();
+        cmdCenterCountry = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Countries");
@@ -127,21 +131,28 @@ public class FrmCountries extends javax.swing.JDialog {
 
         lblLon.setText("Lon:");
 
+        cmdCenterCountry.setText("Generate Center Countries");
+        cmdCenterCountry.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmdCenterCountryActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(59, 59, 59)
-                .addComponent(cmdInsert)
-                .addGap(101, 101, 101)
-                .addComponent(cmdClear)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(cmdDelete)
-                .addGap(63, 63, 63))
-            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(cmdCenterCountry, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(71, 71, 71)
+                        .addComponent(cmdClear, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cmdInsert, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cmdDelete, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 495, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lblName)
@@ -186,9 +197,10 @@ public class FrmCountries extends javax.swing.JDialog {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cmdCenterCountry)
+                    .addComponent(cmdClear)
                     .addComponent(cmdInsert)
-                    .addComponent(cmdDelete)
-                    .addComponent(cmdClear))
+                    .addComponent(cmdDelete))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -233,7 +245,29 @@ public class FrmCountries extends javax.swing.JDialog {
         txtLon.setText("");
     }//GEN-LAST:event_cmdClearActionPerformed
 
+    private void cmdCenterCountryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdCenterCountryActionPerformed
+        // TODO add your handling code here:
+        try
+        {
+            JFileChooser fc=new JFileChooser();            
+            fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            fc.setCurrentDirectory(new File(Configuration.DIRECTORY_DEFAULT));
+            if(fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION)
+            {
+                cTCountries.findCenterPointCountry(fc.getSelectedFile().getAbsolutePath());
+                load();
+                JOptionPane.showMessageDialog(null, "Task finished");
+            }
+        }
+        catch(Exception ex)
+        {
+            JOptionPane.showMessageDialog(null, "Ops... We have a error");
+            System.out.println(ex);
+        }
+    }//GEN-LAST:event_cmdCenterCountryActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton cmdCenterCountry;
     private javax.swing.JButton cmdClear;
     private javax.swing.JButton cmdDelete;
     private javax.swing.JButton cmdInsert;
