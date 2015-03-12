@@ -18,6 +18,7 @@ package Controllers.Occurrences;
 
 import Models.DataBase.BaseUpdate;
 import Models.DataBase.DBFile;
+import Models.DataBase.Field;
 import Models.DataBase.ResultQuery;
 import Models.Occurrences.Repository.BaseRepository;
 import Models.Occurrences.Source.BaseTable;
@@ -70,7 +71,7 @@ public abstract class BaseController {
         else
             throw new Exception("Error when it tryed to open file. Path: " + filePath );
         //Validation fields
-        repository.validateFields(fields);        
+        ArrayList<Field> finalFields=repository.validateFields(fields);        
         System.out.println("Start process to import");
         while((line=dbFile.readLine()) != null)
         {
@@ -83,7 +84,7 @@ public abstract class BaseController {
                 if(clean)
                     line=FixData.deleteAccent(line);
                 //Save into database
-                entity.load(fields, FixData.lineSplit(line,dbFile.getSplit()));
+                entity.load(finalFields, FixData.lineSplit(line,dbFile.getSplit()));
                 result=add(entity);
                 if(result.getAffected() > 0)
                     Log.register(log,TypeLog.REGISTER_OK,String.valueOf(row) + "|" + line, true,prefixLog,Configuration.getParameter("log_ext_review"));
@@ -92,9 +93,9 @@ public abstract class BaseController {
             }
             catch(Exception e)
             {
-                Log.register(log,TypeLog.REGISTER_ERROR,String.valueOf(row) + "|" + e + "|" + line, false,prefixLog,Configuration.getParameter("log_ext_review"));
+                Log.register(log,TypeLog.REGISTER_ERROR,String.valueOf(row) + "|" + e + "|" + line, true,prefixLog,Configuration.getParameter("log_ext_review"));
                 if(result!=null)
-                    Log.register(log,TypeLog.QUERY_ERROR,result.getQuery(), true,prefixLog,Configuration.getParameter("log_ext_sql"));
+                    Log.register(log,TypeLog.QUERY_ERROR,result.getQuery() + ";", false,prefixLog,Configuration.getParameter("log_ext_sql"));
                 errors+=1;
                 System.out.println("Error register: " + row + " " + e);
             }
@@ -128,7 +129,7 @@ public abstract class BaseController {
         else
             throw new Exception("Error when it tryed to open file. Path: " + filePath );
         //Validation fields
-        repository.validateFields(fields);        
+        ArrayList<Field> finalFields=repository.validateFields(fields);        
         System.out.println("Start process to update");
         while((line=dbFile.readLine()) != null)
         {
@@ -137,7 +138,7 @@ public abstract class BaseController {
                 row+=1;
                 System.out.println("Row: " + row);
                 //Save into database
-                entity.load(fields, FixData.lineSplit(line,dbFile.getSplit()));
+                entity.load(finalFields, FixData.lineSplit(line,dbFile.getSplit()));
                 result=repository.update(entity, field);
                 if(result.getAffected() > 0)
                     Log.register(log,TypeLog.REGISTER_OK,result.getQuery(), true,prefixLog,Configuration.getParameter("log_ext_review"));

@@ -131,7 +131,7 @@ public class FrmCountries extends javax.swing.JDialog {
 
         lblLon.setText("Lon:");
 
-        cmdCenterCountry.setText("Generate Center Countries");
+        cmdCenterCountry.setText("Generate Country Centroids ");
         cmdCenterCountry.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cmdCenterCountryActionPerformed(evt);

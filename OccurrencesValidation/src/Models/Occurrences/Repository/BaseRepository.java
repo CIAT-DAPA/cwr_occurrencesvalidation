@@ -17,12 +17,14 @@
 package Models.Occurrences.Repository;
 
 import Models.DataBase.BaseUpdate;
+import Models.DataBase.Field;
 import Models.DataBase.MySQL;
 import Models.DataBase.ResultQuery;
 import Models.Occurrences.Source.BaseTable;
 import Tools.Configuration;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  *
@@ -69,22 +71,27 @@ public abstract class BaseRepository {
      * @return List values
      * @throws SQLException Error with connection to the database
      */
-    public ArrayList<String> validateFields(ArrayList<String> fields) throws SQLException, Exception{        
+    public ArrayList<Field> validateFields(ArrayList<String> fields) throws SQLException, Exception{
+        HashMap rows=new HashMap();
+        ArrayList<Field> realFields=new ArrayList<Field>();
         String listFields="";
         for(String f: fields)
             listFields+="'" +f +"'," ;
+        listFields=listFields.substring(0, listFields.length()-1);
         //query to database
-        dbInformationSchema.getResults("Select count(COLUMN_NAME) as count " +
+        dbInformationSchema.getResults("Select COLUMN_NAME, DATA_TYPE " +
                                         "From COLUMNS " +
                                         "Where TABLE_NAME = '" + getTable() +"' and Table_schema = '" + Configuration.getParameter("currie_schema_gapanalysis") + "'" +
-                                            "and COLUMN_NAME in (" + listFields.substring(0, listFields.length()-1) + ");");
-        if(dbInformationSchema.getRecordSet().next())
+                                            "and COLUMN_NAME in (" + listFields + ");");
+        while(dbInformationSchema.getRecordSet().next())
+            rows.put(dbInformationSchema.getRecordSet().getString(1), dbInformationSchema.getRecordSet().getString(2));
+        for(String f : fields)
         {
-            int count=dbInformationSchema.getRecordSet().getInt(1);
-            if(count < fields.size())
-                throw new Exception("Some fields did not find into table \"" + getTable() + "\". Count table: " + String.valueOf(count) + ", Count fields file: "+ String.valueOf(fields.size()));
+            if(!rows.containsKey(f))
+                throw new Exception(f + " field not found into table \"" + getTable() + "\". Count table: " + String.valueOf(realFields.size()) + ", Count fields file: "+ String.valueOf(fields.size()));
+            realFields.add(new Field(f,rows.get(f).toString()));
         }
-        return fields;
+        return realFields;
     }
     
     /**
@@ -100,7 +107,7 @@ public abstract class BaseRepository {
         {
             fields+=f + ",";
             temp=entity.get(f);
-            values += temp == null ? "null" : "'" + temp.toString() + "',";
+            values += temp == null ? "null," : "'" + temp.toString() + "',";
         }
         query+=fields.substring(0, fields.length()-1) + ") values (";
         query+=values.substring(0, values.length()-1) + ")";

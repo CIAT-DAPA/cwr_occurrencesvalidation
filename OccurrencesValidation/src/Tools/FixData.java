@@ -75,10 +75,10 @@ public class FixData {
     public static String deleteAccent(String input)
     {
         String original = "áàäéèëíìïóòöúùuñÁÀÄÉÈËÍÌÏÓÒÖÚÙÜÑçÇ";
-        String ascii = "aaaeeeiiiooouuunAAAEEEIIIOOOUUUNcC";
+        String ascii =    "aaaeeeiiiooouuunAAAEEEIIIOOOUUUNcC";
         String output = input;
         for (int i=0; i<original.length(); i++)
-            output = output.replace(original.charAt(i), ascii.charAt(i));
+            output = output.replace(original.charAt(i), ascii.charAt(i));       
         return output;
     }
     

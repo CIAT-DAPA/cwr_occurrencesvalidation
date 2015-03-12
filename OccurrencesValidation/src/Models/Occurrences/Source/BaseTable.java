@@ -16,6 +16,7 @@
 
 package Models.Occurrences.Source;
 
+import Models.DataBase.Field;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -91,10 +92,16 @@ public abstract class BaseTable {
      * @param fields list with name of fields
      * @param values values in the same order that fields
      */
-    public void load(ArrayList<String> fields,ArrayList<String> values){
+    public void load(ArrayList<Field> fields,ArrayList<String> values){
         for(int i=0;i<fields.size();i++)
-            row.put(fields.get(i), values.get(i));
+        {
+            if(fields.get(i).getType().trim().equals("tinyint") || fields.get(i).getType().trim().equals("int") || fields.get(i).getType().trim().equals("double") || fields.get(i).getType().trim().equals("float"))
+                row.put(fields.get(i).getName(),i < values.size() && !values.get(i).equals("") ?  values.get(i) : null);
+            else
+                row.put(fields.get(i).getName(),i < values.size() ?  values.get(i) : "");
+        }
     }
+    
     
     /***
      * Method that return all attributes of table
