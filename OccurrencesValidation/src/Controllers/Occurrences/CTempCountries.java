@@ -17,6 +17,7 @@
 package Controllers.Occurrences;
 
 import Models.DataBase.BaseUpdate;
+import Models.DataBase.Field;
 import Models.Geographic.Repository.RepositoryGoogle;
 import Models.Geographic.Source.Location;
 import Models.Occurrences.Repository.RepositoryTempCountries;
@@ -88,7 +89,13 @@ public class CTempCountries extends BaseController {
      */
     public TempCountries generateEntity(String name,String iso2, String iso3,double lat,double lon){
         TempCountries a=new TempCountries();
-        a.load(new ArrayList<>(Arrays.asList("name","iso2","iso3","lat","lon")),new ArrayList<>(Arrays.asList(name,iso2,iso3,String.valueOf(lat),String.valueOf(lon))));
+        ArrayList<Field> fields=new ArrayList<>();
+        fields.add(new Field("name","varchar"));
+        fields.add(new Field("iso2","varchar"));
+        fields.add(new Field("iso3","varchar"));
+        fields.add(new Field("lat","double"));
+        fields.add(new Field("lon","double"));
+        a.load(fields,new ArrayList<>(Arrays.asList(name,iso2,iso3,String.valueOf(lat),String.valueOf(lon))));
         return a;
     }
     

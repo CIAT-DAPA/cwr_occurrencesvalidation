@@ -197,7 +197,6 @@ public class FrmDataValidation extends javax.swing.JDialog {
             }
         });
 
-        chkReviewData.setSelected(true);
         chkReviewData.setText("Review data");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -316,7 +315,9 @@ public class FrmDataValidation extends javax.swing.JDialog {
     
     private void cboStepActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboStepActionPerformed
         // TODO add your handling code here:
-        setPoliciesByStep(cboStep.getSelectedIndex());
+        int step=getStep();
+        chkReviewData.setSelected(step==2 || step == 3 || step == 6 || step == 7);
+        setPoliciesByStep(cboStep.getSelectedIndex());        
     }//GEN-LAST:event_cboStepActionPerformed
     
     private void cmdCountriesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdCountriesActionPerformed
