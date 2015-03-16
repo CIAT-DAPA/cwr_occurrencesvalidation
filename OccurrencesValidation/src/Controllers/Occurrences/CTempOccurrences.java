@@ -167,6 +167,8 @@ public class CTempOccurrences extends BaseController {
         long row=0, countRows;
         TempOccurrences entity=new TempOccurrences();
         
+        String comments;
+        
         boolean origin;
         double lat,lon;
         //Headers for log of review data
@@ -430,6 +432,7 @@ public class CTempOccurrences extends BaseController {
                         else
                         {
                             origin=p.getTypePolicy()==TypePolicy.POSTCHECK_GEOCODING_CROSCHECK_COORDS ? true : false;                            
+                            comments = FixData.getValueImaginary(entity.get("comments"));
                             if(origin)
                             {
                                 lat=entity.getDouble("latitude");
@@ -448,16 +451,18 @@ public class CTempOccurrences extends BaseController {
                                 throw new Exception("Point not found in the water database. " + water);
                             //It is not earth
                             else if(!water.equals(Configuration.getParameter("geocoding_database_world_earth")))
+                            {
+                                query+="comments='" +  (comments.equals("") ? "" : comments + ". ") + "Point in the water',";
                                 throw new Exception("Point in the water or boundaries. " + water + " Lat: " + String.valueOf(lat) + " Lon: " + String.valueOf(lon));
-                            else if(country != null && country.getDouble("lat")==lat && country.getDouble("lon")==lon)
+                            }
+                            else if(country != null && country.getDouble("lat")==lat && country.getDouble("lon")==lon)                                
                                 throw new Exception("Point in the country centroid. " + " Lat: " + String.valueOf(lat) + " Lon: " + String.valueOf(lon) + " Country ISO 2: " + entity.getString("final_iso2"));
                             else if(origin)
                             {
                                 googleReverse=RepositoryGoogle.reverse(lat, lon);
                                 if(googleReverse == null || !googleReverse.get("status").toString().equals("OK") || !FixData.getValue(googleReverse.get("iso")).toLowerCase().equals(FixData.getValue(entity.get("final_iso2")).toLowerCase()))
-                                    throw new Exception("Cross check coords error: Country doesn't match  or not found. Latitude: " + String.valueOf(lat) +
-                                            " Longitude: " + String.valueOf(lon) +
-                                            (googleReverse == null ? "" : (" Status: " + googleReverse.get("status").toString() + " Iso: " + FixData.getValue(googleReverse.get("iso")))));
+                                    query+="coord_source='" + (origin ? "original" : "georef") + "',final_lat='" + String.valueOf(lat) + "',final_lon='" + String.valueOf(lon) + "'," +
+                                        "comments='" +  (comments.equals("") ? "" : comments + ". ") + "Country not match between source and reverse geocoding',";
                                 else
                                     query+="coord_source='original',final_lat='" + String.valueOf(lat) + "',final_lon='" + String.valueOf(lon) + "',";
                             }
