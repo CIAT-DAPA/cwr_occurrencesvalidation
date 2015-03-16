@@ -455,6 +455,7 @@ public class CTempOccurrences extends BaseController {
                                 query+="comments='" +  (comments.equals("") ? "" : comments + ". ") + "Point in the water',";
                                 throw new Exception("Point in the water or boundaries. " + water + " Lat: " + String.valueOf(lat) + " Lon: " + String.valueOf(lon));
                             }
+                            //Country centrois
                             else if(country != null && country.getDouble("lat")==lat && country.getDouble("lon")==lon)                                
                                 throw new Exception("Point in the country centroid. " + " Lat: " + String.valueOf(lat) + " Lon: " + String.valueOf(lon) + " Country ISO 2: " + entity.getString("final_iso2"));
                             else if(origin)
