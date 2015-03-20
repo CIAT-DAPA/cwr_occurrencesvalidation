@@ -6,6 +6,7 @@
 package Views.Desktop;
 
 import Controllers.Occurrences.CTempOccurrences;
+import Controllers.Tools.Reports.TypeReport;
 import Tools.Configuration;
 import java.io.File;
 import javax.swing.JFileChooser;
@@ -26,7 +27,19 @@ public class FrmReport extends javax.swing.JDialog {
         initComponents();
         exit=false;
         txtDestination.setText(Configuration.DIRECTORY_DEFAULT);
-        txtCompare.setEnabled(chkCompare.isSelected());
+        for(TypeReport value: TypeReport.values())
+            cboType.addItem(value); 
+        fixFields();
+    }
+    
+    /**
+     * Method that enable or disable some fields of  the form
+     */
+    private void fixFields()
+    {
+        txtCompare.setEnabled((TypeReport)cboType.getSelectedItem()==TypeReport.COMPARE_TO);
+        txtCondition.setEnabled((TypeReport)cboType.getSelectedItem()==TypeReport.COMPARE_TO);
+        txtIgnore.setEnabled((TypeReport)cboType.getSelectedItem()==TypeReport.COMPARE_TO);
     }
 
     /**
@@ -42,10 +55,14 @@ public class FrmReport extends javax.swing.JDialog {
         txtDestination = new javax.swing.JTextField();
         cmdLog = new javax.swing.JButton();
         cmdRun = new javax.swing.JButton();
-        cmdExit = new javax.swing.JButton();
-        chkCompare = new javax.swing.JCheckBox();
         lblCompare = new javax.swing.JLabel();
         txtCompare = new javax.swing.JTextField();
+        lblType = new javax.swing.JLabel();
+        cboType = new javax.swing.JComboBox();
+        lblCondition = new javax.swing.JLabel();
+        txtCondition = new javax.swing.JTextField();
+        lblIgnore = new javax.swing.JLabel();
+        txtIgnore = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Summary");
@@ -67,21 +84,19 @@ public class FrmReport extends javax.swing.JDialog {
             }
         });
 
-        cmdExit.setText("Exit");
-        cmdExit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmdExitActionPerformed(evt);
-            }
-        });
-
-        chkCompare.setText("Compare");
-        chkCompare.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                chkCompareActionPerformed(evt);
-            }
-        });
-
         lblCompare.setText("Table to compare:");
+
+        lblType.setText("Type:");
+
+        cboType.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cboTypeActionPerformed(evt);
+            }
+        });
+
+        lblCondition.setText("Condition:");
+
+        lblIgnore.setText("Ignore:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -91,43 +106,55 @@ public class FrmReport extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(chkCompare)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(lblType)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cboType, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblDestination)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtDestination)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cmdLog))
+                    .addGroup(layout.createSequentialGroup()
                         .addComponent(lblCompare)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtCompare))
+                        .addComponent(txtCompare, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblCondition)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtCondition))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(lblDestination)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtDestination, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(cmdLog))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(cmdRun, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(cmdExit, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addComponent(lblIgnore)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtIgnore))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 113, Short.MAX_VALUE)
+                        .addComponent(cmdRun, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(108, 108, 108)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(3, 3, 3)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblType)
+                    .addComponent(cboType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblDestination)
                     .addComponent(txtDestination, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cmdLog))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(chkCompare)
                     .addComponent(lblCompare)
-                    .addComponent(txtCompare, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                    .addComponent(txtCompare, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblCondition)
+                    .addComponent(txtCondition, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cmdRun)
-                    .addComponent(cmdExit))
+                    .addComponent(lblIgnore)
+                    .addComponent(txtIgnore, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cmdRun)
                 .addContainerGap())
         );
 
@@ -155,7 +182,7 @@ public class FrmReport extends javax.swing.JDialog {
         // TODO add your handling code here:
         try
         {
-            this.exit=false;
+            this.exit=true;
             this.setVisible(false);
         }
         catch(Exception ex)
@@ -165,27 +192,25 @@ public class FrmReport extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_cmdRunActionPerformed
 
-    private void cmdExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdExitActionPerformed
+    private void cboTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboTypeActionPerformed
         // TODO add your handling code here:
-        exit=true;
-        this.setVisible(false);
-    }//GEN-LAST:event_cmdExitActionPerformed
-
-    private void chkCompareActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkCompareActionPerformed
-        // TODO add your handling code here:
-        txtCompare.setEnabled(chkCompare.isSelected());
-    }//GEN-LAST:event_chkCompareActionPerformed
+        fixFields();
+    }//GEN-LAST:event_cboTypeActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JCheckBox chkCompare;
-    private javax.swing.JButton cmdExit;
+    private javax.swing.JComboBox cboType;
     private javax.swing.JButton cmdLog;
     private javax.swing.JButton cmdRun;
     private javax.swing.JLabel lblCompare;
+    private javax.swing.JLabel lblCondition;
     private javax.swing.JLabel lblDestination;
+    private javax.swing.JLabel lblIgnore;
+    private javax.swing.JLabel lblType;
     private javax.swing.JTextField txtCompare;
+    private javax.swing.JTextField txtCondition;
     private javax.swing.JTextField txtDestination;
+    private javax.swing.JTextField txtIgnore;
     // End of variables declaration//GEN-END:variables
 
     /**
@@ -194,11 +219,30 @@ public class FrmReport extends javax.swing.JDialog {
     public boolean isExit() {
         return exit;
     }
+    
+    /**
+     * @return the type report
+     */
+    public TypeReport getTypeReport(){
+        return (TypeReport)cboType.getSelectedItem();
+    }
 
     /**
      * @return 
      */
     public String getDestination(){
         return txtDestination.getText();
+    }
+    
+    public String getCompare(){
+        return txtCompare.getText();
+    }
+    
+    public String getCondition(){
+        return txtCondition.getText();
+    }
+    
+    public String getIgnore(){
+        return txtIgnore.getText();
     }
 }

@@ -33,6 +33,7 @@ public class FrmUpdateFields extends javax.swing.JDialog {
     public FrmUpdateFields(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        exit=false;
         for(TypeImports value: TypeImports.values())
             cboTypeImport.addItem(value);
         txtLog.setText(Configuration.DIRECTORY_DEFAULT);
@@ -52,7 +53,6 @@ public class FrmUpdateFields extends javax.swing.JDialog {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblUpdates = new javax.swing.JTable();
         cmdRun = new javax.swing.JButton();
-        cmdExit = new javax.swing.JButton();
         lblLog = new javax.swing.JLabel();
         txtLog = new javax.swing.JTextField();
         cmdLog = new javax.swing.JButton();
@@ -102,13 +102,6 @@ public class FrmUpdateFields extends javax.swing.JDialog {
             }
         });
 
-        cmdExit.setText("Exit");
-        cmdExit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmdExitActionPerformed(evt);
-            }
-        });
-
         lblLog.setText("Log:");
 
         cmdLog.setText("Search");
@@ -125,16 +118,11 @@ public class FrmUpdateFields extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lblTypeImport)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cboTypeImport, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(cmdRun, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(28, 28, 28)
-                        .addComponent(cmdExit, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lblLog)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -142,6 +130,10 @@ public class FrmUpdateFields extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cmdLog)))
                 .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(cmdRun, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(101, 101, 101))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -158,9 +150,7 @@ public class FrmUpdateFields extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cmdExit)
-                    .addComponent(cmdRun))
+                .addComponent(cmdRun)
                 .addGap(6, 6, 6))
         );
 
@@ -184,7 +174,7 @@ public class FrmUpdateFields extends javax.swing.JDialog {
                     if(!field.equals("") && !value.equals(""))
                         updates.add( new BaseUpdate(field, value, condition) );
                 }
-                this.exit=false;
+                this.exit=true;
                 this.setVisible(false);
             }
         }
@@ -195,12 +185,6 @@ public class FrmUpdateFields extends javax.swing.JDialog {
             System.out.println(ex.toString());
         }
     }//GEN-LAST:event_cmdRunActionPerformed
-
-    private void cmdExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdExitActionPerformed
-        // TODO add your handling code here:
-        exit=true;
-        this.setVisible(false);
-    }//GEN-LAST:event_cmdExitActionPerformed
 
     private void cmdLogActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdLogActionPerformed
         // TODO add your handling code here:
@@ -220,7 +204,6 @@ public class FrmUpdateFields extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox cboTypeImport;
-    private javax.swing.JButton cmdExit;
     private javax.swing.JButton cmdLog;
     private javax.swing.JButton cmdRun;
     private javax.swing.JScrollPane jScrollPane1;

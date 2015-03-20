@@ -97,7 +97,6 @@ public class FrmImport extends javax.swing.JDialog {
         lblDesType = new javax.swing.JLabel();
         cboTypeImport = new javax.swing.JComboBox();
         cmdStartImport = new javax.swing.JButton();
-        cmdExit = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Import");
@@ -138,13 +137,6 @@ public class FrmImport extends javax.swing.JDialog {
             }
         });
 
-        cmdExit.setText("Exit");
-        cmdExit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmdExitActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -179,11 +171,9 @@ public class FrmImport extends javax.swing.JDialog {
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(layout.createSequentialGroup()
-                .addGap(70, 70, 70)
+                .addGap(124, 124, 124)
                 .addComponent(cmdStartImport)
-                .addGap(26, 26, 26)
-                .addComponent(cmdExit, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -205,11 +195,9 @@ public class FrmImport extends javax.swing.JDialog {
                     .addComponent(txtSplit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblDesType)
                     .addComponent(cboTypeImport, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cmdStartImport)
-                    .addComponent(cmdExit))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
+                .addComponent(cmdStartImport)
+                .addContainerGap())
         );
 
         pack();
@@ -230,13 +218,7 @@ public class FrmImport extends javax.swing.JDialog {
             System.out.println(ex);
         }
     }//GEN-LAST:event_cmdSelectFileActionPerformed
-    
-    private void cmdExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdExitActionPerformed
-        // TODO add your handling code here:
-        exit=true;
-        this.setVisible(false);
-    }//GEN-LAST:event_cmdExitActionPerformed
-    
+        
     private void cmdStartImportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdStartImportActionPerformed
         // TODO add your handling code here:
         try
@@ -244,7 +226,7 @@ public class FrmImport extends javax.swing.JDialog {
             TypeImports tImport=(TypeImports)cboTypeImport.getSelectedItem();
             cBase=tImport==TypeImports.TEMP_OCCURRENCES ? new CTempOccurrences() : 
                     (tImport==TypeImports.METADATA ? new CMetadata() : null);            
-            this.exit=false;            
+            this.exit=true;            
             this.setVisible(false);
         }
         catch(Exception ex)
@@ -274,7 +256,6 @@ public class FrmImport extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox cboTypeImport;
     private javax.swing.JCheckBox chkClean;
-    private javax.swing.JButton cmdExit;
     private javax.swing.JButton cmdLog;
     private javax.swing.JButton cmdSelectFile;
     private javax.swing.JButton cmdStartImport;

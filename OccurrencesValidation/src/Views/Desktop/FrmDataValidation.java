@@ -118,7 +118,6 @@ public class FrmDataValidation extends javax.swing.JDialog {
         scpPolicies = new javax.swing.JScrollPane();
         tblPolicies = new javax.swing.JTable();
         cmdStart = new javax.swing.JButton();
-        cmdExit = new javax.swing.JButton();
         cmdSelect = new javax.swing.JButton();
         chkReviewData = new javax.swing.JCheckBox();
 
@@ -183,13 +182,6 @@ public class FrmDataValidation extends javax.swing.JDialog {
             }
         });
 
-        cmdExit.setText("Exit");
-        cmdExit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmdExitActionPerformed(evt);
-            }
-        });
-
         cmdSelect.setText("Unselect all");
         cmdSelect.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -228,10 +220,8 @@ public class FrmDataValidation extends javax.swing.JDialog {
                         .addComponent(cboStep, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(cmdSelect)
-                        .addGap(102, 102, 102)
-                        .addComponent(cmdStart, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(cmdExit, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(cmdStart, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -255,8 +245,7 @@ public class FrmDataValidation extends javax.swing.JDialog {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cmdSelect)
-                    .addComponent(cmdStart)
-                    .addComponent(cmdExit))
+                    .addComponent(cmdStart))
                 .addContainerGap())
         );
 
@@ -279,13 +268,7 @@ public class FrmDataValidation extends javax.swing.JDialog {
             System.out.println(ex);
         }
     }//GEN-LAST:event_cmdLogActionPerformed
-    
-    private void cmdExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdExitActionPerformed
-        // TODO add your handling code here:
-        exit=true;
-        this.setVisible(false);
-    }//GEN-LAST:event_cmdExitActionPerformed
-    
+        
     private void cmdStartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdStartActionPerformed
         // TODO add your handling code here:
         try
@@ -297,7 +280,7 @@ public class FrmDataValidation extends javax.swing.JDialog {
                     policies.add( new Policy((TypePolicy)tblPolicies.getValueAt(i, 1)) );
             }
             cTempOccurrences=new CTempOccurrences();
-            this.exit=false;
+            this.exit=true;
             this.setVisible(false);
             
         }
@@ -405,7 +388,6 @@ public class FrmDataValidation extends javax.swing.JDialog {
     private javax.swing.JComboBox cboStep;
     private javax.swing.JCheckBox chkReviewData;
     private javax.swing.JButton cmdCountries;
-    private javax.swing.JButton cmdExit;
     private javax.swing.JButton cmdLog;
     private javax.swing.JButton cmdSelect;
     private javax.swing.JButton cmdStart;

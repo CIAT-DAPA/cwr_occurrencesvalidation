@@ -36,6 +36,7 @@ public class FrmUpdate extends javax.swing.JDialog {
     public FrmUpdate(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        exit=false;
         // Add
         for(TypeImports value: TypeImports.values())
             cboTypeImport.addItem(value);
@@ -83,7 +84,6 @@ public class FrmUpdate extends javax.swing.JDialog {
         lblTypeImport = new javax.swing.JLabel();
         cboTypeImport = new javax.swing.JComboBox();
         cmdRun = new javax.swing.JButton();
-        cmdExit = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Update");
@@ -116,13 +116,6 @@ public class FrmUpdate extends javax.swing.JDialog {
             }
         });
 
-        cmdExit.setText("Exit");
-        cmdExit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmdExitActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -131,29 +124,27 @@ public class FrmUpdate extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(cmdRun, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lblTypeImport)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cmdExit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(lblTypeImport)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(cboTypeImport, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGroup(layout.createSequentialGroup()
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(lblLog)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(txtLog, javax.swing.GroupLayout.PREFERRED_SIZE, 313, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(cmdLog))
-                                .addGroup(layout.createSequentialGroup()
-                                    .addComponent(lblFile)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(txtFile, javax.swing.GroupLayout.PREFERRED_SIZE, 313, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(cmdSearch)))
-                            .addGap(0, 0, Short.MAX_VALUE))))
+                        .addComponent(cboTypeImport, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblLog)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtLog, javax.swing.GroupLayout.PREFERRED_SIZE, 313, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cmdLog))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblFile)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtFile, javax.swing.GroupLayout.PREFERRED_SIZE, 313, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cmdSearch))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(103, 103, 103)
+                                .addComponent(cmdRun, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -174,9 +165,7 @@ public class FrmUpdate extends javax.swing.JDialog {
                     .addComponent(lblTypeImport)
                     .addComponent(cboTypeImport, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cmdRun)
-                    .addComponent(cmdExit))
+                .addComponent(cmdRun)
                 .addContainerGap())
         );
 
@@ -207,7 +196,7 @@ public class FrmUpdate extends javax.swing.JDialog {
             TypeImports tImport=(TypeImports)cboTypeImport.getSelectedItem();
             cBase=tImport==TypeImports.TEMP_OCCURRENCES ? new CTempOccurrences() : 
                     (tImport==TypeImports.METADATA ? new CMetadata() : null);
-            this.exit=false;            
+            this.exit=true;            
             this.setVisible(false);
         }
         catch(Exception ex)
@@ -232,17 +221,10 @@ public class FrmUpdate extends javax.swing.JDialog {
             System.out.println(ex);
         }
     }//GEN-LAST:event_cmdLogActionPerformed
-
-    private void cmdExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdExitActionPerformed
-        // TODO add your handling code here:
-        exit=true;
-        this.setVisible(false);
-    }//GEN-LAST:event_cmdExitActionPerformed
    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox cboTypeImport;
-    private javax.swing.JButton cmdExit;
     private javax.swing.JButton cmdLog;
     private javax.swing.JButton cmdRun;
     private javax.swing.JButton cmdSearch;

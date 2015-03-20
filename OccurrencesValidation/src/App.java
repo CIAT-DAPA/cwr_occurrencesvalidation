@@ -19,6 +19,7 @@ import Views.Desktop.FrmOptions;
 import Views.Desktop.FrmDataValidation;
 import Controllers.Occurrences.CMetadata;
 import Controllers.Occurrences.CTempOccurrences;
+import Controllers.Tools.Reports.TypeReport;
 import Tools.Configuration;
 import Views.Desktop.FrmConf;
 import Views.Desktop.FrmReport;
@@ -54,10 +55,10 @@ public class App {
                 if(option==1)
                 {
                     frmImp=new FrmImport(new JFrame(),true);
-                    frmImp.setVisible(true);
-                    changeDirectory(frmImp.getLog());
-                    if(!frmImp.isExit())
+                    frmImp.setVisible(true);                    
+                    if(frmImp.isExit())
                     {
+                        changeDirectory(frmImp.getLog());
                         if(frmImp.getCBase() instanceof CTempOccurrences){
                             cTempOccurrences=(CTempOccurrences)frmImp.getCBase();
                             cTempOccurrences.importFile(frmImp.getSource(), frmImp.getSplit(), frmImp.getClean(),frmImp.getLog());
@@ -74,10 +75,10 @@ public class App {
                 else if(option == 2)
                 {
                     frmData=new FrmDataValidation(new JFrame(),true);
-                    frmData.setVisible(true);
-                    changeDirectory(frmData.getLog());
-                    if(!frmData.isExit())
+                    frmData.setVisible(true);                    
+                    if(frmData.isExit())
                     {
+                        changeDirectory(frmData.getLog());
                         cTempOccurrences=frmData.getCTO();
                         cTempOccurrences.crossCheck(frmData.getStep(), frmData.getPolicies(), frmData.getLog(),frmData.getReviewData());
                         message("Validation finished!!!");
@@ -86,10 +87,10 @@ public class App {
                 else if(option == 3)
                 {
                     frmUpdate=new FrmUpdate(new JFrame(),true);
-                    frmUpdate.setVisible(true);
-                    changeDirectory(frmUpdate.getLog());
-                    if(!frmUpdate.isExit())
+                    frmUpdate.setVisible(true);                    
+                    if(frmUpdate.isExit())
                     {
+                        changeDirectory(frmUpdate.getLog());
                         if(frmUpdate.getCBase() instanceof CTempOccurrences){
                             cTempOccurrences=(CTempOccurrences)frmUpdate.getCBase();
                             cTempOccurrences.updateFileQuery(frmUpdate.getFile(), frmUpdate.getLog());
@@ -107,10 +108,10 @@ public class App {
                 else if(option == 5)
                 {
                     frmUpdateFields=new FrmUpdateFields(new JFrame(),true);
-                    frmUpdateFields.setVisible(true);
-                    changeDirectory(frmUpdateFields.getLog());
-                    if(!frmUpdateFields.isExit())
+                    frmUpdateFields.setVisible(true);                    
+                    if(frmUpdateFields.isExit())
                     {
+                        changeDirectory(frmUpdateFields.getLog());
                         if(frmUpdateFields.getCBase() instanceof CTempOccurrences){
                             cTempOccurrences=(CTempOccurrences)frmUpdateFields.getCBase();
                             cTempOccurrences.updateFields(frmUpdateFields.getUpdates(), frmUpdateFields.getLog());
@@ -123,12 +124,15 @@ public class App {
                 else if(option == 6)
                 {
                     frmReport=new FrmReport(new JFrame(), true);
-                    frmReport.setVisible(true);
-                    changeDirectory(frmReport.getDestination());
-                    if(!frmReport.isExit())
+                    frmReport.setVisible(true);                    
+                    if(frmReport.isExit())
                     {
+                        changeDirectory(frmReport.getDestination());
                         cTempOccurrences=new CTempOccurrences();
-                        cTempOccurrences.generateReport(frmReport.getDestination());
+                        if(frmReport.getTypeReport()==TypeReport.SUMMARY)
+                            cTempOccurrences.reportSummary(frmReport.getDestination());
+                        else
+                            cTempOccurrences.reportCompare(frmReport.getDestination(),);
                         message("Summary finished!!!");
                     }
                 }

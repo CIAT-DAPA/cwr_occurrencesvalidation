@@ -16,6 +16,7 @@
 
 package Models.Occurrences.Repository;
 
+import Models.DataBase.MySQL;
 import Models.DataBase.ResultQuery;
 import Models.Occurrences.Source.TempOccurrences;
 import Tools.Configuration;
@@ -119,6 +120,51 @@ public class RepositoryTempOccurrences extends BaseRepository {
             while(db.getRecordSet().next())
                 temp.put(FixData.getValue(db.getRecordSet().getString(field)), db.getRecordSet().getString("count"));
             a.put(field, temp);
+        }
+        return a;
+    }
+    
+    /**
+     * Method that genera a special table with information of occurrences
+     * @return HashMap of HashMap's
+     * @throws SQLException 
+     */
+    public HashMap compare(String tableCompare, String ignore,String condition) throws SQLException{
+        HashMap a=new HashMap(), temp;
+        String field="";        
+        long temp_occurrences, compare, i=1;
+        //fix parameters
+        ignore=ignore.endsWith(",") ? ignore.substring(0, ignore.length()-1) : ignore;
+        //List fields
+        dbInformationSchema.getResults("Select COLUMN_NAME " +
+                                       "From COLUMNS " +
+                                       "Where TABLE_NAME = '" + getTable() +"' and Table_schema = '" + Configuration.getParameter("currie_schema_gapanalysis") + "' " +
+                                           (!ignore.equals("") ? "and COLUMN_NAME not in (" + ignore + ")" : "") + ";" );
+        MySQL dbCompare=new MySQL(Configuration.getParameter("currie_server"),Configuration.getParameter("currie_schema_gapanalysis"), Configuration.getParameter("currie_user"), Configuration.getParameter("currie_password"));
+        while(dbInformationSchema.getRecordSet().next())
+        {
+            temp = new HashMap();
+            field=dbInformationSchema.getRecordSet().getString("COLUMN_NAME");
+            db.getResults("Select " + field + " " + ", count(*) as count " +
+                          "From " + getTable() + " " +
+                          "Group by " + field + " " +
+                          "Order by " + field + ";");
+            temp.put("field", field);
+            while(db.getRecordSet().next())
+            {
+                temp.put("value", db.getRecordSet().getString(1));
+                temp_occurrences = db.getRecordSet().getInt(2);
+                temp.put("temp_occurrences", temp_occurrences);
+                dbCompare.getResults("Select count(*) " +
+                                     "From " + tableCompare + " " +
+                                     "Where " + field + "='" + db.getRecordSet().getString(1) + "' " +
+                                        (!condition.equals("") ? "and " + condition : "") +";");
+                compare = dbCompare.getRecordSet().next() ? dbCompare.getRecordSet().getInt(1) : 0;
+                temp.put("compare", compare);
+                temp.put("difference", temp_occurrences-compare);
+                a.put(i, temp);
+                i+=1;
+            }
         }
         return a;
     }
