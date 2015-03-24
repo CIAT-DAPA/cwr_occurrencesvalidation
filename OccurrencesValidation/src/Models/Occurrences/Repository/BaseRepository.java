@@ -107,7 +107,7 @@ public abstract class BaseRepository {
         {
             fields+=f + ",";
             temp=entity.get(f);
-            values += temp == null ? "null," : "'" + temp.toString() + "',";
+            values += temp == null ? "null," : "'" + temp.toString().trim() + "',";
         }
         query+=fields.substring(0, fields.length()-1) + ") values (";
         query+=values.substring(0, values.length()-1) + ")";
@@ -128,7 +128,7 @@ public abstract class BaseRepository {
             if(!f.equals(field))
             {
                 temp=entity.get(f);
-                query += f + "=" + (temp == null ? "null" : "'" + temp.toString() + "'") + ",";
+                query += f + "=" + (temp == null ? "null" : "'" + temp.toString().trim() + "'") + ",";
             }            
         }
         query=query.substring(0, query.length()-1) + " where " + field + "='" +entity.get(field) + "'";
@@ -154,7 +154,7 @@ public abstract class BaseRepository {
      * @throws SQLException 
      */
     public ResultQuery delete(String field,String value) throws SQLException{
-        String query="Delete " + getTable() + " where " + field + "='" + value + "'";
+        String query="Delete from " + getTable() + " where " + field + "='" + value + "'";
         return new ResultQuery(query, db.update(query));
     }
     

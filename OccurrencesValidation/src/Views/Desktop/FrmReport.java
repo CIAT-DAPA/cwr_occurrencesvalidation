@@ -30,6 +30,8 @@ public class FrmReport extends javax.swing.JDialog {
         for(TypeReport value: TypeReport.values())
             cboType.addItem(value); 
         fixFields();
+        txtCompare.setText(Configuration.getParameter("compare_table_name"));
+        txtIgnore.setText(Configuration.getParameter("compare_fields_ignore"));
     }
     
     /**

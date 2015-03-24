@@ -150,6 +150,7 @@ public class RepositoryTempOccurrences extends BaseRepository {
                           "Group by " + field + " " +
                           "Order by " + field + ";");
             temp.put("field", field);
+            System.out.println(field);
             while(db.getRecordSet().next())
             {
                 temp.put("value", db.getRecordSet().getString(1));

@@ -49,7 +49,8 @@ public class CTempOccurrences extends BaseController {
     private final String PREFIX_IMPORT = "TO_IMPORT_";
     private final String PREFIX_CROSSCHECK = "TO_CROSSCHECK_";
     private final String PREFIX_UPDATE = "TO_UPDATE_";
-    private final String PREFIX_REPORT = "TO_REPORT_";
+    private final String PREFIX_REPORT_SUMMARY = "TO_REPORT_SUMMARY_";
+    private final String PREFIX_REPORT_COMPARE = "TO_REPORT_COMPARE";
     private final String PREFIX_UPDATE_QUERY = "TO_UPDATE_QUERY_";
     /*Members Class*/
     private String[] FIELDS_MANDATORY;
@@ -456,14 +457,17 @@ public class CTempOccurrences extends BaseController {
                                 throw new Exception("Point in the water or boundaries. " + water + " Lat: " + String.valueOf(lat) + " Lon: " + String.valueOf(lon));
                             }
                             //Country centrois
-                            else if(country != null && country.getDouble("lat")==lat && country.getDouble("lon")==lon)                                
+                            else if(country != null && country.getDouble("lat")==lat && country.getDouble("lon")==lon)
+                            {
+                                query+="comments='" +  (comments.equals("") ? "" : comments + ". ") + "Point in the country centroid',";
                                 throw new Exception("Point in the country centroid. " + " Lat: " + String.valueOf(lat) + " Lon: " + String.valueOf(lon) + " Country ISO 2: " + entity.getString("final_iso2"));
+                            }
                             else if(origin)
                             {
                                 googleReverse=RepositoryGoogle.reverse(lat, lon);
                                 if(googleReverse == null || !googleReverse.get("status").toString().equals("OK") || !FixData.getValue(googleReverse.get("iso")).toLowerCase().equals(FixData.getValue(entity.get("final_iso2")).toLowerCase()))
                                     query+="coord_source='" + (origin ? "original" : "georef") + "',final_lat='" + String.valueOf(lat) + "',final_lon='" + String.valueOf(lon) + "'," +
-                                        "comments='" +  (comments.equals("") ? "" : comments + ". ") + "Country not match between source and reverse geocoding',";
+                                        "comments='" +  (comments.equals("") ? "" : comments + ". ") + "Coordinates do not match to country in source data',";
                                 else
                                     query+="coord_source='original',final_lat='" + String.valueOf(lat) + "',final_lon='" + String.valueOf(lon) + "',";
                             }
@@ -512,40 +516,46 @@ public class CTempOccurrences extends BaseController {
         {
             HashMap report=getRepository().summary(), temp;
             
-            Log.register(log, TypeLog.REGISTER_OK,"FIELD|VALUE|COUNT", false,PREFIX_REPORT,Configuration.getParameter("log_ext_review"));
+            Log.register(log, TypeLog.REGISTER_OK,"FIELD|VALUE|COUNT", false,PREFIX_REPORT_SUMMARY,Configuration.getParameter("log_ext_review"));
             for(Object k1:report.keySet().toArray())
             {
                 temp=(HashMap)report.get(k1.toString());
                 for(Object k2:temp.keySet().toArray())
-                    Log.register(log, TypeLog.REGISTER_OK,k1.toString()+"|" + k2.toString() + "|" + temp.get(k2.toString()), false,PREFIX_REPORT,Configuration.getParameter("log_ext_review"));
+                    Log.register(log, TypeLog.REGISTER_OK,k1.toString()+"|" + k2.toString() + "|" + temp.get(k2.toString()), false,PREFIX_REPORT_SUMMARY,Configuration.getParameter("log_ext_review"));
             }
         }
         catch(Exception ex)
         {
-            Log.register(log, TypeLog.REGISTER_ERROR, ex.toString() , true, PREFIX_REPORT ,Configuration.getParameter("log_ext_review") );
+            Log.register(log, TypeLog.REGISTER_ERROR, ex.toString() , true, PREFIX_REPORT_SUMMARY ,Configuration.getParameter("log_ext_review") );
         }
     }
     
     /**
      * Method that generate a summary of values into table temp
      * @param log path log
+     * @param table table to compare
+     * @param ignore fields to ignore
+     * @param condition condition to filter
      */
     public void reportCompare(String log, String table, String ignore, String condition)
     {
         try
         {
-            HashMap report=getRepository().summary(), temp;
-            Log.register(log, TypeLog.REGISTER_OK,"FIELD|VALUE|TEMPOCCURRENCE|" + table.toUpperCase() + "|DIFF", false,PREFIX_REPORT,Configuration.getParameter("log_ext_review"));
+            HashMap report=getRepository().compare(table, ignore, condition), temp;
+            String line;
+            Log.register(log, TypeLog.REGISTER_OK,"FIELD|VALUE|TEMPOCCURRENCE|" + table.toUpperCase() + "|DIFF", false,PREFIX_REPORT_COMPARE,Configuration.getParameter("log_ext_review"));
             for(Object k1:report.keySet().toArray())
             {
                 temp=(HashMap)report.get(k1.toString());
+                line="";
                 for(Object k2:temp.keySet().toArray())
-                    Log.register(log, TypeLog.REGISTER_OK,k1.toString()+"|" + k2.toString() + "|" + temp.get(k2.toString()), false,PREFIX_REPORT,Configuration.getParameter("log_ext_review"));
+                    line+=temp.get(k2.toString()).toString() + "|";
+                Log.register(log, TypeLog.REGISTER_OK, line, false,PREFIX_REPORT_COMPARE,Configuration.getParameter("log_ext_review"));
             }
         }
         catch(Exception ex)
         {
-            Log.register(log, TypeLog.REGISTER_ERROR, ex.toString() , true, PREFIX_REPORT ,Configuration.getParameter("log_ext_review") );
+            Log.register(log, TypeLog.REGISTER_ERROR, ex.toString() , true, PREFIX_REPORT_COMPARE ,Configuration.getParameter("log_ext_review") );
         }
     }
 }
