@@ -31,7 +31,7 @@ public class FrmReport extends javax.swing.JDialog {
             cboType.addItem(value); 
         fixFields();
         txtCompare.setText(Configuration.getParameter("compare_table_name"));
-        txtIgnore.setText(Configuration.getParameter("compare_fields_ignore"));
+        txtFields.setText(Configuration.getParameter("compare_fields"));
     }
     
     /**
@@ -41,7 +41,7 @@ public class FrmReport extends javax.swing.JDialog {
     {
         txtCompare.setEnabled((TypeReport)cboType.getSelectedItem()==TypeReport.COMPARE_TO);
         txtCondition.setEnabled((TypeReport)cboType.getSelectedItem()==TypeReport.COMPARE_TO);
-        txtIgnore.setEnabled((TypeReport)cboType.getSelectedItem()==TypeReport.COMPARE_TO);
+        txtFields.setEnabled((TypeReport)cboType.getSelectedItem()==TypeReport.COMPARE_TO);
     }
 
     /**
@@ -63,8 +63,8 @@ public class FrmReport extends javax.swing.JDialog {
         cboType = new javax.swing.JComboBox();
         lblCondition = new javax.swing.JLabel();
         txtCondition = new javax.swing.JTextField();
-        lblIgnore = new javax.swing.JLabel();
-        txtIgnore = new javax.swing.JTextField();
+        lblFields = new javax.swing.JLabel();
+        txtFields = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Summary");
@@ -98,7 +98,7 @@ public class FrmReport extends javax.swing.JDialog {
 
         lblCondition.setText("Condition:");
 
-        lblIgnore.setText("Ignore:");
+        lblFields.setText("Fields:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -126,9 +126,9 @@ public class FrmReport extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtCondition))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblIgnore)
+                        .addComponent(lblFields)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtIgnore))
+                        .addComponent(txtFields))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 113, Short.MAX_VALUE)
                         .addComponent(cmdRun, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -153,8 +153,8 @@ public class FrmReport extends javax.swing.JDialog {
                     .addComponent(txtCondition, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblIgnore)
-                    .addComponent(txtIgnore, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(lblFields)
+                    .addComponent(txtFields, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cmdRun)
                 .addContainerGap())
@@ -207,12 +207,12 @@ public class FrmReport extends javax.swing.JDialog {
     private javax.swing.JLabel lblCompare;
     private javax.swing.JLabel lblCondition;
     private javax.swing.JLabel lblDestination;
-    private javax.swing.JLabel lblIgnore;
+    private javax.swing.JLabel lblFields;
     private javax.swing.JLabel lblType;
     private javax.swing.JTextField txtCompare;
     private javax.swing.JTextField txtCondition;
     private javax.swing.JTextField txtDestination;
-    private javax.swing.JTextField txtIgnore;
+    private javax.swing.JTextField txtFields;
     // End of variables declaration//GEN-END:variables
 
     /**
@@ -244,7 +244,7 @@ public class FrmReport extends javax.swing.JDialog {
         return txtCondition.getText();
     }
     
-    public String getIgnore(){
-        return txtIgnore.getText();
+    public String getFields(){
+        return txtFields.getText();
     }
 }

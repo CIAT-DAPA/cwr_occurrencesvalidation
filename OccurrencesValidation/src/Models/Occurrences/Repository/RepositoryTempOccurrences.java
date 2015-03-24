@@ -129,30 +129,28 @@ public class RepositoryTempOccurrences extends BaseRepository {
      * @return HashMap of HashMap's
      * @throws SQLException 
      */
-    public HashMap compare(String tableCompare, String ignore,String condition) throws SQLException{
+    public HashMap compare(String tableCompare, String fields,String condition) throws SQLException{
         HashMap a=new HashMap(), temp;
         String field="";        
-        long temp_occurrences, compare, i=1;
-        //fix parameters
-        ignore=ignore.endsWith(",") ? ignore.substring(0, ignore.length()-1) : ignore;
+        long temp_occurrences, compare, i=1;        
         //List fields
         dbInformationSchema.getResults("Select COLUMN_NAME " +
                                        "From COLUMNS " +
                                        "Where TABLE_NAME = '" + getTable() +"' and Table_schema = '" + Configuration.getParameter("currie_schema_gapanalysis") + "' " +
-                                           (!ignore.equals("") ? "and COLUMN_NAME not in (" + ignore + ")" : "") + ";" );
+                                            "and COLUMN_NAME in (" + fields + ");" );
         MySQL dbCompare=new MySQL(Configuration.getParameter("currie_server"),Configuration.getParameter("currie_schema_gapanalysis"), Configuration.getParameter("currie_user"), Configuration.getParameter("currie_password"));
         while(dbInformationSchema.getRecordSet().next())
-        {
-            temp = new HashMap();
+        {            
             field=dbInformationSchema.getRecordSet().getString("COLUMN_NAME");
-            db.getResults("Select " + field + " " + ", count(*) as count " +
+            db.getResults("Select distinct " + field + " " + ", count(*) as count " +
                           "From " + getTable() + " " +
                           "Group by " + field + " " +
-                          "Order by " + field + ";");
-            temp.put("field", field);
-            System.out.println(field);
+                          "Order by " + field + ";");            
             while(db.getRecordSet().next())
             {
+                temp = new HashMap();  
+                System.out.println(field + " - " + db.getRecordSet().getString(1));
+                temp.put("field", field);                
                 temp.put("value", db.getRecordSet().getString(1));
                 temp_occurrences = db.getRecordSet().getInt(2);
                 temp.put("temp_occurrences", temp_occurrences);
@@ -163,7 +161,7 @@ public class RepositoryTempOccurrences extends BaseRepository {
                 compare = dbCompare.getRecordSet().next() ? dbCompare.getRecordSet().getInt(1) : 0;
                 temp.put("compare", compare);
                 temp.put("difference", temp_occurrences-compare);
-                a.put(i, temp);
+                a.put(String.valueOf(i), temp);
                 i+=1;
             }
         }

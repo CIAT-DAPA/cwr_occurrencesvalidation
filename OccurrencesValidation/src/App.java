@@ -132,7 +132,7 @@ public class App {
                         if(frmReport.getTypeReport()==TypeReport.SUMMARY)
                             cTempOccurrences.reportSummary(frmReport.getDestination());
                         else if(frmReport.getTypeReport()==TypeReport.COMPARE_TO)
-                            cTempOccurrences.reportCompare(frmReport.getDestination(),frmReport.getCompare(),frmReport.getIgnore(),frmReport.getCondition());
+                            cTempOccurrences.reportCompare(frmReport.getDestination(),frmReport.getCompare(),frmReport.getFields(),frmReport.getCondition());
                         message("Summary finished!!!");
                     }
                 }

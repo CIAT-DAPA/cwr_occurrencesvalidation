@@ -49,9 +49,9 @@
                       <Component id="txtCondition" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="lblIgnore" min="-2" max="-2" attributes="0"/>
+                      <Component id="lblFields" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="txtIgnore" max="32767" attributes="0"/>
+                      <Component id="txtFields" max="32767" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace min="0" pref="113" max="32767" attributes="0"/>
@@ -83,8 +83,8 @@
               </Group>
               <EmptySpace pref="18" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="lblIgnore" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="txtIgnore" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="lblFields" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="txtFields" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="cmdRun" min="-2" max="-2" attributes="0"/>
@@ -146,12 +146,12 @@
     </Component>
     <Component class="javax.swing.JTextField" name="txtCondition">
     </Component>
-    <Component class="javax.swing.JLabel" name="lblIgnore">
+    <Component class="javax.swing.JLabel" name="lblFields">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Ignore:"/>
+        <Property name="text" type="java.lang.String" value="Fields:"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="txtIgnore">
+    <Component class="javax.swing.JTextField" name="txtFields">
     </Component>
   </SubComponents>
 </Form>

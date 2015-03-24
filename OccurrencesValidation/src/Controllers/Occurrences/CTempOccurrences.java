@@ -534,27 +534,26 @@ public class CTempOccurrences extends BaseController {
      * Method that generate a summary of values into table temp
      * @param log path log
      * @param table table to compare
-     * @param ignore fields to ignore
+     * @param fields list fields 
      * @param condition condition to filter
      */
-    public void reportCompare(String log, String table, String ignore, String condition)
+    public void reportCompare(String log, String table, String fields, String condition)
     {
         try
         {
-            HashMap report=getRepository().compare(table, ignore, condition), temp;
+            HashMap report=getRepository().compare(table, fields, condition), temp;
             String line;
-            Log.register(log, TypeLog.REGISTER_OK,"FIELD|VALUE|TEMPOCCURRENCE|" + table.toUpperCase() + "|DIFF", false,PREFIX_REPORT_COMPARE,Configuration.getParameter("log_ext_review"));
+            Log.register(log, TypeLog.REGISTER_OK,"FIELD|VALUE|TEMP_OCCURRENCES|" + table.toUpperCase() + "|DIFF", false,PREFIX_REPORT_COMPARE,Configuration.getParameter("log_ext_review"));
             for(Object k1:report.keySet().toArray())
             {
                 temp=(HashMap)report.get(k1.toString());
-                line="";
-                for(Object k2:temp.keySet().toArray())
-                    line+=temp.get(k2.toString()).toString() + "|";
+                line=temp.get("field").toString() + "|" +temp.get("value").toString() + "|" + temp.get("temp_occurrences").toString() + "|"+ temp.get("compare").toString() + "|"+ temp.get("difference").toString();
                 Log.register(log, TypeLog.REGISTER_OK, line, false,PREFIX_REPORT_COMPARE,Configuration.getParameter("log_ext_review"));
             }
         }
         catch(Exception ex)
         {
+            System.out.println(ex);
             Log.register(log, TypeLog.REGISTER_ERROR, ex.toString() , true, PREFIX_REPORT_COMPARE ,Configuration.getParameter("log_ext_review") );
         }
     }
