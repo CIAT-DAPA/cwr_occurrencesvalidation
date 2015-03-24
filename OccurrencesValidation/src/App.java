@@ -131,8 +131,8 @@ public class App {
                         cTempOccurrences=new CTempOccurrences();
                         if(frmReport.getTypeReport()==TypeReport.SUMMARY)
                             cTempOccurrences.reportSummary(frmReport.getDestination());
-                        else
-                            cTempOccurrences.reportCompare(frmReport.getDestination(),);
+                        else if(frmReport.getTypeReport()==TypeReport.COMPARE_TO)
+                            cTempOccurrences.reportCompare(frmReport.getDestination(),frmReport.getCompare(),frmReport.getIgnore(),frmReport.getCondition());
                         message("Summary finished!!!");
                     }
                 }

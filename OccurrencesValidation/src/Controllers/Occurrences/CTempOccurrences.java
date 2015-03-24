@@ -530,12 +530,12 @@ public class CTempOccurrences extends BaseController {
      * Method that generate a summary of values into table temp
      * @param log path log
      */
-    public void reportCompare(String log, String table, String fieldsCompare,String fieldsIgnore)
+    public void reportCompare(String log, String table, String ignore, String condition)
     {
         try
         {
             HashMap report=getRepository().summary(), temp;
-            Log.register(log, TypeLog.REGISTER_OK,"FIELD|VALUE|COUNT", false,PREFIX_REPORT,Configuration.getParameter("log_ext_review"));
+            Log.register(log, TypeLog.REGISTER_OK,"FIELD|VALUE|TEMPOCCURRENCE|" + table.toUpperCase() + "|DIFF", false,PREFIX_REPORT,Configuration.getParameter("log_ext_review"));
             for(Object k1:report.keySet().toArray())
             {
                 temp=(HashMap)report.get(k1.toString());
