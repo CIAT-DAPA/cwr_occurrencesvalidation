@@ -547,7 +547,7 @@ public class CTempOccurrences extends BaseController {
             for(Object k1:report.keySet().toArray())
             {
                 temp=(HashMap)report.get(k1.toString());
-                if(temp.containsKey("field") && temp.containsKey("value")&& temp.containsKey("temp_occurrences")&& temp.containsKey("compare")&& temp.containsKey("difference"))
+                if(temp != null && temp.containsKey("field") && temp.containsKey("value")&& temp.containsKey("temp_occurrences")&& temp.containsKey("compare")&& temp.containsKey("difference"))
                 {
                     line=temp.get("field").toString() + "|" +temp.get("value").toString() + "|" + temp.get("temp_occurrences").toString() + "|"+ temp.get("compare").toString() + "|"+ temp.get("difference").toString();
                     Log.register(log, TypeLog.REGISTER_OK, line, false,PREFIX_REPORT_COMPARE,Configuration.getParameter("log_ext_review"));
