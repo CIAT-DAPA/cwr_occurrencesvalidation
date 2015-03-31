@@ -18,16 +18,15 @@ package Models.Taxonomy.Repository;
 
 import Models.Taxonomy.Source.Taxonstand;
 import Tools.Configuration;
-import com.sun.org.apache.bcel.internal.generic.AALOAD;
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import org.expr.rcaller.RCaller;
+import org.expr.rcaller.RCode;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
-import rcaller.RCaller;
-import rcaller.RCode;
 
 /**
  *
@@ -50,22 +49,15 @@ public class RepositoryTaxonstand {
                 return (Taxonstand)db.get(taxon.trim().replaceAll(" ", "_"));
             RCaller caller = new RCaller();
             caller.setRscriptExecutable(Configuration.getParameter("taxonstand_rscript_path"));
+            caller.redirectROutputToFile("taxon.txt", true);
             RCode code = new RCode();
             code.clear();
             code.addRCode("library(Taxonstand)");
-            code.addRCode("r1 <- " + Configuration.getParameter("taxonstand_function_name") + "(\"" + taxon + "\"" +  Configuration.getParameter("taxonstand_function_parameters") + ")");
-            code.addRCode("r1$Authority<-gsub(\"&\", \"&amp;\", r1$Authority)");
+            code.addRCode("r1 <- " + Configuration.getParameter("taxonstand_function_name") + "(\"" + taxon + "\"" +  Configuration.getParameter("taxonstand_function_parameters") + ")");            
+            code.addRCode("r1$Authority<-gsub(\"&\", \"&amp;\",r1$Authority)");
             caller.setRCode(code);
-            caller.runAndReturnResult("r1");
-            //Xml
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            //load answer of r
-            Document doc = dBuilder.parse( new InputSource(new ByteArrayInputStream(caller.getParser().getXMLFileAsString().getBytes("utf-8"))));
-            //Document doc = dBuilder.parse(caller.getParser().getXMLFile());
-            //doc.getDocumentElement().normalize();
-            NodeList nList = doc.getElementsByTagName("variable");           
-            a=new Taxonstand(nList);
+            caller.runAndReturnResult("r1");                         
+            a=new Taxonstand(caller.getParser().getDocument().getElementsByTagName("variable"));
             db.put(taxon.trim().replaceAll(" ", "_"), a);
         }
         catch (Exception ex)

@@ -55,6 +55,15 @@ public class Taxonstand extends BaseTaxonomy {
         }
     }
     
+    public Taxonstand(String author,String family,String genus,String species,String species2){
+        super();
+        this.author=author;
+        this.family=family;
+        this.genus=genus;
+        this.species=species;
+        this.species2=species2;
+    }
+    
     @Override
     public String toString(){
         return allValues;
