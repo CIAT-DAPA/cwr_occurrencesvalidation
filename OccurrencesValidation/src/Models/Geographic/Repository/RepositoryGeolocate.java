@@ -18,7 +18,7 @@ package Models.Geographic.Repository;
 
 import Models.DataBase.Geocoding.Geolocatesvc;
 import Models.DataBase.Geocoding.GeorefResultSet;
-import Models.Geographic.Source.LocationGeolocate;
+import Models.Geographic.Source.Location;
 
 /**
  *
@@ -36,9 +36,9 @@ public class RepositoryGeolocate {
      * @param locality
      * @return 
      */
-    public static LocationGeolocate georenferencing(String country,String adm1, String adm2, String adm3,String local_area,String locality)
+    public static Location georenferencing(String country,String adm1, String adm2, String adm3,String local_area,String locality)
     {
-        LocationGeolocate a=null;
+        Location a=null;
         boolean f=false, t=true;
         Geolocatesvc client=new Geolocatesvc() ;
         GeorefResultSet result;
@@ -46,10 +46,9 @@ public class RepositoryGeolocate {
             result = client.getGeolocatesvcSoap().georef2(country, adm1, adm2, adm3 + "," + local_area + "," + locality, f, f, f, t, t, f, f, 0);
             if(result.getResultSet().size()>0)
             {
-                a=new LocationGeolocate(result.getResultSet().get(0).getWGS84Coordinate().getLatitude(),
+                a=new Location(result.getResultSet().get(0).getWGS84Coordinate().getLatitude(),
                                         result.getResultSet().get(0).getWGS84Coordinate().getLongitude(),
-                                        Double.parseDouble(result.getResultSet().get(0).getUncertaintyRadiusMeters()),
-                                        Double.parseDouble(result.getResultSet().get(0).getPrecision()));
+                                        Double.parseDouble(result.getResultSet().get(0).getUncertaintyRadiusMeters()));
             }
         }
         catch(Exception ex)
