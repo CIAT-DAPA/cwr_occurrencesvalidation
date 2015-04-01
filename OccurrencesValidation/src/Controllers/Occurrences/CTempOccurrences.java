@@ -375,7 +375,7 @@ public class CTempOccurrences extends BaseController {
                         else{
                             fullAddress=temp_country + "-" + temp_adm1 + "-" + temp_adm2 + "-" + temp_adm3 + "-" + temp_local_area + "-" + temp_locality;
                             review_data+= lGoogle != null ? "0|" + lGoogle.toString() + " Google " + fullAddress +"||" + (lGeolocate==null?"":"\n") :"" ;
-                            review_data+= lGeolocate != null ? (lGoogle==null? "" : entity.getString("id") + "|" ) + "2|" + lGeolocate.toString() + " Geolocate " + fullAddress + "||\n":"";
+                            review_data+= lGeolocate != null ? (lGoogle==null? "" : entity.getString("id") + "|" ) + "2|" + lGeolocate.toString() + " Geolocate " + fullAddress + "||":"";
                         }
                         
                         if(lGoogle != null)
