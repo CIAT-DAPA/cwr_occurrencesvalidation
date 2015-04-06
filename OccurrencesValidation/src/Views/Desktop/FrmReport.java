@@ -39,9 +39,24 @@ public class FrmReport extends javax.swing.JDialog {
      */
     private void fixFields()
     {
-        txtCompare.setEnabled((TypeReport)cboType.getSelectedItem()==TypeReport.COMPARE_TO);
-        txtCondition.setEnabled((TypeReport)cboType.getSelectedItem()==TypeReport.COMPARE_TO);
-        txtFields.setEnabled((TypeReport)cboType.getSelectedItem()==TypeReport.COMPARE_TO);
+        if((TypeReport)cboType.getSelectedItem()==TypeReport.COMPARE_TO)
+        {
+            txtCompare.setEnabled(true);
+            txtCondition.setEnabled(true);
+            txtFields.setEnabled(true);
+        }
+        else if((TypeReport)cboType.getSelectedItem()==TypeReport.SUMMARY)
+        {
+            txtCompare.setEnabled(false);
+            txtCondition.setEnabled(false);
+            txtFields.setEnabled(false);
+        }
+        else if((TypeReport)cboType.getSelectedItem()==TypeReport.COMPARE_GEOGRAPHIC || (TypeReport)cboType.getSelectedItem()==TypeReport.COMPARE_TAXA)
+        {
+            txtCompare.setEnabled(true);
+            txtCondition.setEnabled(true);
+            txtFields.setEnabled(false);
+        }
     }
 
     /**
@@ -110,11 +125,11 @@ public class FrmReport extends javax.swing.JDialog {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lblType)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cboType, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cboType, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(lblDestination)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtDestination)
+                        .addComponent(txtDestination, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cmdLog))
                     .addGroup(layout.createSequentialGroup()
@@ -130,7 +145,7 @@ public class FrmReport extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtFields))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 113, Short.MAX_VALUE)
+                        .addGap(0, 199, Short.MAX_VALUE)
                         .addComponent(cmdRun, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(108, 108, 108)))
                 .addContainerGap())

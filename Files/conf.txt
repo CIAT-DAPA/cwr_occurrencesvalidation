@@ -33,3 +33,7 @@ summary_fields_values=is_hybrid,availability,filename,username,provider_institut
 summary_fields_nulls=final_lat,final_lon,latitude,longitude,latitude_georef,longitude_georef,f_x1_genus,f_x1_rank1,f_x1_rank2,f_x1_sp1,f_x1_sp2,f_x1_sp3,taxon_final,final_country,final_iso2,final_ew,final_ns
 compare_table_name=cwr_occurrences
 compare_fields='final_lat','final_lon','final_country','taxon_final'
+compare_geographic_fields=final_lat,final_lon,final_country
+compare_taxa_fields=taxon_final
+compare_prefix_temporal=t
+compare_prefix_occurrence=o

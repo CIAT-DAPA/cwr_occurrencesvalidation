@@ -16,6 +16,7 @@
 
 package Controllers.Occurrences;
 
+import Controllers.Tools.Reports.TypeReport;
 import Controllers.Tools.Validation.Policy;
 import Controllers.Tools.Validation.TypePolicy;
 import Models.DataBase.BaseUpdate;
@@ -551,6 +552,46 @@ public class CTempOccurrences extends BaseController {
                 {
                     line=temp.get("field").toString() + "|" +temp.get("value").toString() + "|" + temp.get("temp_occurrences").toString() + "|"+ temp.get("compare").toString() + "|"+ temp.get("difference").toString();
                     Log.register(log, TypeLog.REGISTER_OK, line, false,PREFIX_REPORT_COMPARE,Configuration.getParameter("log_ext_review"));
+                }
+            }
+        }
+        catch(Exception ex)
+        {
+            System.out.println(ex);
+            Log.register(log, TypeLog.REGISTER_ERROR, ex.toString() , true, PREFIX_REPORT_COMPARE ,Configuration.getParameter("log_ext_review") );
+        }
+    }
+    
+    /**
+     * Method that generate a summary of values into table temp
+     * @param log path log
+     * @param table table to compare
+     * @param condition condition to filter
+     */
+    public void reportCompareSimple(String log, String table,  String condition, TypeReport type)
+    {
+        try
+        {
+            HashMap report=getRepository().compareSimple(table, condition, type == TypeReport.COMPARE_GEOGRAPHIC ? Configuration.getParameter("compare_geographic_fields") : (type == TypeReport.COMPARE_TAXA ? Configuration.getParameter("compare_taxa_fields") : "")), temp;
+            String line;
+            ArrayList<String> fields=FixData.lineSplit(report.get("COLUMNS").toString(), "|");
+            Log.register(log,TypeLog.REGISTER_OK, report.get("COLUMNS").toString(), false,PREFIX_REPORT_COMPARE + type.toString(),Configuration.getParameter("log_ext_review"));
+            Object[] keys=report.keySet().toArray();
+            long max=keys.length, row=1;
+            for(Object k1:keys)
+            {
+                System.out.println((row/max) + " %");
+                row+=1;
+                if(!k1.toString().equals("COLUMNS"))
+                {
+                    temp=(HashMap)report.get(k1.toString());                
+                    if(temp != null )
+                    {
+                        line = "";
+                        for(int i=0;i<fields.size();i++)
+                            line+=temp.get(fields.get(i)) + "|";
+                        Log.register(log, TypeLog.REGISTER_OK, line, false,PREFIX_REPORT_COMPARE,Configuration.getParameter("log_ext_review"));
+                    }                    
                 }
             }
         }

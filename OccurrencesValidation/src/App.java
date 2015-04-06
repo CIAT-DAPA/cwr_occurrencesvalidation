@@ -133,7 +133,9 @@ public class App {
                             cTempOccurrences.reportSummary(frmReport.getDestination());
                         else if(frmReport.getTypeReport()==TypeReport.COMPARE_TO)
                             cTempOccurrences.reportCompare(frmReport.getDestination(),frmReport.getCompare(),frmReport.getFields(),frmReport.getCondition());
-                        message("Summary finished!!!");
+                        else if(frmReport.getTypeReport()==TypeReport.COMPARE_GEOGRAPHIC || frmReport.getTypeReport()==TypeReport.COMPARE_TAXA)
+                            cTempOccurrences.reportCompareSimple(frmReport.getDestination(),frmReport.getCompare(),frmReport.getCondition(),frmReport.getTypeReport());
+                        message("Report finished!!!");
                     }
                 }
                 frmOpt.setVisible(true);

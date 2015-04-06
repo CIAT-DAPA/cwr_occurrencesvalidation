@@ -18,8 +18,10 @@ package Models.DataBase;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 /**
  *
@@ -248,6 +250,15 @@ public abstract class DBBase
         int affectedRows = this.statement.executeUpdate(this.query);
         this.statement.close();
         return affectedRows;
+    }
+    
+    public ArrayList<String> getColumnNames() throws SQLException
+    {
+        ArrayList<String> fields=new ArrayList<>();
+        ResultSetMetaData rsmd = this.recordSet.getMetaData();
+        for (int i = 1; i <= rsmd.getColumnCount(); i++ ) 
+            fields.add(rsmd.getColumnLabel(i));
+        return fields;
     }
     
 }

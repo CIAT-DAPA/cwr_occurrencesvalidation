@@ -11,7 +11,9 @@ package Controllers.Tools.Reports;
  */
 public enum TypeReport {
     SUMMARY("Summary"),
-    COMPARE_TO("Compare to");
+    COMPARE_TO("Compare to"),
+    COMPARE_GEOGRAPHIC("Compare Geographic"),
+    COMPARE_TAXA("Compare Taxa");
     
     private final String name;       
 

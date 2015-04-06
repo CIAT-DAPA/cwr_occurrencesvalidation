@@ -22,6 +22,7 @@ import Models.Occurrences.Source.TempOccurrences;
 import Tools.Configuration;
 import Tools.FixData;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 
@@ -164,6 +165,37 @@ public class RepositoryTempOccurrences extends BaseRepository {
                 a.put(String.valueOf(i), temp);
                 i+=1;
             }
+        }
+        return a;
+    }
+    
+    /**
+     * Method that genera a special table with information of occurrences
+     * @return HashMap of HashMap's
+     * @throws SQLException 
+     */
+    public HashMap compareSimple(String table,String condition,String detailFields) throws SQLException{
+        HashMap a=new HashMap(), temp;
+        String prefix_temp=Configuration.getParameter("compare_prefix_temporal"),prefix_occurrences=Configuration.getParameter("compare_prefix_occurrence");
+        String listFields=prefix_temp + ".old_id,"; 
+        for(String f : FixData.valueParameterSplit(detailFields))
+            listFields+=prefix_temp + "." + f + " as " + prefix_temp + "_" + f + "," + prefix_occurrences + "." + f + " as " + prefix_occurrences + "_" + f + "," ;
+        listFields=listFields.substring(0,listFields.length()-1);
+        db.getResults("Select " + listFields + " " +
+                                       "From " + getTable() + " as " + prefix_temp + " " +
+                                            "inner join " + table + " as " + prefix_occurrences + " " +
+                                       (condition.equals("") ? "" : "Where " + condition + " ") +
+                                       "Order by " + prefix_temp + ".old_id");
+        ArrayList<String> lastFields=db.getColumnNames();
+        a.put("COLUMNS", FixData.concatenate(lastFields.toArray(new String[lastFields.size()]), "|"));
+        int k=1;
+        while(db.getRecordSet().next())
+        {
+            temp=new HashMap();
+            for(int i=0;i<lastFields.size();i++)
+                temp.put(lastFields.get(i),db.getRecordSet().getString(lastFields.get(i)));
+            a.put(String.valueOf(k), temp);
+            k+=1;
         }
         return a;
     }
