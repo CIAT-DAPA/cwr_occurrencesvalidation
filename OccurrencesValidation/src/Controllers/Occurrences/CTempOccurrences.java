@@ -417,9 +417,11 @@ public class CTempOccurrences extends BaseController {
                                     FixData.prepareUpdate("f_x1_sp3", entity.getString("x1_sp3"), true, true);
                         }
                         else if(taxon_final.equals(taxon_tnrs_final) && !FixData.hideRank(taxon_final).equals(taxon_taxstand_final))
-                            throw new Exception("Traffic light yellow. Taxstand is different. Taxon: " + taxon_final + " Taxstand: " +  taxon_taxstand_final);
+                            throw new Exception("Traffic light yellow. Taxstand is different. Taxon: " + FixData.hideRank(taxon_final) + " Taxstand: " +  taxon_taxstand_final);
                         else if(!taxon_final.equals(taxon_tnrs_final) && FixData.hideRank(taxon_final).equals(taxon_taxstand_final))
                             throw new Exception("Traffic light yellow. TNRS is different. Taxon: " + taxon_final + " TNRS: " +  taxon_tnrs_final);
+                        else if(!FixData.hideRank(taxon_tnrs_final).equals(taxon_taxstand_final))
+                            throw new Exception("Traffic light Orange. Taxonstand and TNRS are different. Taxondstand: " + taxon_taxstand_final + " TNRS: " +  FixData.hideRank(taxon_tnrs_final));
                         else
                             throw new Exception("Traffic light Red. All differents. Taxon: " + taxon_final + " TNRS: " +  taxon_tnrs_final + " Taxstand: " + taxon_taxstand_final);
                     }

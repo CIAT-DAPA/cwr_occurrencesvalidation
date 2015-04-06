@@ -196,6 +196,7 @@ public class RepositoryTempOccurrences extends BaseRepository {
                 temp.put(lastFields.get(i),db.getRecordSet().getString(lastFields.get(i)));
             a.put(String.valueOf(k), temp);
             k+=1;
+            System.out.println(k);
         }
         return a;
     }
