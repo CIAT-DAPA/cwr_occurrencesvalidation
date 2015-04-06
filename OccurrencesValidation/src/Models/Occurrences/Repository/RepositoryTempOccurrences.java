@@ -184,6 +184,7 @@ public class RepositoryTempOccurrences extends BaseRepository {
         db.getResults("Select " + listFields + " " +
                                        "From " + getTable() + " as " + prefix_temp + " " +
                                             "inner join " + table + " as " + prefix_occurrences + " " +
+                                                " on " + prefix_temp + ".old_id=" + prefix_occurrences + ".old_id " +
                                        (condition.equals("") ? "" : "Where " + condition + " ") +
                                        "Order by " + prefix_temp + ".old_id");
         ArrayList<String> lastFields=db.getColumnNames();
@@ -196,7 +197,6 @@ public class RepositoryTempOccurrences extends BaseRepository {
                 temp.put(lastFields.get(i),db.getRecordSet().getString(lastFields.get(i)));
             a.put(String.valueOf(k), temp);
             k+=1;
-            System.out.println(k);
         }
         return a;
     }
