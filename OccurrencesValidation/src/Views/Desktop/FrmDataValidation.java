@@ -332,27 +332,27 @@ public class FrmDataValidation extends javax.swing.JDialog {
                 break;
                 //Step 2: Taxonomy checks part 1
             case 2:
-                setStatusTable(9, 10, true);
+                setStatusTable(9, 11, true);
                 break;
                 //Step 3: Geographic checks part 1
             case 3:
-                setStatusTable(11, 16, true);
+                setStatusTable(12, 17, true);
                 break;
                 //Step 4: Taxonomy checks part 2
             case 4:
-                setStatusTable(17, 17, true);
+                setStatusTable(18, 18, true);
                 break;
                 //Step 5: Taxonomy checks part 3
             case 5:
-                setStatusTable(18, 18, true);
+                setStatusTable(19, 19, true);
                 break;
                 //Step 6: Geographic checks coords
             case 6:
-                setStatusTable(19, 19, true);
+                setStatusTable(20, 20, true);
                 break;
                 //Step 7: Geographic checks georef
             case 7:
-                setStatusTable(20, 20, true);
+                setStatusTable(21, 21, true);
                 break;
             default:
                 break;

@@ -64,7 +64,8 @@ public class RepositoryTempOccurrences extends BaseRepository {
                     "final_iso2, " +
                     "coord_source, " +
                     "latitude_georef,longitude_georef, " +
-                    "comments " +
+                    "comments, " +
+                    "grin_final_taxon " +
                     "From temp_occurrences ");
     }
     

@@ -28,6 +28,7 @@ import Models.Occurrences.Repository.RepositoryTempCountries;
 import Models.Occurrences.Repository.RepositoryTempOccurrences;
 import Models.Occurrences.Source.TempCountries;
 import Models.Occurrences.Source.TempOccurrences;
+import Models.Taxonomy.Repository.RepositoryGRIN;
 import Models.Taxonomy.Repository.RepositoryTNRS;
 import Models.Taxonomy.Repository.RepositoryTaxonstand;
 import Models.Taxonomy.Source.TNRS;
@@ -153,6 +154,7 @@ public class CTempOccurrences extends BaseController {
         String header="Update " + getRepository().getTable() + " set ",footer, query;
         TNRS[] tnrs;
         Taxonstand taxonstand;
+        String grin;
         Location lGoogle,lGeolocate;
         RepositoryTempCountries rTCountries=new RepositoryTempCountries();
         TempCountries country;
@@ -160,7 +162,8 @@ public class CTempOccurrences extends BaseController {
         HashMap googleReverse;
         String fullAddress;
         String value1, value2;
-        String name,taxon_final,taxon_tnrs_final,taxon_taxstand_final;
+        String name,taxon_final,taxon_tnrs_final,taxon_taxstand_final, taxon_grin_final;
+        String[] taxon_grin_split;
         
         RepositoryWaterBody rWater;
         String water;
@@ -175,7 +178,7 @@ public class CTempOccurrences extends BaseController {
         double lat,lon;
         //Headers for log of review data
         if(reviewdata)
-            Log.register(log,TypeLog.REVIEW_DATA, step==2? "id|x1_genus|x1_sp1|x1_rank1|x1_sp2|x1_rank2|x1_sp3|" + RepositoryTNRS.HEADER + RepositoryTaxonstand.HEADER :
+            Log.register(log,TypeLog.REVIEW_DATA, step==2? "id|x1_genus|x1_sp1|x1_rank1|x1_sp2|x1_rank2|x1_sp3|" + RepositoryTNRS.HEADER + RepositoryTaxonstand.HEADER + RepositoryGRIN.HEADER :
                     (step==3 || step==6 || step==7 ? "id|" + RepositoryGoogle.HEADER : ""), false,PREFIX_CROSSCHECK + String.valueOf(step),Configuration.getParameter("log_ext_review"));
         rWater=new RepositoryWaterBody(Configuration.getParameter("geocoding_database_world"));
         countRows=repository.count();
@@ -284,6 +287,24 @@ public class CTempOccurrences extends BaseController {
                                     "taxstand_genus='" + taxonstand.genus + "'," +
                                     "taxstand_sp1='" + taxonstand.species  + "'," +
                                     "taxstand_sp2='" + taxonstand.species2  + "',";
+                        }
+                    }
+                    //Group GRIN
+                    else if(p.getTypePolicy()==TypePolicy.GRIN_QUERY)
+                    {
+                        name=FixData.concatenate(new String[]{entity.getString("x1_genus"),
+                            entity.getString("x1_sp1"),
+                            entity.getString("x1_rank1"),
+                            entity.getString("x1_sp2"),
+                            entity.getString("x1_rank2"),
+                            entity.getString("x1_sp3")},"+");
+                        grin=RepositoryGRIN.get(name,false);
+                        if(grin==null || grin.equals(""))
+                            throw new Exception("Taxon not found in GRIN");
+                        else
+                        {
+                            review_data+=grin+"|";
+                            query+="grin_final_taxon='" + grin.trim().replaceAll(" ", "_") + "',";
                         }
                     }
                     //Group Geocoding
@@ -402,7 +423,21 @@ public class CTempOccurrences extends BaseController {
                             entity.getString("x1_sp3")},"_").toLowerCase();
                         taxon_tnrs_final= entity.getString("tnrs_final_taxon") == null ? "" : FixData.removePatternEnd(entity.getString("tnrs_final_taxon").toLowerCase(),"_");
                         taxon_taxstand_final= entity.getString("taxstand_final_taxon") == null ? "" : FixData.removePatternEnd(entity.getString("taxstand_final_taxon").toLowerCase(),"_");
-                        if(taxon_final.equals(taxon_tnrs_final) && FixData.hideRank(taxon_final).equals(taxon_taxstand_final))
+                        taxon_grin_final = entity.getString("grin_final_taxon") == null ? "" : FixData.removePatternEnd(entity.getString("grin_final_taxon").toLowerCase(),"_");
+                        if(!taxon_grin_final.equals(""))
+                        {
+                            query+= "taxon_final='" + taxon_grin_final + "',";
+                            taxon_grin_split=taxon_grin_final.split("_");
+                            if(taxon_grin_split.length >= 1 && !taxon_grin_split[0].equals(""))
+                                query+=FixData.prepareUpdate("f_x1_genus", FixData.toCapitalLetter(taxon_grin_split[0]) , true, false);
+                            if(taxon_grin_split.length >= 2 && !taxon_grin_split[1].equals(""))
+                                query+=FixData.prepareUpdate("f_x1_sp1", entity.getString("x1_sp1"), true, true);
+                            if(taxon_grin_split.length >= 4  && !taxon_grin_split[3].equals(""))
+                                 query+=FixData.prepareUpdate("f_x1_sp2", taxon_grin_split[3], true, true);
+                            if(taxon_grin_split.length >= 6  && !taxon_grin_split[5].equals(""))
+                                 query+=FixData.prepareUpdate("f_x1_sp3", taxon_grin_split[5], true, true);
+                        }
+                        else if(taxon_final.equals(taxon_tnrs_final) && FixData.hideRank(taxon_final).equals(taxon_taxstand_final) )
                         {
                             query+= "taxon_final='" + FixData.toCapitalLetter(taxon_final) + "',";
                             //4.1
@@ -415,15 +450,15 @@ public class CTempOccurrences extends BaseController {
                                     FixData.prepareUpdate("f_x1_sp1", entity.getString("x1_sp1"), true, true) +
                                     FixData.prepareUpdate("f_x1_sp2", entity.getString("x1_sp2"), true, true) +
                                     FixData.prepareUpdate("f_x1_sp3", entity.getString("x1_sp3"), true, true);
-                        }
+                        }                                                
                         else if(taxon_final.equals(taxon_tnrs_final) && !FixData.hideRank(taxon_final).equals(taxon_taxstand_final))
                             throw new Exception("Traffic light yellow. Taxstand is different. Taxon: " + FixData.hideRank(taxon_final) + " Taxstand: " +  taxon_taxstand_final);
                         else if(!taxon_final.equals(taxon_tnrs_final) && FixData.hideRank(taxon_final).equals(taxon_taxstand_final))
                             throw new Exception("Traffic light yellow. TNRS is different. Taxon: " + taxon_final + " TNRS: " +  taxon_tnrs_final);
-                        else if(!FixData.hideRank(taxon_tnrs_final).equals(taxon_taxstand_final))
-                            throw new Exception("Traffic light Orange. Taxonstand and TNRS are different. Taxondstand: " + taxon_taxstand_final + " TNRS: " +  FixData.hideRank(taxon_tnrs_final));
+                        else if(FixData.hideRank(taxon_tnrs_final).equals(taxon_taxstand_final) && !taxon_final.equals(taxon_tnrs_final))
+                            throw new Exception("Traffic light Orange. Taxonstand and TNRS are equals, but taxon_final is different. Taxondstand: " + taxon_taxstand_final + " TNRS: " +  taxon_tnrs_final + " Taxon final:" + taxon_final);
                         else
-                            throw new Exception("Traffic light Red. All differents. Taxon: " + taxon_final + " TNRS: " +  taxon_tnrs_final + " Taxstand: " + taxon_taxstand_final);
+                            throw new Exception("Traffic light Red. All differents. Taxon: " + taxon_final + " TNRS: " +  taxon_tnrs_final + " Taxstand: " + taxon_taxstand_final + " Grin: " + taxon_grin_final);
                     }
                     //4.6.3
                     else if(p.getTypePolicy()==TypePolicy.POSTCHECK_VALIDATE_TAXON_MANDATORY && (entity.getString("taxon_final") == null || entity.getString("taxon_final").equals("")))
