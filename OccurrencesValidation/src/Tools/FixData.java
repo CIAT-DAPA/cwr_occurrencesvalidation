@@ -229,10 +229,10 @@ public class FixData {
         else
         {
             String r=rank.toLowerCase().trim();
-            return r.equals("ssp") || r.equals("ssp.") || r.equals("subsp-") ? "subsp." :
+            return r.startsWith("subs") || r.equals("ssp") || r.equals("ssp.") || r.equals("subsp-") ? "subsp." :
                     (r.equals("v") || r.equals("v.") || r.equals("var-") ? "var." :
-                    (r.equals("conv") || r.equals("conv.") || r.equals("convar-") ? "convar." :
-                    (r.equals("forma") || r.equals("forma.") || r.equals("for.") || r.equals("f-") ? "f." : "")));
+                    (r.startsWith("conv") || r.equals("conv.") || r.equals("convar-") ? "convar." :
+                    (r.startsWith("for") || r.equals("forma.") || r.equals("for.") || r.equals("f-") ? "f." : "")));
         }
     }
     

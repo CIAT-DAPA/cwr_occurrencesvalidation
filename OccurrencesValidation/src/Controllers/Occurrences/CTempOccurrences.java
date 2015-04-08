@@ -232,12 +232,7 @@ public class CTempOccurrences extends BaseController {
                     //4.4
                     else if(p.getTypePolicy()==TypePolicy.TNRS_QUERY)
                     {
-                        name=FixData.concatenate(new String[]{entity.getString("x1_genus"),
-                            entity.getString("x1_sp1"),
-                            entity.getString("x1_rank1"),
-                            entity.getString("x1_sp2"),
-                            entity.getString("x1_rank2"),
-                            entity.getString("x1_sp3")}," ");
+                        name=generateName(entity);
                         review_data += FixData.getValue(entity.getString("x1_genus")) + "|" +
                                 FixData.getValue(entity.getString("x1_sp1")) + "|" +
                                 FixData.getValue(entity.getString("x1_rank1")) + "|" +
@@ -267,12 +262,7 @@ public class CTempOccurrences extends BaseController {
                     //4.5
                     else if(p.getTypePolicy()==TypePolicy.TAXONDSTAND_QUERY)
                     {
-                        name=FixData.concatenate(new String[]{entity.getString("x1_genus"),
-                            entity.getString("x1_sp1"),
-                            entity.getString("x1_rank1"),
-                            entity.getString("x1_sp2"),
-                            entity.getString("x1_rank2"),
-                            entity.getString("x1_sp3")}," ");
+                        name=generateName(entity);
                         taxonstand=RepositoryTaxonstand.get(name);
                         if(taxonstand==null)
                             throw new Exception("Taxon not found in taxonstand");
@@ -292,12 +282,7 @@ public class CTempOccurrences extends BaseController {
                     //Group GRIN
                     else if(p.getTypePolicy()==TypePolicy.GRIN_QUERY)
                     {
-                        name=FixData.concatenate(new String[]{entity.getString("x1_genus"),
-                            entity.getString("x1_sp1"),
-                            entity.getString("x1_rank1"),
-                            entity.getString("x1_sp2"),
-                            entity.getString("x1_rank2"),
-                            entity.getString("x1_sp3")},"+");
+                        name=generateName(entity);
                         grin=RepositoryGRIN.get(name,false);
                         if(grin==null || grin.equals(""))
                             throw new Exception("Taxon not found in GRIN: " + name);
@@ -540,6 +525,18 @@ public class CTempOccurrences extends BaseController {
             System.out.println(FixData.toPercent(countRows, row) + "% row " + row + " of " + countRows);
         }
         return a;
+    }
+    
+    private String generateName(TempOccurrences entity)
+    {
+        String value1=FixData.validateRank(entity.getString("x1_rank1"));
+        String value2=FixData.validateRank(entity.getString("x1_rank2"));
+        return FixData.concatenate(new String[]{entity.getString("x1_genus"),
+                            entity.getString("x1_sp1"),
+                            value1,
+                            entity.getString("x1_sp2"),
+                            value2,
+                            entity.getString("x1_sp3")}," ");
     }
     
     /**
