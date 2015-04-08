@@ -162,9 +162,7 @@ public class FixData {
      */
     public static String prepareUpdate(String field, String value, boolean removeAccents,boolean lower)
     {
-        if(field== null)
-            return "";
-        else if(value==null)
+        if(field== null || value==null)
             return "";
         else
         {
@@ -349,5 +347,33 @@ public class FixData {
             System.out.println("Error: coord length is not correct");
             return -1;
         }
+    }
+    
+    /**
+     * Method that evaluate if current position is a gap
+     * @param taxon
+     * @param currentPos
+     * @return 
+     */
+    public static String fixGapsInTaxon(String[] taxon,int currentPos,boolean capitalLetter)
+    {
+        String a=null;
+        if(taxon.length > (currentPos + 1))
+        {
+            if(taxon[currentPos].equals("x"))
+                a=(capitalLetter ? FixData.toCapitalLetter(taxon[currentPos]) : taxon[currentPos]) + taxon[currentPos+1];
+            else if(currentPos > 0 && taxon[currentPos-1].equals("x"))
+                a=null;
+            else
+                a=capitalLetter ? FixData.toCapitalLetter(taxon[currentPos]) : taxon[currentPos];
+        }
+        else if(taxon.length == (currentPos + 1))
+        {
+            if(currentPos > 0 && taxon[currentPos-1].equals("x"))
+                a=null;
+            else
+                a=capitalLetter ? FixData.toCapitalLetter(taxon[currentPos]) : taxon[currentPos];
+        }
+        return a;
     }
 }

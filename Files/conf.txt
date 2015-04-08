@@ -25,6 +25,7 @@ geocoding_database_world_table=waterbody
 geocoding_database_world_earth=1
 tnrs_url_base=http://tnrs.iplantc.org/tnrsm-svc/matchNames?
 taxonstand_rscript_path=C:\Program Files\R\R-3.1.2\bin\Rscript.exe
+#taxonstand_rscript_path=/usr/lib64/R/bin/Rscript
 taxonstand_function_name=TPLck
 taxonstand_function_parameters=,corr=TRUE,
 log_ext_review=csv
@@ -34,6 +35,6 @@ summary_fields_nulls=final_lat,final_lon,latitude,longitude,latitude_georef,long
 compare_table_name=cwr_occurrences
 compare_fields='final_lat','final_lon','final_country','taxon_final'
 compare_geographic_fields=final_lat,final_lon,final_country
-compare_taxa_fields=taxon_final
+compare_taxa_fields=taxon_final,f_x1_genus,f_x1_sp1,f_x1_rank1,f_x1_sp2,f_x1_rank2,f_x1_sp3
 compare_prefix_temporal=t
 compare_prefix_occurrence=o

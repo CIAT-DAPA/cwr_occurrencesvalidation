@@ -162,7 +162,7 @@ public class CTempOccurrences extends BaseController {
         HashMap googleReverse;
         String fullAddress;
         String value1, value2;
-        String name,taxon_final,taxon_tnrs_final,taxon_taxstand_final, taxon_grin_final;
+        String name,taxon_temp_final,taxon_tnrs_final,taxon_taxstand_final, taxon_grin_final;
         String[] taxon_grin_split;
         
         RepositoryWaterBody rWater;
@@ -304,7 +304,7 @@ public class CTempOccurrences extends BaseController {
                         else
                         {
                             review_data+=grin+"|";
-                            query+="grin_final_taxon='" + grin.trim().replaceAll(" ", "_") + "',";
+                            query+="grin_final_taxon='" + FixData.toCapitalLetter(grin.trim().replaceAll(" ", "_"))  + "',";
                         }
                     }
                     //Group Geocoding
@@ -415,7 +415,7 @@ public class CTempOccurrences extends BaseController {
                     //4.6
                     else if(p.getTypePolicy()==TypePolicy.POSTCHECK_VALIDATE_TAXON)
                     {
-                        taxon_final=FixData.concatenate(new String[]{entity.getString("x1_genus"),
+                        taxon_temp_final=FixData.concatenate(new String[]{entity.getString("x1_genus"),
                             entity.getString("x1_sp1"),
                             entity.getString("x1_rank1"),
                             entity.getString("x1_sp2"),
@@ -426,20 +426,18 @@ public class CTempOccurrences extends BaseController {
                         taxon_grin_final = entity.getString("grin_final_taxon") == null ? "" : FixData.removePatternEnd(entity.getString("grin_final_taxon").toLowerCase(),"_");
                         if(!taxon_grin_final.equals(""))
                         {
-                            query+= "taxon_final='" + taxon_grin_final + "',";
+                            query+= "taxon_final='" + FixData.toCapitalLetter(taxon_grin_final.replaceAll("_x_", "_x")) + "',";
                             taxon_grin_split=taxon_grin_final.split("_");
-                            if(taxon_grin_split.length >= 1 && !taxon_grin_split[0].equals(""))
-                                query+=FixData.prepareUpdate("f_x1_genus", FixData.toCapitalLetter(taxon_grin_split[0]) , true, false);
-                            if(taxon_grin_split.length >= 2 && !taxon_grin_split[1].equals(""))
-                                query+=FixData.prepareUpdate("f_x1_sp1", entity.getString("x1_sp1"), true, true);
-                            if(taxon_grin_split.length >= 4  && !taxon_grin_split[3].equals(""))
-                                 query+=FixData.prepareUpdate("f_x1_sp2", taxon_grin_split[3], true, true);
-                            if(taxon_grin_split.length >= 6  && !taxon_grin_split[5].equals(""))
-                                 query+=FixData.prepareUpdate("f_x1_sp3", taxon_grin_split[5], true, true);
+                            query += FixData.prepareUpdate("f_x1_genus", FixData.fixGapsInTaxon(taxon_grin_split, 0, true),true, false) +
+                                    FixData.prepareUpdate("f_x1_sp1", FixData.fixGapsInTaxon(taxon_grin_split, 1, false), true, true)+
+                                    FixData.prepareUpdate("f_x1_rank1", FixData.fixGapsInTaxon(taxon_grin_split, 2, false), true, true)+
+                                    FixData.prepareUpdate("f_x1_sp2", FixData.fixGapsInTaxon(taxon_grin_split, 3, false), true, true)+
+                                    FixData.prepareUpdate("f_x1_rank2", FixData.fixGapsInTaxon(taxon_grin_split, 4, false), true, true) +
+                                    FixData.prepareUpdate("f_x1_sp3", FixData.fixGapsInTaxon(taxon_grin_split, 5, false), true, true);
                         }
-                        else if(taxon_final.equals(taxon_tnrs_final) && FixData.hideRank(taxon_final).equals(taxon_taxstand_final) )
+                        else if(taxon_temp_final.equals(taxon_tnrs_final) && FixData.hideRank(taxon_temp_final).equals(taxon_taxstand_final) )
                         {
-                            query+= "taxon_final='" + FixData.toCapitalLetter(taxon_final) + "',";
+                            query+= "taxon_final='" + FixData.toCapitalLetter(taxon_temp_final) + "',";
                             //4.1
                             value1=FixData.validateRank(entity.getString("x1_rank1"));
                             query+=value1==null || value1.equals("") ? "" : "f_x1_rank1='" + value1 + "'";
@@ -451,14 +449,14 @@ public class CTempOccurrences extends BaseController {
                                     FixData.prepareUpdate("f_x1_sp2", entity.getString("x1_sp2"), true, true) +
                                     FixData.prepareUpdate("f_x1_sp3", entity.getString("x1_sp3"), true, true);
                         }                                                
-                        else if(taxon_final.equals(taxon_tnrs_final) && !FixData.hideRank(taxon_final).equals(taxon_taxstand_final))
-                            throw new Exception("Traffic light yellow. Taxstand is different. Taxon: " + FixData.hideRank(taxon_final) + " Taxstand: " +  taxon_taxstand_final);
-                        else if(!taxon_final.equals(taxon_tnrs_final) && FixData.hideRank(taxon_final).equals(taxon_taxstand_final))
-                            throw new Exception("Traffic light yellow. TNRS is different. Taxon: " + taxon_final + " TNRS: " +  taxon_tnrs_final);
-                        else if(FixData.hideRank(taxon_tnrs_final).equals(taxon_taxstand_final) && !taxon_final.equals(taxon_tnrs_final))
-                            throw new Exception("Traffic light Orange. Taxonstand and TNRS are equals, but taxon_final is different. Taxondstand: " + taxon_taxstand_final + " TNRS: " +  taxon_tnrs_final + " Taxon final:" + taxon_final);
+                        else if(taxon_temp_final.equals(taxon_tnrs_final) && !FixData.hideRank(taxon_temp_final).equals(taxon_taxstand_final))
+                            throw new Exception("Traffic light yellow. Taxstand is different. Taxon Temp: " + FixData.hideRank(taxon_temp_final) + " Taxstand: " +  taxon_taxstand_final);
+                        else if(!taxon_temp_final.equals(taxon_tnrs_final) && FixData.hideRank(taxon_temp_final).equals(taxon_taxstand_final))
+                            throw new Exception("Traffic light yellow. TNRS is different. Taxon: " + taxon_temp_final + " TNRS: " +  taxon_tnrs_final);
+                        else if(FixData.hideRank(taxon_tnrs_final).equals(taxon_taxstand_final) && !taxon_temp_final.equals(taxon_tnrs_final))
+                            throw new Exception("Traffic light Orange. Taxonstand and TNRS are equals, but taxon_final is different. Taxondstand: " + taxon_taxstand_final + " TNRS: " +  taxon_tnrs_final + " Taxon Temp:" + taxon_temp_final);
                         else
-                            throw new Exception("Traffic light Red. All differents. Taxon: " + taxon_final + " TNRS: " +  taxon_tnrs_final + " Taxstand: " + taxon_taxstand_final + " Grin: " + taxon_grin_final);
+                            throw new Exception("Traffic light Red. All differents. Taxon: " + taxon_temp_final + " TNRS: " +  taxon_tnrs_final + " Taxstand: " + taxon_taxstand_final + " Grin: " + taxon_grin_final);
                     }
                     //4.6.3
                     else if(p.getTypePolicy()==TypePolicy.POSTCHECK_VALIDATE_TAXON_MANDATORY && (entity.getString("taxon_final") == null || entity.getString("taxon_final").equals("")))
@@ -470,7 +468,7 @@ public class CTempOccurrences extends BaseController {
                             System.out.println("The record has already been crosschecked. coord_source: " + entity.getString("coord_source"));
                         else
                         {
-                            origin=p.getTypePolicy()==TypePolicy.POSTCHECK_GEOCODING_CROSCHECK_COORDS ? true : false;                            
+                            origin=p.getTypePolicy()==TypePolicy.POSTCHECK_GEOCODING_CROSCHECK_COORDS;                            
                             comments = FixData.getValueImaginary(entity.get("comments"));
                             if(origin)
                             {
