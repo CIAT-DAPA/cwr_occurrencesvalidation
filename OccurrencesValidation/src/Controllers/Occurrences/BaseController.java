@@ -26,6 +26,7 @@ import Tools.Configuration;
 import Tools.FixData;
 import Tools.Log;
 import Tools.TypeLog;
+import com.sun.org.apache.bcel.internal.Repository;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -61,7 +62,7 @@ public abstract class BaseController {
     protected long importFile(String filePath, String fileSplit, boolean clean, BaseTable entity, String log, String prefixLog) throws SQLException, Exception{        
         DBFile dbFile=new DBFile(fileSplit, filePath);
         long row=0,errors=0;
-        String line;
+        String line, query;
         ArrayList<String> fields;
         ResultQuery result=null;
         //Load Header
@@ -93,11 +94,16 @@ public abstract class BaseController {
             }
             catch(Exception e)
             {
-                Log.register(log,TypeLog.REGISTER_ERROR,String.valueOf(row) + "|" + e + "|" + line, true,prefixLog,Configuration.getParameter("log_ext_review"));
-                if(result!=null)
-                    Log.register(log,TypeLog.QUERY_ERROR,result.getQuery() + ";", false,prefixLog,Configuration.getParameter("log_ext_sql"));
+                StackTraceElement[] frames = e.getStackTrace();
+                String msgE="";
+                for(StackTraceElement frame : frames)
+                    msgE += frame.getClassName() + "-" + frame.getMethodName() + "-" + String.valueOf(frame.getLineNumber());
+                Log.register(log,TypeLog.REGISTER_ERROR,String.valueOf(row) + "|" + msgE + "|" + e + "|" + line, true,prefixLog,Configuration.getParameter("log_ext_review"));
+                query=result!=null?result.getQuery():(repository != null && !repository.getQuery(false).equals("") ? repository.getQuery(false):"");
+                if(query != null && !query.equals(""))
+                    Log.register(log,TypeLog.QUERY_ERROR,query + ";", false,prefixLog,Configuration.getParameter("log_ext_sql"));
                 errors+=1;
-                System.out.println("Error register: " + row + " " + e);
+                System.out.println("Error register: " + row + " " + e + " " + query);
             }
         }
         System.out.println("End process");

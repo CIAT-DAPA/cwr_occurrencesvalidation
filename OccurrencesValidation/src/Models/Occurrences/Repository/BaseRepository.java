@@ -55,6 +55,16 @@ public abstract class BaseRepository {
     }
     
     /**
+     * Method that return the query executed
+     * @param number True if you want get query from schema, otherwise false
+     * @return 
+     */
+    public String getQuery(boolean schema)
+    {
+        return schema ? db.getQuery() : dbInformationSchema.getQuery();
+    }
+    
+    /**
      * Method that execute a query into database
      * @param query query to execute
      * @return number rows affected
@@ -107,7 +117,7 @@ public abstract class BaseRepository {
         {
             fields+=f + ",";
             temp=entity.get(f);
-            values += temp == null ? "null," : "'" + temp.toString().trim() + "',";
+            values += temp == null || temp.toString().equals("NULL") || temp.toString().equals("null") ? "null," : "'" + temp.toString().trim() + "',";
         }
         query+=fields.substring(0, fields.length()-1) + ") values (";
         query+=values.substring(0, values.length()-1) + ")";
