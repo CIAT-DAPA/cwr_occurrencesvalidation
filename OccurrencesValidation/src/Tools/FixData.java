@@ -206,8 +206,18 @@ public class FixData {
      */
     public static String[] valueParameterSplit(String line)
     {
-        String[] values=line.split(","); 
-        if(line.endsWith(","))
+        return valueParameterSplit(line,",");
+    }
+    
+    /**
+     * Method that return all real values for parameters
+     * @param line
+     * @return 
+     */
+    public static String[] valueParameterSplit(String line, String pattern)
+    {
+        String[] values=line.split(pattern); 
+        if(line.endsWith(pattern))
         {
             values=Arrays.copyOf(values, values.length+1);
             values[values.length-1]="";

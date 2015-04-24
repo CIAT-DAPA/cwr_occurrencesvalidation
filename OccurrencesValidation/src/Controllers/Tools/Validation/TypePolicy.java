@@ -22,25 +22,23 @@ package Controllers.Tools.Validation;
  */
 public enum TypePolicy {
     CHECK_FIELDS_MANDATORY,                         //0
-    CHECK_AVAILABILITY,                             //1
-    CHECK_SOURCE,                                   //2
-    CHECK_CULT,                                     //3    
-    CHECK_ORIGIN_STAT,                              //4
-    CHECK_IS_HYBRID,                                //5
-    CORRECT_DEPENDENCE_SOURCE_AVAILABILITY,         //6    
-    FINAL_CULT,                                     //7
-    FINAL_ORIGIN,                                   //8
-    TNRS_QUERY,                                     //9    
-    TAXONDSTAND_QUERY,                              //10
-    GRIN_QUERY,                                     //11
-    GEOCODING_VALIDATE_COUNTRY,                     //12
-    GEOCODING_VALIDATE_ISO2,                        //13
-    GEOCODING_VALIDATE_COORDS_GRADS,                //14
-    GEOCODING_VALIDATE_NS_EW,                       //15
-    GEOCODING_VALIDATE_COORDS_LAT_LON,              //16    
-    GEOCODING_INITIAL,                              //17
-    POSTCHECK_VALIDATE_TAXON,                       //18    
-    POSTCHECK_VALIDATE_TAXON_MANDATORY,             //19
-    POSTCHECK_GEOCODING_CROSCHECK_COORDS,           //20
-    POSTCHECK_GEOCODING_CROSCHECK_GEOREF,           //21
+    CHECK_CONTENT,                                  //1
+    CORRECT_DEPENDENCE_SOURCE_AVAILABILITY,         //2    
+    FINAL_CULT,                                     //3
+    COMPARE_ORIGIN_STAT,                            //4
+    TNRS_QUERY,                                     //5    
+    TAXONDSTAND_QUERY,                              //6
+    GRIN_QUERY,                                     //7
+    GEOCODING_VALIDATE_COUNTRY,                     //8
+    GEOCODING_VALIDATE_ISO2,                        //9
+    GEOCODING_VALIDATE_COORDS_GRADS,                //10
+    GEOCODING_VALIDATE_NS_EW,                       //11
+    GEOCODING_VALIDATE_COORDS_LAT_LON,              //12  
+    GEOCODING_INITIAL,                              //13
+    STABLISH_ORIGIN_STAT,                           //14
+    POSTCHECK_VALIDATE_TAXON,                       //15    
+    POSTCHECK_VALIDATE_TAXON_MANDATORY,             //16
+    POSTCHECK_GEOCODING_CROSCHECK_COORDS,           //17
+    POSTCHECK_GEOCODING_CROSCHECK_GEOREF,           //18
+    POSTCHECK_ORIGIN_STAT,                          //19
 }

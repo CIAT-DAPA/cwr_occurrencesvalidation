@@ -56,11 +56,9 @@ public class CTempOccurrences extends BaseController {
     private final String PREFIX_UPDATE_QUERY = "TO_UPDATE_QUERY_";
     /*Members Class*/
     private String[] FIELDS_MANDATORY;
-    private String[] CONTENT_AVAILABILITY;
-    private String[] CONTENT_SOURCE;
+    private String[] FIELDS_CONTENT;
     private String[] CONTENT_CULT;
     private String[] CONTENT_ORIGIN;
-    private String[] CONTENT_HYBRID;
     private String[] GEO_NS;
     private String[] GEO_EW;
     private String REGEXP_COORDS;
@@ -81,11 +79,7 @@ public class CTempOccurrences extends BaseController {
     public CTempOccurrences() {
         super(new RepositoryTempOccurrences());
         FIELDS_MANDATORY=FixData.valueParameterSplit(Configuration.getParameter("validation_fields_mandatory"));
-        CONTENT_AVAILABILITY=FixData.valueParameterSplit(Configuration.getParameter("validation_content_availability"));
-        CONTENT_SOURCE=FixData.valueParameterSplit(Configuration.getParameter("validation_content_source"));
-        CONTENT_CULT=FixData.valueParameterSplit(Configuration.getParameter("validation_content_cult"));
-        CONTENT_ORIGIN=FixData.valueParameterSplit(Configuration.getParameter("validation_content_origin"));
-        CONTENT_HYBRID=FixData.valueParameterSplit(Configuration.getParameter("validation_content_hybrid"));
+        FIELDS_CONTENT=FixData.valueParameterSplit(Configuration.getParameter("validation_fields_content"),"|");        
         GEO_NS=FixData.valueParameterSplit(Configuration.getParameter("validation_content_ns"));
         GEO_EW=FixData.valueParameterSplit(Configuration.getParameter("validation_content_ew"));
         REGEXP_COORDS=Configuration.getParameter("validation_content_regexp_coords");
@@ -152,6 +146,7 @@ public class CTempOccurrences extends BaseController {
     public long crossCheck(int step,ArrayList<Policy> policies, String log, boolean reviewdata) throws SQLException{
         int a=0;
         String header="Update " + getRepository().getTable() + " set ",footer, query;
+        String content_field,content_error;
         TNRS[] tnrs;
         Taxonstand taxonstand;
         String grin;
@@ -202,21 +197,19 @@ public class CTempOccurrences extends BaseController {
                                 throw new Exception(f + " is mandatory");
                         }
                     }
-                    //3.2
-                    else if(p.getTypePolicy()==TypePolicy.CHECK_AVAILABILITY && !FixData.containsValue(entity.getString("availability"), FixData.toArrayList(CONTENT_AVAILABILITY)))
-                        throw new Exception("Availability not correct: " + entity.getString("availability"));
-                    //3.3
-                    else if(p.getTypePolicy()==TypePolicy.CHECK_SOURCE && !FixData.containsValue(entity.getString("source"), FixData.toArrayList(CONTENT_SOURCE)))
-                        throw new Exception("Source not correct: " + entity.getString("source"));
-                    //3.4
-                    else if(p.getTypePolicy()==TypePolicy.CHECK_CULT && !FixData.containsValue(entity.getString("cult_stat"), FixData.toArrayList(CONTENT_CULT)))
-                        throw new Exception("Cult stat not correct: " + entity.getString("cult_stat"));
-                    //3.5
-                    else if(p.getTypePolicy()==TypePolicy.CHECK_ORIGIN_STAT && !FixData.containsValue(entity.getString("origin_stat"), FixData.toArrayList(CONTENT_ORIGIN)))
-                        throw new Exception("Origin stat not correct: " + entity.getString("origin_stat"));
-                    //3.6
-                    else if(p.getTypePolicy()==TypePolicy.CHECK_IS_HYBRID && !FixData.containsValue(entity.getString("is_hybrid"), FixData.toArrayList(CONTENT_HYBRID)))
-                        throw new Exception("Is hybrid not correct: " + entity.getString("is_hybrid"));
+                    //3.2, 3.3, 3.4, 3.5, 3.6
+                    else if(p.getTypePolicy()==TypePolicy.CHECK_CONTENT)
+                    {
+                        content_error="";
+                        for(String list_field:FIELDS_CONTENT)
+                        {
+                            content_field=list_field.split("@")[0];
+                            if(!FixData.containsValue(entity.getString(content_field), FixData.toArrayList(list_field.split("@")[1].split(","))))
+                                content_error += content_field + " not correct: " + FixData.getValue(entity.get(content_field)) + ",";
+                        }
+                        if(!content_error.equals(""))
+                            throw new Exception("Errors: " + content_error);
+                    }
                     //Group Correct
                     //3.3
                     else if(p.getTypePolicy()==TypePolicy.CORRECT_DEPENDENCE_SOURCE_AVAILABILITY && entity.getString("availability") != null && FixData.containsValue(entity.getString("availability"), FixData.toArrayList(new String[]{"0"})) && FixData.containsValue(entity.getString("source"), FixData.toArrayList(new String[]{"H"})))
@@ -226,8 +219,10 @@ public class CTempOccurrences extends BaseController {
                     else if(p.getTypePolicy()==TypePolicy.FINAL_CULT)
                         query+= "final_cult_stat=" + ((entity.getString("cult_stat") != null && FixData.containsValue(entity.getString("cult_stat"), FixData.toArrayList(CONTENT_CULT))) ? "'" + entity.getString("cult_stat") + "'" : "null" ) + ",";
                     //3.5
-                    else if(p.getTypePolicy()==TypePolicy.FINAL_ORIGIN)
+                    else if(p.getTypePolicy()==TypePolicy.COMPARE_ORIGIN_STAT){
+                        //Aquiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
                         query+= "final_origin_stat=" + ((entity.getString("origin_stat") != null && FixData.containsValue(entity.getString("origin_stat"), FixData.toArrayList(CONTENT_ORIGIN))) ? "'" + FixData.translate(1, entity.getString("origin_stat"))  + "'" : "null" ) + ",";
+                    }
                     //Group TNRS
                     //4.4
                     else if(p.getTypePolicy()==TypePolicy.TNRS_QUERY)
