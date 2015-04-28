@@ -129,7 +129,7 @@ public class FrmDataValidation extends javax.swing.JDialog {
 
         lblStep.setText("Step:");
 
-        cboStep.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Step 0: Custom", "Step 1: Cross check data", "Step 2: Taxonomy checks part 1", "Step 3: Geographic checks part 1", "Step 4: Taxonomy checks part 2", "Step 5: Taxonomy checks part 3", "Step 6: Geographic checks coords", "Step 7: Geographic checks georef" }));
+        cboStep.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Step 0: Custom", "Step 1: Cross check data", "Step 2: Taxonomy checks part 1", "Step 3: Geographic checks part 1", "Step 4: Taxonomy checks part 2", "Step 5: Taxonomy checks part 3", "Step 6: Geographic checks coords", "Step 7: Geographic checks georef", "Step 8: Compare origin stat " }));
         cboStep.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cboStepActionPerformed(evt);
@@ -328,30 +328,34 @@ public class FrmDataValidation extends javax.swing.JDialog {
         {
             //Step 1: Cross check data
             case 1:
-                setStatusTable(0, 4, true);
+                setStatusTable(0, 3, true);
                 break;
-                //Step 2: Taxonomy checks part 1
+            //Step 2: Taxonomy checks part 1
             case 2:
-                setStatusTable(5, 7, true);
+                setStatusTable(4, 6, true);
                 break;
-                //Step 3: Geographic checks part 1
+            //Step 3: Geographic checks part 1
             case 3:
-                setStatusTable(8, 13, true);
+                setStatusTable(7, 12, true);
                 break;
-                //Step 4: Taxonomy checks part 2
+            //Step 4: Taxonomy checks part 2
             case 4:
+                setStatusTable(13, 13, true);
+                break;
+            //Step 5: Taxonomy checks part 3
+            case 5:
                 setStatusTable(14, 14, true);
                 break;
-                //Step 5: Taxonomy checks part 3
-            case 5:
+            //Step 6: Geographic checks coords
+            case 6:
                 setStatusTable(15, 15, true);
                 break;
-                //Step 6: Geographic checks coords
-            case 6:
+            //Step 7: Geographic checks georef
+            case 7:
                 setStatusTable(16, 16, true);
                 break;
-                //Step 7: Geographic checks georef
-            case 7:
+            //Step 8: Geographic checks georef
+            case 8:
                 setStatusTable(17, 17, true);
                 break;
             default:

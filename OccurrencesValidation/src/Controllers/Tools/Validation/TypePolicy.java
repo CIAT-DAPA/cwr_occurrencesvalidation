@@ -24,21 +24,19 @@ public enum TypePolicy {
     CHECK_FIELDS_MANDATORY,                         //0
     CHECK_CONTENT,                                  //1
     CORRECT_DEPENDENCE_SOURCE_AVAILABILITY,         //2    
-    FINAL_CULT,                                     //3
-    COMPARE_ORIGIN_STAT,                            //4
-    TNRS_QUERY,                                     //5    
-    TAXONDSTAND_QUERY,                              //6
-    GRIN_QUERY,                                     //7
-    GEOCODING_VALIDATE_COUNTRY,                     //8
-    GEOCODING_VALIDATE_ISO2,                        //9
-    GEOCODING_VALIDATE_COORDS_GRADS,                //10
-    GEOCODING_VALIDATE_NS_EW,                       //11
-    GEOCODING_VALIDATE_COORDS_LAT_LON,              //12  
-    GEOCODING_INITIAL,                              //13
-    STABLISH_ORIGIN_STAT,                           //14
-    POSTCHECK_VALIDATE_TAXON,                       //15    
-    POSTCHECK_VALIDATE_TAXON_MANDATORY,             //16
-    POSTCHECK_GEOCODING_CROSCHECK_COORDS,           //17
-    POSTCHECK_GEOCODING_CROSCHECK_GEOREF,           //18
-    POSTCHECK_ORIGIN_STAT,                          //19
+    FINAL_CULT,                                     //3    
+    TNRS_QUERY,                                     //4    
+    TAXONDSTAND_QUERY,                              //5
+    GRIN_QUERY,                                     //6
+    GEOCODING_VALIDATE_COUNTRY,                     //7
+    GEOCODING_VALIDATE_ISO2,                        //8
+    GEOCODING_VALIDATE_COORDS_GRADS,                //9
+    GEOCODING_VALIDATE_NS_EW,                       //10
+    GEOCODING_VALIDATE_COORDS_LAT_LON,              //11  
+    GEOCODING_INITIAL,                              //12
+    POSTCHECK_VALIDATE_TAXON,                       //13    
+    POSTCHECK_VALIDATE_TAXON_MANDATORY,             //14
+    POSTCHECK_GEOCODING_CROSCHECK_COORDS,           //15
+    POSTCHECK_GEOCODING_CROSCHECK_GEOREF,           //16
+    POSTCHECK_ORIGIN_STAT,                          //17
 }

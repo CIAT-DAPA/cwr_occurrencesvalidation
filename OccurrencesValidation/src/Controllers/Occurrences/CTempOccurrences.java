@@ -19,6 +19,8 @@ package Controllers.Occurrences;
 import Controllers.Tools.Reports.TypeReport;
 import Controllers.Tools.Validation.Policy;
 import Controllers.Tools.Validation.TypePolicy;
+import Models.Complements.Repository.RepositoryOriginStatDistribution;
+import Models.Complements.Source.OriginStatDistribution;
 import Models.DataBase.BaseUpdate;
 import Models.Geographic.Repository.RepositoryWaterBody;
 import Models.Geographic.Repository.RepositoryGeolocate;
@@ -171,6 +173,10 @@ public class CTempOccurrences extends BaseController {
         
         boolean origin;
         double lat,lon;
+        
+        ArrayList<OriginStatDistribution> origin_stat;
+        boolean origin_stat_found;
+        String origin_stat_value;
         //Headers for log of review data
         if(reviewdata)
             Log.register(log,TypeLog.REVIEW_DATA, step==2? "id|x1_genus|x1_sp1|x1_rank1|x1_sp2|x1_rank2|x1_sp3|" + RepositoryTNRS.HEADER + RepositoryTaxonstand.HEADER + RepositoryGRIN.HEADER :
@@ -217,12 +223,7 @@ public class CTempOccurrences extends BaseController {
                     //Group Check Part 2
                     //3.4
                     else if(p.getTypePolicy()==TypePolicy.FINAL_CULT)
-                        query+= "final_cult_stat=" + ((entity.getString("cult_stat") != null && FixData.containsValue(entity.getString("cult_stat"), FixData.toArrayList(CONTENT_CULT))) ? "'" + entity.getString("cult_stat") + "'" : "null" ) + ",";
-                    //3.5
-                    else if(p.getTypePolicy()==TypePolicy.COMPARE_ORIGIN_STAT){
-                        //Aquiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii
-                        query+= "final_origin_stat=" + ((entity.getString("origin_stat") != null && FixData.containsValue(entity.getString("origin_stat"), FixData.toArrayList(CONTENT_ORIGIN))) ? "'" + FixData.translate(1, entity.getString("origin_stat"))  + "'" : "null" ) + ",";
-                    }
+                        query+= "final_cult_stat=" + ((entity.getString("cult_stat") != null && FixData.containsValue(entity.getString("cult_stat"), FixData.toArrayList(CONTENT_CULT))) ? "'" + entity.getString("cult_stat") + "'" : "null" ) + ",";                    
                     //Group TNRS
                     //4.4
                     else if(p.getTypePolicy()==TypePolicy.TNRS_QUERY)
@@ -492,6 +493,38 @@ public class CTempOccurrences extends BaseController {
                             else
                                 throw new Exception("Erro. " + water);
                         }
+                    }
+                    else if(p.getTypePolicy()==TypePolicy.POSTCHECK_ORIGIN_STAT)
+                    {
+                        if(FixData.getValueImaginary(entity.get("final_iso2")).equals(""))
+                            throw new Exception("The occurrence don't has final_iso2");
+                        else if(FixData.getValueImaginary(entity.get("taxon_final")).equals(""))
+                            throw new Exception("The occurrence don't has taxon_final");
+                        origin_stat=RepositoryOriginStatDistribution.get(entity.getString("taxon_final"), entity.getString("final_iso2"));
+                        origin_stat_value="";
+                        origin_stat_found=false;
+                        for(OriginStatDistribution os:origin_stat)
+                        {
+                            origin_stat_value=os.getType();
+                            if(os.getType().toLowerCase().trim().equals(Configuration.getParameter("origin_stat_native")))
+                            {
+                                query+= "final_origin_stat='" + FixData.translate(1, entity.getString("origin_stat"))  + "',";
+                                origin_stat_found=true;
+                                break;
+                            }
+                        }
+                        //validation to value searched
+                        if(!origin_stat_value.equals(""))
+                            query+= "origin_stat_inv='" + origin_stat_value  + "',";
+                        //validation to final field
+                        if(entity.getString("origin_stat") != null && FixData.containsValue(entity.getString("origin_stat"), FixData.toArrayList(CONTENT_ORIGIN)))
+                            query+= "final_origin_stat='" + FixData.translate(1, entity.getString("origin_stat"))  + "',";
+                        else if(origin_stat_found)
+                            query+= "final_origin_stat='" + origin_stat_value  + "',";
+                        else if(!origin_stat_found && !origin_stat_value.equals(""))
+                            query+= "final_origin_stat='" + Configuration.getParameter("origin_stat_non-native")  + "',";
+                        else
+                            throw new Exception("Not found value for field final_origin_stat. Values: Origin=" + FixData.getValue(entity.get("origin_stat")) + " Search=" + origin_stat_value);
                     }
                 }
                 catch(Exception e)
