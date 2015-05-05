@@ -81,10 +81,11 @@ public class CTempOccurrences extends BaseController {
     public CTempOccurrences() {
         super(new RepositoryTempOccurrences());
         FIELDS_MANDATORY=FixData.valueParameterSplit(Configuration.getParameter("validation_fields_mandatory"));
-        FIELDS_CONTENT=FixData.valueParameterSplit(Configuration.getParameter("validation_fields_content"),"|");        
+        FIELDS_CONTENT=FixData.valueParameterSplit(Configuration.getParameter("validation_fields_content"),"\\|");        
         GEO_NS=FixData.valueParameterSplit(Configuration.getParameter("validation_content_ns"));
         GEO_EW=FixData.valueParameterSplit(Configuration.getParameter("validation_content_ew"));
         REGEXP_COORDS=Configuration.getParameter("validation_content_regexp_coords");
+        CONTENT_CULT=FixData.valueParameterSplit(Configuration.getParameter("validation_content_cult"));
     }
     
     /**
