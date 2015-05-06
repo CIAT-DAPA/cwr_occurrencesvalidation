@@ -33,7 +33,7 @@ public class RepositoryOriginStatDistribution {
             SQLite db=new SQLite(Configuration.getParameter("origin_stat_database"));
             db.getResults("Select scientific_name,country,type " +
                           "From " + Configuration.getParameter("origin_stat_database_table") + " " +
-                          "Where scientific_name = '" +  scientific_name +"' and country='" + country +"'");
+                          "Where scientific_name = '" +  scientific_name.replaceAll("_", " ") +"' and country='" + country +"'");
             ArrayList<OriginStatDistribution> temp=new ArrayList<>();
             while(db.getRecordSet().next())
                 temp.add(new OriginStatDistribution(db.getRecordSet().getString("scientific_name"), db.getRecordSet().getString("country"), db.getRecordSet().getString("type")));

@@ -504,12 +504,13 @@ public class CTempOccurrences extends BaseController {
                         origin_stat=RepositoryOriginStatDistribution.get(entity.getString("taxon_final"), entity.getString("final_iso2"));
                         origin_stat_value="";
                         origin_stat_found=false;
+                        //Search for origin_stat_inv
                         for(OriginStatDistribution os:origin_stat)
                         {
                             origin_stat_value=os.getType();
                             if(os.getType().toLowerCase().trim().equals(Configuration.getParameter("origin_stat_native")))
                             {
-                                query+= "final_origin_stat='" + FixData.translate(1, entity.getString("origin_stat"))  + "',";
+                                //query+= "final_origin_stat='" + FixData.translate(1, entity.getString("origin_stat"))  + "',";
                                 origin_stat_found=true;
                                 break;
                             }
