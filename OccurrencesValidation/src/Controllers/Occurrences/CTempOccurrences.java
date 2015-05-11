@@ -541,14 +541,16 @@ public class CTempOccurrences extends BaseController {
                         origin_stat_value="";
                         origin_stat_found=false;
                         //Search for origin_stat_inv
-                        for(OriginStatDistribution os:origin_stat)
+                        if(origin_stat != null)
                         {
-                            origin_stat_value=os.getType();
-                            if(os.getType().toLowerCase().trim().equals(Configuration.getParameter("origin_stat_native")))
+                            for(OriginStatDistribution os:origin_stat)
                             {
-                                //query+= "final_origin_stat='" + FixData.translate(1, entity.getString("origin_stat"))  + "',";
-                                origin_stat_found=true;
-                                break;
+                                origin_stat_value=os.getType();
+                                if(os.getType().toLowerCase().trim().equals(Configuration.getParameter("origin_stat_native")))
+                                {
+                                    origin_stat_found=true;
+                                    break;
+                                }
                             }
                         }
                         //validation to value searched
