@@ -300,7 +300,7 @@ public class CTempOccurrences extends BaseController {
                             if(country == null)
                             {
                                 googleReverse=RepositoryGoogle.reverse(entity.getDouble("latitude"), entity.getDouble("longitude"));
-                                if(googleReverse == null || !googleReverse.get("status").toString().equals("OK"))
+                                if(googleReverse != null || googleReverse.get("status").toString().equals("OK"))
                                 {
                                     query+="country='" + googleReverse.get("country").toString() + "'," +
                                             "iso='" + googleReverse.get("iso").toString() + "',";
@@ -329,7 +329,7 @@ public class CTempOccurrences extends BaseController {
                             if(country == null)
                             {
                                 googleReverse=RepositoryGoogle.reverse(entity.getDouble("latitude"), entity.getDouble("longitude"));
-                                if(googleReverse == null || !googleReverse.get("status").toString().equals("OK"))
+                                if(googleReverse != null || googleReverse.get("status").toString().equals("OK"))
                                 {
                                     query+="country='" + googleReverse.get("country").toString() + "'," +
                                             "iso='" + googleReverse.get("iso").toString() + "',";
