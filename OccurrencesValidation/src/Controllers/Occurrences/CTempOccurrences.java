@@ -599,12 +599,12 @@ public class CTempOccurrences extends BaseController {
     {
         String value1=FixData.validateRank(entity.getString("x1_rank1"));
         String value2=FixData.validateRank(entity.getString("x1_rank2"));
-        return FixData.concatenate(new String[]{entity.getString("x1_genus"),
+        return FixData.toCapitalLetter(FixData.concatenate(new String[]{entity.getString("x1_genus"),
                             entity.getString("x1_sp1"),
                             value1,
                             entity.getString("x1_sp2"),
                             value2,
-                            entity.getString("x1_sp3")}," ");
+                            entity.getString("x1_sp3")}," "));
     }
     
     /**
