@@ -298,7 +298,21 @@ public class CTempOccurrences extends BaseController {
                         {
                             country=rTCountries.searchByName(entity.getString("country"));
                             if(country == null)
-                                throw new Exception("Country not found for country: iso=" + (entity.getString("iso") == null ? "null" : entity.getString("iso")) + " country=" + (entity.getString("country") == null ? "null" : entity.getString("country")));
+                            {
+                                googleReverse=RepositoryGoogle.reverse(entity.getDouble("latitude"), entity.getDouble("longitude"));
+                                if(googleReverse == null || !googleReverse.get("status").toString().equals("OK"))
+                                {
+                                    query+="country='" + googleReverse.get("country").toString() + "'," +
+                                            "iso='" + googleReverse.get("iso").toString() + "',";
+                                    country=rTCountries.searchByName(googleReverse.get("country").toString());
+                                    if(country != null)
+                                        query+="final_country='" +country.getString("name") + "',";
+                                    else
+                                        throw new Exception("Country not found for country: name=" + googleReverse.get("country").toString() + " original=" +  FixData.getValue(entity.get("country")));
+                                }
+                                else
+                                    throw new Exception("Country not found for country: iso=" + FixData.getValue(entity.get("iso")) + " country=" + FixData.getValue(entity.get("country")));
+                            }
                             else
                                 query+="final_country='" +country.getString("name") + "',";
                         }
@@ -313,7 +327,21 @@ public class CTempOccurrences extends BaseController {
                         {
                             country=rTCountries.searchByName(entity.getString("country"));
                             if(country == null)
-                                throw new Exception("Country not found for final_iso: iso=" + (entity.getString("iso") == null ? "null" : entity.getString("iso")) + " country=" + (entity.getString("country") == null ? "null" : entity.getString("country")));
+                            {
+                                googleReverse=RepositoryGoogle.reverse(entity.getDouble("latitude"), entity.getDouble("longitude"));
+                                if(googleReverse == null || !googleReverse.get("status").toString().equals("OK"))
+                                {
+                                    query+="country='" + googleReverse.get("country").toString() + "'," +
+                                            "iso='" + googleReverse.get("iso").toString() + "',";
+                                    country=rTCountries.searchByName(googleReverse.get("country").toString());
+                                    if(country != null)
+                                        query+="final_iso2='" +country.getString("iso2") + "',";
+                                    else
+                                        throw new Exception("ISO 2 not found for country: name=" + googleReverse.get("country").toString() + " original=" +  FixData.getValue(entity.get("country")));
+                                }
+                                else
+                                    throw new Exception("ISO 2 not found for country: iso=" + FixData.getValue(entity.get("iso")) + " country=" + FixData.getValue(entity.get("country")));
+                            }
                             else
                                 query+="final_iso2='" +country.getString("iso2") + "',";
                         }
