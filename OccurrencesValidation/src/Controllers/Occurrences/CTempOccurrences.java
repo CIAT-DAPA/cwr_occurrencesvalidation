@@ -178,6 +178,8 @@ public class CTempOccurrences extends BaseController {
         ArrayList<OriginStatDistribution> origin_stat;
         boolean origin_stat_found;
         String origin_stat_value;
+        
+        String countryTempGeoref;
         //Headers for log of review data
         if(reviewdata)
             Log.register(log,TypeLog.REVIEW_DATA, step==2? "id|x1_genus|x1_sp1|x1_rank1|x1_sp2|x1_rank2|x1_sp3|" + RepositoryTNRS.HEADER + RepositoryTaxonstand.HEADER + RepositoryGRIN.HEADER :
@@ -188,6 +190,7 @@ public class CTempOccurrences extends BaseController {
         while((entity=(TempOccurrences)getRepository().hasNext(entity)) != null)
         {
             review_data = entity.getString("id") + "|";
+            countryTempGeoref="";
             query=header;
             row+=1;
             for(Policy p: policies)
@@ -304,6 +307,7 @@ public class CTempOccurrences extends BaseController {
                                 {
                                     query+="country='" + googleReverse.get("country").toString() + "'," +
                                             "iso='" + googleReverse.get("iso").toString() + "',";
+                                    countryTempGeoref=googleReverse.get("country").toString();
                                     country=rTCountries.searchByName(googleReverse.get("country").toString());
                                     if(country != null)
                                         query+="final_country='" +country.getString("name") + "',";
@@ -333,6 +337,7 @@ public class CTempOccurrences extends BaseController {
                                 {
                                     query+="country='" + googleReverse.get("country").toString() + "'," +
                                             "iso='" + googleReverse.get("iso").toString() + "',";
+                                    countryTempGeoref=googleReverse.get("country").toString();
                                     country=rTCountries.searchByName(googleReverse.get("country").toString());
                                     if(country != null)
                                         query+="final_iso2='" +country.getString("iso2") + "',";
@@ -394,6 +399,9 @@ public class CTempOccurrences extends BaseController {
                     else if(p.getTypePolicy()==TypePolicy.GEOCODING_INITIAL)
                     {
                         temp_country=FixData.getValueImaginary(entity.getString("country"));
+                        //Validate the country for georef process
+                        if(temp_country.equals("") && !countryTempGeoref.equals(""))
+                            temp_country=countryTempGeoref;
                         temp_adm1=FixData.getValueImaginary(entity.getString("adm1"));
                         temp_adm2=FixData.getValueImaginary(entity.getString("adm2"));
                         temp_adm3=FixData.getValueImaginary(entity.getString("adm3"));
