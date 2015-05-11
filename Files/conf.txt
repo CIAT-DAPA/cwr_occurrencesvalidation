@@ -1,6 +1,9 @@
 currie_server=
 currie_schema_base=
 currie_schema_gapanalysis=
+currie_table_temp_occurrences=temp_occurrences
+currie_table_metadata=metadata
+currie_table_countries=temp_countries
 currie_user=
 currie_password=
 validation_fields_mandatory=filename,username,provider_institute_id,field_collected_data,data_public_access,citation,source

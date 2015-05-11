@@ -36,7 +36,7 @@ public class RepositoryTempOccurrences extends BaseRepository {
      * Method Construct
      */
     public RepositoryTempOccurrences(){
-        super("temp_occurrences");
+        super(Configuration.getParameter("currie_table_temp_occurrences"));
     }
     
     /*Methods CRUD*/
@@ -66,7 +66,7 @@ public class RepositoryTempOccurrences extends BaseRepository {
                     "latitude_georef,longitude_georef, " +
                     "comments, " +
                     "grin_final_taxon " +
-                    "From temp_occurrences ");
+                    "From " + super.getTable() + " ");
     }
     
     /**

@@ -18,6 +18,7 @@ package Models.Occurrences.Repository;
 
 import Models.DataBase.ResultQuery;
 import Models.Occurrences.Source.Metadata;
+import Tools.Configuration;
 import java.sql.SQLException;
 
 /**
@@ -30,7 +31,7 @@ public class RepositoryMetadata extends BaseRepository {
      * Method Construct
      */
     public RepositoryMetadata(){
-        super("metadata");
+        super(Configuration.getParameter("currie_table_metadata"));
     }
     
     /*Methods CRUD*/

@@ -18,6 +18,7 @@ package Models.Occurrences.Repository;
 
 import Models.DataBase.ResultQuery;
 import Models.Occurrences.Source.TempCountries;
+import Tools.Configuration;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -31,7 +32,7 @@ public class RepositoryTempCountries extends BaseRepository {
      * Method Construct
      */
     public RepositoryTempCountries(){
-        super("temp_countries");
+        super(Configuration.getParameter("currie_table_countries"));
     }
     
     /*Queries CRUD*/
