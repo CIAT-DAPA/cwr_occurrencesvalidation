@@ -38,6 +38,11 @@ public class RepositoryGRIN {
                     a=line.replaceAll("ACC=", "").trim();
                     break;
                 }
+                else if(line.startsWith("HOM="))
+                {
+                    a=name;
+                    break;
+                }
             }
         }
         catch(Exception ex)
