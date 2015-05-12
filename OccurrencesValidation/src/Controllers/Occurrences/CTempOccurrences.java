@@ -448,7 +448,7 @@ public class CTempOccurrences extends BaseController {
                                     FixData.prepareUpdate("f_x1_rank2", FixData.fixGapsInTaxon(taxon_grin_split, 4), true, true) +
                                     FixData.prepareUpdate("f_x1_sp3", FixData.fixGapsInTaxon(taxon_grin_split, 5), true, true);
                         }
-                        else if(taxon_temp_final.equals(taxon_tnrs_final) && FixData.hideRank(taxon_temp_final).equals(taxon_taxstand_final) )
+                        else if(FixData.hideRankSP(taxon_temp_final).equals(taxon_tnrs_final) && FixData.hideRank(taxon_temp_final).equals(taxon_taxstand_final) )
                         {
                             query+= "taxon_final='" + taxon_temp_final + "',";
                             //4.1
@@ -462,10 +462,10 @@ public class CTempOccurrences extends BaseController {
                                     FixData.prepareUpdate("f_x1_sp2", entity.getString("x1_sp2"), true, true) +
                                     FixData.prepareUpdate("f_x1_sp3", entity.getString("x1_sp3"), true, true);
                         }                                                
-                        else if(taxon_temp_final.equals(taxon_tnrs_final) && !FixData.hideRank(taxon_temp_final).equals(taxon_taxstand_final))
-                            throw new Exception("Traffic light yellow. Taxstand is different. Taxon Temp: " + FixData.hideRank(taxon_temp_final) + " Taxstand: " +  taxon_taxstand_final);
-                        else if(!taxon_temp_final.equals(taxon_tnrs_final) && FixData.hideRank(taxon_temp_final).equals(taxon_taxstand_final))
-                            throw new Exception("Traffic light yellow. TNRS is different. Taxon: " + taxon_temp_final + " TNRS: " +  taxon_tnrs_final);
+                        else if(FixData.hideRankSP(taxon_temp_final).equals(taxon_tnrs_final) && !FixData.hideRank(taxon_temp_final).equals(taxon_taxstand_final))
+                            throw new Exception("Traffic light yellow. Taxstand is different. Taxon Temp: " + FixData.hideRank(FixData.hideRankSP(taxon_temp_final)) + " Taxstand: " +  taxon_taxstand_final);
+                        else if(!FixData.hideRankSP(taxon_temp_final).equals(taxon_tnrs_final) && FixData.hideRank(taxon_temp_final).equals(taxon_taxstand_final))
+                            throw new Exception("Traffic light yellow. TNRS is different. Taxon: " + FixData.hideRankSP(taxon_temp_final) + " TNRS: " +  taxon_tnrs_final);
                         else if(FixData.hideRank(taxon_tnrs_final).equals(taxon_taxstand_final) && !taxon_temp_final.equals(taxon_tnrs_final))
                             throw new Exception("Traffic light Orange. Taxonstand and TNRS are equals, but taxon_final is different. Taxondstand: " + taxon_taxstand_final + " TNRS: " +  taxon_tnrs_final + " Taxon Temp:" + taxon_temp_final);
                         else

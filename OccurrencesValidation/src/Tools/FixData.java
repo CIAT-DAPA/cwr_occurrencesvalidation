@@ -239,10 +239,10 @@ public class FixData {
         else
         {
             String r=rank.toLowerCase().trim();
-            return r.startsWith("subs") || r.equals("ssp") || r.equals("ssp.") || r.equals("subsp-") ? "subsp." :
-                    (r.equals("v") || r.equals("v.") || r.equals("var-") ? "var." :
-                    (r.startsWith("conv") || r.equals("conv.") || r.equals("convar-") ? "convar." :
-                    (r.startsWith("for") || r.equals("forma.") || r.equals("for.") || r.equals("f-") ? "f." : "")));
+            return r.startsWith("subs") || r.equals("ssp") || r.equals("ssp.") || r.equals("subsp-") || r.equals("subsp.") ? "subsp." :
+                    (r.equals("v") || r.equals("v.") || r.equals("var-") || r.equals("var.") ? "var." :
+                    (r.startsWith("conv") || r.equals("conv.") || r.equals("convar-") || r.equals("convar.") ? "convar." :
+                    (r.startsWith("for") || r.equals("forma.") || r.equals("for.") || r.equals("f-") || r.equals("f.") ? "f." : "")));
         }
     }
     
@@ -254,6 +254,16 @@ public class FixData {
     public static String hideRank(String taxon)
     {
         return taxon.replaceAll("_subsp.", "").replaceAll("_var.", "").replaceAll("_convar.", "");
+    }
+    
+    /**
+     * Method that delete the word sp. for some case in the taxon
+     * @param taxon
+     * @return 
+     */
+    public static String hideRankSP(String taxon)
+    {
+        return taxon.endsWith("_subsp.") ? taxon: (taxon.endsWith("_sp.") ? taxon.replaceAll("_sp.", "") : taxon);
     }
     
     /**
