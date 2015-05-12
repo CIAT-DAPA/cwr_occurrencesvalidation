@@ -253,7 +253,7 @@ public class FixData {
      */
     public static String hideRank(String taxon)
     {
-        return taxon.replaceAll("_subsp.", "").replaceAll("_var.", "").replaceAll("_convar.", "").replaceAll("_sp.", "");
+        return taxon.replaceAll("_subsp.", "").replaceAll("_var.", "").replaceAll("_convar.", "");
     }
     
     /**
