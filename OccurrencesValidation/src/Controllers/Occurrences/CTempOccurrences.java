@@ -232,7 +232,7 @@ public class CTempOccurrences extends BaseController {
                     //4.4
                     else if(p.getTypePolicy()==TypePolicy.TNRS_QUERY)
                     {
-                        name=generateName(entity);
+                        name=generateName(entity," ");
                         review_data += FixData.getValue(entity.getString("x1_genus")) + "|" +
                                 FixData.getValue(entity.getString("x1_sp1")) + "|" +
                                 FixData.getValue(entity.getString("x1_rank1")) + "|" +
@@ -250,7 +250,7 @@ public class CTempOccurrences extends BaseController {
                             {
                                 review_data+=t.toString();
                                 query+="tnrs_author1='" + t.authorAttributed + "',"+
-                                        "tnrs_final_taxon='" + t.finalTaxon.replaceAll(" ", "_") + "'," +
+                                        "tnrs_final_taxon='" + FixData.toCapitalLetter(t.finalTaxon.replaceAll(" ", "_")) + "'," +
                                         "tnrs_overall_score='" + String.valueOf(t.overall)  + "'," +
                                         "tnrs_source='" + t.acceptedNameUrl + "'," +
                                         "tnrs_x1_family='" + t.family  + "',";
@@ -262,7 +262,7 @@ public class CTempOccurrences extends BaseController {
                     //4.5
                     else if(p.getTypePolicy()==TypePolicy.TAXONDSTAND_QUERY)
                     {
-                        name=generateName(entity);
+                        name=generateName(entity," ");
                         taxonstand=RepositoryTaxonstand.get(name);
                         if(taxonstand==null)
                             throw new Exception("Taxon not found in taxonstand");
@@ -271,10 +271,10 @@ public class CTempOccurrences extends BaseController {
                             review_data+=taxonstand.toString();
                             query+="taxstand_author1='" + taxonstand.author + "',"+
                                     "taxstand_family='" + taxonstand.family.replaceAll(" ", "_") + "'," +
-                                    "taxstand_final_taxon='" + FixData.concatenate(new String[]{ taxonstand.genus,
+                                    "taxstand_final_taxon='" + FixData.toCapitalLetter(FixData.concatenate(new String[]{ taxonstand.genus,
                                         taxonstand.species,
-                                        taxonstand.species2}," ").replaceAll(" ", "_")  + "'," +
-                                    "taxstand_genus='" + taxonstand.genus + "'," +
+                                        taxonstand.species2}," ").replaceAll(" ", "_"))  + "'," +
+                                    "taxstand_genus='" + FixData.toCapitalLetter(taxonstand.genus) + "'," +
                                     "taxstand_sp1='" + taxonstand.species  + "'," +
                                     "taxstand_sp2='" + taxonstand.species2  + "',";
                         }
@@ -282,7 +282,7 @@ public class CTempOccurrences extends BaseController {
                     //Group GRIN
                     else if(p.getTypePolicy()==TypePolicy.GRIN_QUERY)
                     {
-                        name=generateName(entity);
+                        name=generateName(entity," ");
                         grin=RepositoryGRIN.get(name,false);
                         if(grin==null || grin.equals(""))
                             throw new Exception("Taxon not found in GRIN: " + name);
@@ -433,34 +433,29 @@ public class CTempOccurrences extends BaseController {
                     //4.6
                     else if(p.getTypePolicy()==TypePolicy.POSTCHECK_VALIDATE_TAXON)
                     {
-                        taxon_temp_final=FixData.concatenate(new String[]{entity.getString("x1_genus"),
-                            entity.getString("x1_sp1"),
-                            entity.getString("x1_rank1"),
-                            entity.getString("x1_sp2"),
-                            entity.getString("x1_rank2"),
-                            entity.getString("x1_sp3")},"_").toLowerCase();
-                        taxon_tnrs_final= entity.getString("tnrs_final_taxon") == null ? "" : FixData.removePatternEnd(entity.getString("tnrs_final_taxon").toLowerCase(),"_");
-                        taxon_taxstand_final= entity.getString("taxstand_final_taxon") == null ? "" : FixData.removePatternEnd(entity.getString("taxstand_final_taxon").toLowerCase(),"_");
-                        taxon_grin_final = entity.getString("grin_final_taxon") == null ? "" : FixData.removePatternEnd(entity.getString("grin_final_taxon").toLowerCase(),"_");
+                        taxon_temp_final=generateName(entity,"_");
+                        taxon_tnrs_final= entity.getString("tnrs_final_taxon") == null ? "" : FixData.removePatternEnd(entity.getString("tnrs_final_taxon"),"_");
+                        taxon_taxstand_final= entity.getString("taxstand_final_taxon") == null ? "" : FixData.removePatternEnd(entity.getString("taxstand_final_taxon"),"_");
+                        taxon_grin_final = entity.getString("grin_final_taxon") == null ? "" : FixData.removePatternEnd(entity.getString("grin_final_taxon"),"_");
                         if(!taxon_grin_final.equals(""))
                         {
-                            query+= "taxon_final='" + FixData.toCapitalLetter(taxon_grin_final.replaceAll("_x_", "_x")) + "',";
+                            query+= "taxon_final='" + taxon_grin_final.replaceAll("_x_", "_x") + "',";
                             taxon_grin_split=taxon_grin_final.split("_");
-                            query += FixData.prepareUpdate("f_x1_genus", FixData.fixGapsInTaxon(taxon_grin_split, 0, true),true, false) +
-                                    FixData.prepareUpdate("f_x1_sp1", FixData.fixGapsInTaxon(taxon_grin_split, 1, false), true, true)+
-                                    FixData.prepareUpdate("f_x1_rank1", FixData.fixGapsInTaxon(taxon_grin_split, 2, false), true, true)+
-                                    FixData.prepareUpdate("f_x1_sp2", FixData.fixGapsInTaxon(taxon_grin_split, 3, false), true, true)+
-                                    FixData.prepareUpdate("f_x1_rank2", FixData.fixGapsInTaxon(taxon_grin_split, 4, false), true, true) +
-                                    FixData.prepareUpdate("f_x1_sp3", FixData.fixGapsInTaxon(taxon_grin_split, 5, false), true, true);
+                            query += FixData.prepareUpdate("f_x1_genus", FixData.toCapitalLetter(FixData.fixGapsInTaxon(taxon_grin_split, 0)),true, false) +
+                                    FixData.prepareUpdate("f_x1_sp1", FixData.fixGapsInTaxon(taxon_grin_split, 1), true, true)+
+                                    FixData.prepareUpdate("f_x1_rank1", FixData.fixGapsInTaxon(taxon_grin_split, 2), true, true)+
+                                    FixData.prepareUpdate("f_x1_sp2", FixData.fixGapsInTaxon(taxon_grin_split, 3), true, true)+
+                                    FixData.prepareUpdate("f_x1_rank2", FixData.fixGapsInTaxon(taxon_grin_split, 4), true, true) +
+                                    FixData.prepareUpdate("f_x1_sp3", FixData.fixGapsInTaxon(taxon_grin_split, 5), true, true);
                         }
                         else if(taxon_temp_final.equals(taxon_tnrs_final) && FixData.hideRank(taxon_temp_final).equals(taxon_taxstand_final) )
                         {
-                            query+= "taxon_final='" + FixData.toCapitalLetter(taxon_temp_final) + "',";
+                            query+= "taxon_final='" + taxon_temp_final + "',";
                             //4.1
                             value1=FixData.validateRank(entity.getString("x1_rank1"));
-                            query+=value1==null || value1.equals("") ? "" : "f_x1_rank1='" + value1 + "'";
+                            query+=value1==null || value1.equals("") ? "" : "f_x1_rank1='" + value1 + "',";
                             value2=FixData.validateRank(entity.getString("x1_rank2"));
-                            query+=value2==null || value2.equals("") ? "" : "f_x1_rank2='" + value2 + "'";
+                            query+=value2==null || value2.equals("") ? "" : "f_x1_rank2='" + value2 + "',";
                             //4.2 4.3
                             query+=FixData.prepareUpdate("f_x1_genus", FixData.toCapitalLetter(entity.getString("x1_genus")) , true, false) +
                                     FixData.prepareUpdate("f_x1_sp1", entity.getString("x1_sp1"), true, true) +
@@ -595,7 +590,7 @@ public class CTempOccurrences extends BaseController {
         return a;
     }
     
-    private String generateName(TempOccurrences entity)
+    private String generateName(TempOccurrences entity, String union)
     {
         String value1=FixData.validateRank(entity.getString("x1_rank1"));
         String value2=FixData.validateRank(entity.getString("x1_rank2"));
@@ -604,7 +599,7 @@ public class CTempOccurrences extends BaseController {
                             value1,
                             entity.getString("x1_sp2"),
                             value2,
-                            entity.getString("x1_sp3")}," "));
+                            entity.getString("x1_sp3")},union));
     }
     
     /**

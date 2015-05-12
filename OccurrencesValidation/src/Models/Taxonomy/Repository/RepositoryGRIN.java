@@ -5,6 +5,7 @@
  */
 package Models.Taxonomy.Repository;
 
+import Tools.Configuration;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -28,7 +29,7 @@ public class RepositoryGRIN {
         String a=null;
         try
         {
-            URL url = new URL("http://www.ars-grin.gov/~sbmljw/cgi-bin/tax_dave.pl?" + name.trim().replaceAll(" ", "+").replace("_", "+") + (common ? ":com" : ":sci"));
+            URL url = new URL(Configuration.getParameter("grin_url_base") + name.trim().replaceAll(" ", "+").replace("_", "+") + (common ? ":com" : ":sci"));
             BufferedReader reader=new BufferedReader(new InputStreamReader(url.openConnection().getInputStream()));
             String line;
             while((line=reader.readLine())!=null)

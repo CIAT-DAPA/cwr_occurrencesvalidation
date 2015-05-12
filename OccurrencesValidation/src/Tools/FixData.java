@@ -253,7 +253,7 @@ public class FixData {
      */
     public static String hideRank(String taxon)
     {
-        return taxon.replaceAll("_subsp.", "").replaceAll("_var.", "").replaceAll("_convar.", "");
+        return taxon.replaceAll("_subsp.", "").replaceAll("_var.", "").replaceAll("_convar.", "").replaceAll("_sp.", "");
     }
     
     /**
@@ -365,24 +365,24 @@ public class FixData {
      * @param currentPos
      * @return 
      */
-    public static String fixGapsInTaxon(String[] taxon,int currentPos,boolean capitalLetter)
+    public static String fixGapsInTaxon(String[] taxon,int currentPos)
     {
         String a=null;
         if(taxon.length > (currentPos + 1))
         {
             if(taxon[currentPos].equals("x"))
-                a=(capitalLetter ? FixData.toCapitalLetter(taxon[currentPos]) : taxon[currentPos]) + taxon[currentPos+1];
+                a=taxon[currentPos] + taxon[currentPos+1];
             else if(currentPos > 0 && taxon[currentPos-1].equals("x"))
                 a=null;
             else
-                a=capitalLetter ? FixData.toCapitalLetter(taxon[currentPos]) : taxon[currentPos];
+                a=taxon[currentPos];
         }
         else if(taxon.length == (currentPos + 1))
         {
             if(currentPos > 0 && taxon[currentPos-1].equals("x"))
                 a=null;
             else
-                a=capitalLetter ? FixData.toCapitalLetter(taxon[currentPos]) : taxon[currentPos];
+                a=taxon[currentPos];
         }
         return a;
     }
