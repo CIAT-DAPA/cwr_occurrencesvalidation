@@ -282,7 +282,7 @@ public class CTempOccurrences extends BaseController {
                     //Group GRIN
                     else if(p.getTypePolicy()==TypePolicy.GRIN_QUERY)
                     {
-                        name=generateName(entity," ");
+                        name=generateName(entity," ").replaceAll(" x ", " ");
                         grin=RepositoryGRIN.get(name,false);
                         if(grin==null || grin.equals(""))
                             throw new Exception("Taxon not found in GRIN: " + name);
