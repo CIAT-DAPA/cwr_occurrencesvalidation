@@ -9,6 +9,7 @@ import Tools.Configuration;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.HashMap;
 
 /**
  *
@@ -16,7 +17,11 @@ import java.net.URL;
  */
 public class RepositoryGRIN {
     
+    //Const
     public final static String HEADER="GR_Taxon|";
+    
+    /*Members static*/
+    private static HashMap db=null;
     
     /**
      * Method that search into database of GRIN the name of taxon
@@ -29,6 +34,10 @@ public class RepositoryGRIN {
         String a=null;
         try
         {
+            if(db==null)
+                db=new HashMap();
+            if(db.containsKey(name.trim().replaceAll(" ", "_")))
+                return db.get(name.trim().replaceAll(" ", "_")).toString();
             URL url = new URL(Configuration.getParameter("grin_url_base") + name.trim().replaceAll(" ", "+").replace("_", "+") + (common ? ":com" : ":sci"));
             BufferedReader reader=new BufferedReader(new InputStreamReader(url.openConnection().getInputStream()));
             String line;
@@ -45,6 +54,7 @@ public class RepositoryGRIN {
                     break;
                 }
             }
+            db.put(name.trim().replaceAll(" ", "_"), a);
         }
         catch(Exception ex)
         {

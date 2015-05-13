@@ -242,7 +242,7 @@ public class FixData {
      */
     public static String hideRankSP(String taxon)
     {
-        return taxon.endsWith("_subsp.") ? taxon: (taxon.endsWith("_sp.") ? taxon.replaceAll("_sp.", "") : taxon);
+        return (taxon.endsWith("_subsp.") ? taxon: (taxon.endsWith("_sp.") ? taxon.replaceAll("_sp.", "") : taxon)).replaceAll("_hybrid", "");
     }
     
     /**

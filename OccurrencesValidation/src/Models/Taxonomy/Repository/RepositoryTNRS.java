@@ -35,7 +35,7 @@ public class RepositoryTNRS {
     public final static String HEADER = "TNRS_Group|TNRS_AcceptedName|TNRS_AcceptedAuthor|TNRS_NameSubmitted|TNRS_Url|TNRS_NameScientific|TNRS_ScientificScore|TNRS_MatchedFamily|TNRS_MatchedFamilyScore|TNRS_AuthorAttributed|TNRS_Family|TNRS_Genus|TNRS_GenusScore|TNRS_SpeciesMatched|TNRS_SpeciesMatchedScore|TNRS_Infraspecific1Rank|TNRS_Infraspecific1Epithet|TNRS_Infraspecific1EpithetScore|TNRS_Infraspecific2Rank|TNRS_Infraspecific2Epithet|TNRS_Infraspecific2EpithetScore|TNRS_Author|TNRS_AuthorScore|TNRS_Annotation|TNRS_Unmatched|TNRS_Overall|TNRS_Epithet|TNRS_EpithetScore|TNRS_Acceptance|TNRS_FamilySubmitted|TNRS_Selected|TNRS_AcceptedNameUrl|";
     
     /*Members class*/
-    public static HashMap db=null;    
+    private static HashMap db=null;    
     
     /**
      * Method that consuming web services from tnrs and get results
