@@ -62,7 +62,7 @@ public class UpdateQuery {
         Object[] keys=content.keySet().toArray();
         for(Object key:keys){
             value=content.get(key.toString()).toString().trim();
-            a+=key.toString() + "=" + (value.equals("null") ? "null" : "'" + FixData.fixToQuery(FixData.deleteAccent(value)) + "'");
+            a+=key.toString() + "=" + (value.equals("null") ? "null" : "'" + FixData.fixToQuery(FixData.deleteAccent(value)) + "'") + ",";
         }
         return header + " " + a.substring(0, a.length()-1) + " " + where + ";";
     }
