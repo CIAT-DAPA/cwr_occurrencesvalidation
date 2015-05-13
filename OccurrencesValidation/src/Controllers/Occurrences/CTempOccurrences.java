@@ -22,6 +22,7 @@ import Controllers.Tools.Validation.TypePolicy;
 import Models.Complements.Repository.RepositoryOriginStatDistribution;
 import Models.Complements.Source.OriginStatDistribution;
 import Models.DataBase.BaseUpdate;
+import Models.DataBase.UpdateQuery;
 import Models.Geographic.Repository.RepositoryWaterBody;
 import Models.Geographic.Repository.RepositoryGeolocate;
 import Models.Geographic.Repository.RepositoryGoogle;
@@ -148,7 +149,8 @@ public class CTempOccurrences extends BaseController {
      */
     public long crossCheck(int step,ArrayList<Policy> policies, String log, boolean reviewdata) throws SQLException{
         int a=0;
-        String header="Update " + getRepository().getTable() + " set ",footer, query;
+        String header="Update " + getRepository().getTable() + " set";
+        UpdateQuery query;
         String content_field,content_error;
         TNRS[] tnrs;
         Taxonstand taxonstand;
@@ -191,7 +193,7 @@ public class CTempOccurrences extends BaseController {
         {
             review_data = entity.getString("id") + "|";
             countryTempGeoref="";
-            query=header;
+            query=new UpdateQuery(header);
             row+=1;
             for(Policy p: policies)
             {
@@ -223,11 +225,11 @@ public class CTempOccurrences extends BaseController {
                     //Group Correct
                     //3.3
                     else if(p.getTypePolicy()==TypePolicy.CORRECT_DEPENDENCE_SOURCE_AVAILABILITY && entity.getString("availability") != null && FixData.containsValue(entity.getString("availability"), FixData.toArrayList(new String[]{"0"})) && FixData.containsValue(entity.getString("source"), FixData.toArrayList(new String[]{"H"})))
-                        query+="SOURCE='H',";
+                        query.add("source","H");
                     //Group Check Part 2
                     //3.4
                     else if(p.getTypePolicy()==TypePolicy.FINAL_CULT)
-                        query+= "final_cult_stat=" + ((entity.getString("cult_stat") != null && FixData.containsValue(entity.getString("cult_stat"), FixData.toArrayList(CONTENT_CULT))) ? "'" + entity.getString("cult_stat") + "'" : "null" ) + ",";                    
+                        query.add("final_cult_stat", ((entity.getString("cult_stat") != null && FixData.containsValue(entity.getString("cult_stat"), FixData.toArrayList(CONTENT_CULT))) ? FixData.fixToQuery(entity.getString("cult_stat")) : FixData.NULL_DATABASE));
                     //Group TNRS
                     //4.4
                     else if(p.getTypePolicy()==TypePolicy.TNRS_QUERY)
@@ -249,11 +251,11 @@ public class CTempOccurrences extends BaseController {
                             if(t.finalTaxon!=null && !t.finalTaxon.equals(""))
                             {
                                 review_data+=t.toString();
-                                query+="tnrs_author1='" + t.authorAttributed + "',"+
-                                        "tnrs_final_taxon='" + FixData.toCapitalLetter(t.finalTaxon.replaceAll(" ", "_")) + "'," +
-                                        "tnrs_overall_score='" + String.valueOf(t.overall)  + "'," +
-                                        "tnrs_source='" + t.acceptedNameUrl + "'," +
-                                        "tnrs_x1_family='" + t.family  + "',";
+                                query.add("tnrs_author1", t.authorAttributed);
+                                query.add("tnrs_final_taxon", FixData.toCapitalLetter(t.finalTaxon.replaceAll(" ", "_")));
+                                query.add("tnrs_overall_score", String.valueOf(t.overall));
+                                query.add("tnrs_source", t.acceptedNameUrl);
+                                query.add("tnrs_x1_family", t.family);
                                 break;
                             }
                         }
@@ -269,14 +271,14 @@ public class CTempOccurrences extends BaseController {
                         else
                         {
                             review_data+=taxonstand.toString();
-                            query+="taxstand_author1='" + taxonstand.author + "',"+
-                                    "taxstand_family='" + taxonstand.family.replaceAll(" ", "_") + "'," +
-                                    "taxstand_final_taxon='" + FixData.toCapitalLetter(FixData.concatenate(new String[]{ taxonstand.genus,
-                                        taxonstand.species,
-                                        taxonstand.species2}," ").replaceAll(" ", "_"))  + "'," +
-                                    "taxstand_genus='" + FixData.toCapitalLetter(taxonstand.genus) + "'," +
-                                    "taxstand_sp1='" + taxonstand.species  + "'," +
-                                    "taxstand_sp2='" + taxonstand.species2  + "',";
+                            query.add("taxstand_author1", taxonstand.author);
+                            query.add("taxstand_family", taxonstand.family.replaceAll(" ", "_"));
+                            query.add("taxstand_final_taxon", FixData.toCapitalLetter(FixData.concatenate(new String[]{ taxonstand.genus,
+                                                                                        taxonstand.species,
+                                                                                        taxonstand.species2}," ").replaceAll(" ", "_")));
+                            query.add("taxstand_genus", FixData.toCapitalLetter(taxonstand.genus));
+                            query.add("taxstand_sp1", taxonstand.species);
+                            query.add("taxstand_sp2", taxonstand.species2);
                         }
                     }
                     //Group GRIN
@@ -289,7 +291,7 @@ public class CTempOccurrences extends BaseController {
                         else
                         {
                             review_data+=grin+"|";
-                            query+="grin_final_taxon='" + FixData.toCapitalLetter(grin.trim().replaceAll(" ", "_"))  + "',";
+                            query.add("grin_final_taxon", FixData.toCapitalLetter(grin.trim().replaceAll(" ", "_")));
                         }
                     }
                     //Group Geocoding
@@ -305,12 +307,12 @@ public class CTempOccurrences extends BaseController {
                                 googleReverse=RepositoryGoogle.reverse(entity.getDouble("latitude"), entity.getDouble("longitude"));
                                 if(googleReverse != null || googleReverse.get("status").toString().equals("OK"))
                                 {
-                                    query+="country='" + googleReverse.get("country").toString() + "'," +
-                                            "iso='" + googleReverse.get("iso").toString() + "',";
+                                    query.add("country", googleReverse.get("country").toString());
+                                    query.add("iso", googleReverse.get("iso").toString());
                                     countryTempGeoref=googleReverse.get("country").toString();
                                     country=rTCountries.searchByName(googleReverse.get("country").toString());
                                     if(country != null)
-                                        query+="final_country='" +country.getString("name") + "',";
+                                        query.add("final_country", country.getString("name"));
                                     else
                                         throw new Exception("Country not found for country: name=" + googleReverse.get("country").toString() + " original=" +  FixData.getValue(entity.get("country")));
                                 }
@@ -318,10 +320,10 @@ public class CTempOccurrences extends BaseController {
                                     throw new Exception("Country not found for country: iso=" + FixData.getValue(entity.get("iso")) + " country=" + FixData.getValue(entity.get("country")));
                             }
                             else
-                                query+="final_country='" +country.getString("name") + "',";
+                                query.add("final_country", country.getString("name"));
                         }
                         else
-                            query+="final_country='" + country.getString("name") + "',";
+                            query.add("final_country", country.getString("name"));
                     }
                     //5.2
                     else if(p.getTypePolicy()==TypePolicy.GEOCODING_VALIDATE_ISO2)
@@ -335,12 +337,12 @@ public class CTempOccurrences extends BaseController {
                                 googleReverse=RepositoryGoogle.reverse(entity.getDouble("latitude"), entity.getDouble("longitude"));
                                 if(googleReverse != null || googleReverse.get("status").toString().equals("OK"))
                                 {
-                                    query+="country='" + googleReverse.get("country").toString() + "'," +
-                                            "iso='" + googleReverse.get("iso").toString() + "',";
+                                    query.add("country", googleReverse.get("country").toString());
+                                    query.add("iso", googleReverse.get("iso").toString()); 
                                     countryTempGeoref=googleReverse.get("country").toString();
                                     country=rTCountries.searchByName(googleReverse.get("country").toString());
                                     if(country != null)
-                                        query+="final_iso2='" +country.getString("iso2") + "',";
+                                        query.add("final_iso2", country.getString("iso2")); 
                                     else
                                         throw new Exception("ISO 2 not found for country: name=" + googleReverse.get("country").toString() + " original=" +  FixData.getValue(entity.get("country")));
                                 }
@@ -348,10 +350,10 @@ public class CTempOccurrences extends BaseController {
                                     throw new Exception("ISO 2 not found for country: iso=" + FixData.getValue(entity.get("iso")) + " country=" + FixData.getValue(entity.get("country")));
                             }
                             else
-                                query+="final_iso2='" +country.getString("iso2") + "',";
+                                query.add("final_iso2", country.getString("iso2")); 
                         }
                         else
-                            query+="final_iso2='" + country.getString("iso2") + "',";
+                            query.add("final_iso2", country.getString("iso2"));
                     }
                     //5.3.1  5.3.4
                     else if(p.getTypePolicy()==TypePolicy.GEOCODING_VALIDATE_COORDS_GRADS)
@@ -380,20 +382,20 @@ public class CTempOccurrences extends BaseController {
                         if(!FixData.containsValue(entity.getString("ns"), FixData.toArrayList(GEO_NS)))
                             throw new Exception("Error in NS: " + (entity.getString("ns")==null ? "null" : entity.getString("ns")));
                         else if(entity.getString("ns")!= null && FixData.containsValue(entity.getString("ns"), FixData.toArrayList(GEO_NS)))
-                            query+="final_ns='" + entity.getString("ns") + "',";
+                            query.add("final_ns",  entity.getString("ns"));
                         //ew
                         if(!FixData.containsValue(entity.getString("ew"), FixData.toArrayList(GEO_EW)))
                             throw new Exception("Error in EW: " + (entity.getString("ew")==null ? "null" : entity.getString("ew")));
                         else if(entity.getString("ew")!=null && FixData.containsValue(entity.getString("ew"), FixData.toArrayList(GEO_EW)))
-                            query+="final_ew='" + entity.getString("ew") + "',";
+                            query.add("final_ew",  entity.getString("ew"));
                     }
                     //5.3.3
                     else if(p.getTypePolicy()==TypePolicy.GEOCODING_VALIDATE_COORDS_LAT_LON)
                     {
                         if(entity.getString("lat_deg") != null && entity.getString("latitude") == null)
-                            query+= "latitude='" + FixData.degreesToDecimalDegrees(entity.getString("ns").contains("n") , entity.getDouble("lat_deg"), entity.getDouble("lat_min"), entity.getDouble("lat_sec"))  + "',";
+                            query.add("latitude", String.valueOf(FixData.degreesToDecimalDegrees(entity.getString("ns").contains("n") , entity.getDouble("lat_deg"), entity.getDouble("lat_min"), entity.getDouble("lat_sec"))));
                         if(entity.getString("long_deg") != null && entity.getString("longitude") == null)
-                            query+= "longitude='" + FixData.degreesToDecimalDegrees(entity.getString("ew").contains("e") , entity.getDouble("long_deg"), entity.getDouble("long_min"), entity.getDouble("long_sec"))  + "',";
+                            query.add("longitude", String.valueOf(FixData.degreesToDecimalDegrees(entity.getString("ew").contains("e") , entity.getDouble("long_deg"), entity.getDouble("long_min"), entity.getDouble("long_sec"))));
                     }
                     //5.4
                     else if(p.getTypePolicy()==TypePolicy.GEOCODING_INITIAL)
@@ -419,13 +421,17 @@ public class CTempOccurrences extends BaseController {
                         }
                         
                         if(lGoogle != null)
-                            query+= "latitude_georef='" + String.valueOf(lGoogle.getLatitude()) + "'," +
-                                    "longitude_georef='" + String.valueOf(lGoogle.getLongitude()) + "'," +
-                                    "distance_georef='" + String.valueOf(lGoogle.getUncertainty()) + "',";
+                        {
+                            query.add("latitude_georef",  String.valueOf(lGoogle.getLatitude()));
+                            query.add("longitude_georef",  String.valueOf(lGoogle.getLongitude()));
+                            query.add("distance_georef",  String.valueOf(lGoogle.getUncertainty()));
+                        }
                         else if(lGeolocate != null)
-                            query+= "latitude_georef='" + String.valueOf(lGeolocate.getLatitude()) + "'," +
-                                    "longitude_georef='" + String.valueOf(lGeolocate.getLongitude()) + "'," +
-                                    "distance_georef='" + String.valueOf(lGeolocate.getUncertainty()) + "',";
+                        {
+                            query.add("latitude_georef",  String.valueOf(lGeolocate.getLatitude()));
+                            query.add("longitude_georef",  String.valueOf(lGeolocate.getLongitude()));
+                            query.add("distance_georef",  String.valueOf(lGeolocate.getUncertainty()));
+                        }
                         else
                             throw new Exception("Can't geocode record " + temp_country + "," + temp_adm1 + "," + temp_adm2 + "," + temp_adm3 + "," + temp_local_area + "," + temp_locality);
                     }
@@ -439,28 +445,28 @@ public class CTempOccurrences extends BaseController {
                         taxon_grin_final = entity.getString("grin_final_taxon") == null ? "" : FixData.removePatternEnd(entity.getString("grin_final_taxon"),"_");
                         if(!taxon_grin_final.equals(""))
                         {
-                            query+= "taxon_final='" + taxon_grin_final.replaceAll("_x_", "_x") + "',";
+                            query.add("taxon_final",  taxon_grin_final.replaceAll("_x_", "_x"));
                             taxon_grin_split=taxon_grin_final.split("_");
-                            query += FixData.prepareUpdate("f_x1_genus", FixData.toCapitalLetter(FixData.fixGapsInTaxon(taxon_grin_split, 0)),true, false) +
-                                    FixData.prepareUpdate("f_x1_sp1", FixData.fixGapsInTaxon(taxon_grin_split, 1), true, true)+
-                                    FixData.prepareUpdate("f_x1_rank1", FixData.fixGapsInTaxon(taxon_grin_split, 2), true, true)+
-                                    FixData.prepareUpdate("f_x1_sp2", FixData.fixGapsInTaxon(taxon_grin_split, 3), true, true)+
-                                    FixData.prepareUpdate("f_x1_rank2", FixData.fixGapsInTaxon(taxon_grin_split, 4), true, true) +
-                                    FixData.prepareUpdate("f_x1_sp3", FixData.fixGapsInTaxon(taxon_grin_split, 5), true, true);
+                            query.add("f_x1_genus", FixData.toCapitalLetter(FixData.fixGapsInTaxon(taxon_grin_split, 0)));
+                            query.add("f_x1_sp1", FixData.getValue(FixData.fixGapsInTaxon(taxon_grin_split, 1)).toLowerCase());
+                            query.add("f_x1_rank1", FixData.getValue(FixData.fixGapsInTaxon(taxon_grin_split, 2)).toLowerCase());
+                            query.add("f_x1_sp2", FixData.getValue(FixData.fixGapsInTaxon(taxon_grin_split, 3)).toLowerCase());
+                            query.add("f_x1_rank2", FixData.getValue(FixData.fixGapsInTaxon(taxon_grin_split, 4)).toLowerCase());
+                            query.add("f_x1_sp3", FixData.getValue(FixData.fixGapsInTaxon(taxon_grin_split, 5)).toLowerCase());
                         }
                         else if(FixData.hideRankSP(taxon_temp_final).equals(taxon_tnrs_final) && FixData.hideRank(taxon_temp_final).equals(taxon_taxstand_final) )
                         {
-                            query+= "taxon_final='" + taxon_temp_final + "',";
+                            query.add("taxon_final", taxon_temp_final);
                             //4.1
                             value1=FixData.validateRank(entity.getString("x1_rank1"));
-                            query+=value1==null || value1.equals("") ? "" : "f_x1_rank1='" + value1 + "',";
+                            query.add("f_x1_rank1", value1==null ? "null" : value1.equals("") ? "" : value1.toLowerCase() );
                             value2=FixData.validateRank(entity.getString("x1_rank2"));
-                            query+=value2==null || value2.equals("") ? "" : "f_x1_rank2='" + value2 + "',";
+                            query.add("f_x1_rank2", value2==null ? "null" : value2.equals("") ? "" : value2.toLowerCase() );
                             //4.2 4.3
-                            query+=FixData.prepareUpdate("f_x1_genus", FixData.toCapitalLetter(entity.getString("x1_genus")) , true, false) +
-                                    FixData.prepareUpdate("f_x1_sp1", entity.getString("x1_sp1"), true, true) +
-                                    FixData.prepareUpdate("f_x1_sp2", entity.getString("x1_sp2"), true, true) +
-                                    FixData.prepareUpdate("f_x1_sp3", entity.getString("x1_sp3"), true, true);
+                            query.add("f_x1_genus", FixData.toCapitalLetter(FixData.getValue(entity.get("x1_genus"))));
+                            query.add("f_x1_sp1", FixData.getValue(entity.get("x1_sp1")).toLowerCase());
+                            query.add("f_x1_sp2", FixData.getValue(entity.get("x1_sp2")).toLowerCase());
+                            query.add("f_x1_sp3", FixData.getValue(entity.get("x1_sp3")).toLowerCase());
                         }                                                
                         else if(FixData.hideRankSP(taxon_temp_final).equals(taxon_tnrs_final) && !FixData.hideRank(taxon_temp_final).equals(taxon_taxstand_final))
                             throw new Exception("Traffic light yellow. Taxstand is different. Taxon Temp: " + FixData.hideRank(FixData.hideRankSP(taxon_temp_final)) + " Taxstand: " +  taxon_taxstand_final);
@@ -502,28 +508,40 @@ public class CTempOccurrences extends BaseController {
                             //It is not earth
                             else if(!water.equals(Configuration.getParameter("geocoding_database_world_earth")))
                             {
-                                query+="comments='" +  (comments.equals("") ? "" : comments + ". ") + "Point in the water',";
+                                query.add("comments", (comments.equals("") ? "" : comments + ". ") + "Point in the water");
                                 throw new Exception("Point in the water or boundaries. " + water + " Lat: " + String.valueOf(lat) + " Lon: " + String.valueOf(lon));
                             }
                             //Country centrois
                             else if(country != null && country.getDouble("lat")==lat && country.getDouble("lon")==lon)
                             {
-                                query+="comments='" +  (comments.equals("") ? "" : comments + ". ") + "Point in the country centroid',";
+                                query.add("comments", (comments.equals("") ? "" : comments + ". ") + "Point in the country centroid");
                                 throw new Exception("Point in the country centroid. " + " Lat: " + String.valueOf(lat) + " Lon: " + String.valueOf(lon) + " Country ISO 2: " + entity.getString("final_iso2"));
                             }
                             else if(origin)
                             {
                                 googleReverse=RepositoryGoogle.reverse(lat, lon);
                                 if(googleReverse == null || !googleReverse.get("status").toString().equals("OK") || !FixData.getValue(googleReverse.get("iso")).toLowerCase().equals(FixData.getValue(entity.get("final_iso2")).toLowerCase()))
-                                    query+="coord_source='" + (origin ? "original" : "georef") + "',final_lat='" + String.valueOf(lat) + "',final_lon='" + String.valueOf(lon) + "'," +
-                                        "comments='" +  (comments.equals("") ? "" : comments + ". ") + "Coordinates do not match to country in source data',";
+                                {
+                                    query.add("coord_source", (origin ? "original" : "georef"));
+                                    query.add("final_lat", String.valueOf(lat));
+                                    query.add("final_lon", String.valueOf(lon));
+                                    query.add("comments", (comments.equals("") ? "" : comments + ". ") + "Coordinates do not match to country in source data");
+                                }
                                 else
-                                    query+="coord_source='original',final_lat='" + String.valueOf(lat) + "',final_lon='" + String.valueOf(lon) + "',";
+                                {
+                                    query.add("coord_source", "original");
+                                    query.add("final_lat", String.valueOf(lat));
+                                    query.add("final_lon", String.valueOf(lon));
+                                }
                             }
                             else if(!origin)
-                                query+="coord_source='georef',final_lat='" + String.valueOf(lat) + "',final_lon='" + String.valueOf(lon) + "',";
+                            {
+                                query.add("coord_source", "georef");
+                                query.add("final_lat", String.valueOf(lat));
+                                query.add("final_lon", String.valueOf(lon));
+                            }
                             else
-                                throw new Exception("Erro. " + water);
+                                throw new Exception("Error. " + water);
                         }
                     }
                     else if(p.getTypePolicy()==TypePolicy.POSTCHECK_ORIGIN_STAT)
@@ -550,14 +568,14 @@ public class CTempOccurrences extends BaseController {
                         }
                         //validation to value searched
                         if(!origin_stat_value.equals(""))
-                            query+= "origin_stat_inv='" + origin_stat_value  + "',";
+                            query.add("origin_stat_inv", origin_stat_value);
                         //validation to final field
                         if(entity.getString("origin_stat") != null && FixData.containsValue(entity.getString("origin_stat"), FixData.toArrayList(CONTENT_ORIGIN)))
-                            query+= "final_origin_stat='" + FixData.translate(1, entity.getString("origin_stat"))  + "',";
+                            query.add("final_origin_stat", FixData.translate(1, entity.getString("origin_stat")));
                         else if(origin_stat_found)
-                            query+= "final_origin_stat='" + origin_stat_value  + "',";
+                            query.add("final_origin_stat", origin_stat_value);
                         else if(!origin_stat_found && !origin_stat_value.equals(""))
-                            query+= "final_origin_stat='" + Configuration.getParameter("origin_stat_non-native")  + "',";
+                            query.add("final_origin_stat", Configuration.getParameter("origin_stat_non-native"));
                         else
                             throw new Exception("Not found value for field final_origin_stat. Values: Origin=" + FixData.getValue(entity.get("origin_stat")) + " Search=" + origin_stat_value);
                     }
@@ -576,10 +594,10 @@ public class CTempOccurrences extends BaseController {
                     Log.register(log, TypeLog.REGISTER_ERROR, entity.getString("id") + "|" + e.toString() + "|" + msgE, true, PREFIX_CROSSCHECK + String.valueOf(step),Configuration.getParameter("log_ext_review") );
                 }
             }
-            footer=" Where id=" +entity.getString("id") + ";" ;
+            query.setWhere("Where id=" +entity.getString("id"));
             //Validate that have
-            if(!query.endsWith("set "))
-                Log.register(log, TypeLog.REGISTER_OK, query.substring(0, query.length()-1) + footer, false,PREFIX_CROSSCHECK + String.valueOf(step),Configuration.getParameter("log_ext_sql"));
+            if(query.count() > 0)
+                Log.register(log, TypeLog.REGISTER_OK, query.toString(), false,PREFIX_CROSSCHECK + String.valueOf(step),Configuration.getParameter("log_ext_sql"));
             
             //Log for review data
             if(reviewdata && !review_data.equals("") && !review_data.equals(entity.getString("id") + "|") && (step==2 || step == 3 || step == 6 || step == 7))

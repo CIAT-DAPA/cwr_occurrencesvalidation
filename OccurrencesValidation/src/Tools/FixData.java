@@ -27,6 +27,8 @@ import java.util.Calendar;
  * @author Steven Sotelo - stevenbetancurt@hotmail.com
  */
 public class FixData {
+    /*Shared members*/
+    public static final String NULL_DATABASE="null";
     
     /*Static Method*/
     /**
@@ -153,29 +155,6 @@ public class FixData {
     }
     
     /**
-     * Method that create 
-     * @param field
-     * @param value
-     * @param removeAccents
-     * @param lower
-     * @return 
-     */
-    public static String prepareUpdate(String field, String value, boolean removeAccents,boolean lower)
-    {
-        if(field== null || value==null)
-            return "";
-        else
-        {
-            if(removeAccents && lower)
-                return field + "='" + FixData.deleteAccent(value).toLowerCase().trim() + "',";
-            else if(removeAccents && !lower)
-                return field + "='" + FixData.deleteAccent(value).trim() + "',";
-            else
-                return field + "='" + value + "',";
-        }
-    }
-    
-    /**
      * Method that return the real value for parameter
      * @param value
      * @return 
@@ -286,7 +265,7 @@ public class FixData {
      */
     public static String getValue(String field)
     {
-        return field==null ? "null" : field;
+        return field==null ? FixData.NULL_DATABASE : field;
     }
     
     /**
@@ -296,7 +275,7 @@ public class FixData {
      */
     public static String getValue(Object field)
     {
-        return field==null ? "null" : FixData.getValue(field.toString());
+        return field==null ? FixData.NULL_DATABASE : FixData.getValue(field.toString());
     }
     
     /**
@@ -395,5 +374,15 @@ public class FixData {
                 a=taxon[currentPos];
         }
         return a;
+    }
+    
+    /**
+     * Method that fixed de content values for a query 
+     * @param value
+     * @return 
+     */
+    public static String fixedValueToQuery(String value)
+    {
+        return value.contains("'") ? value.replaceAll("'", "''") : value;
     }
 }

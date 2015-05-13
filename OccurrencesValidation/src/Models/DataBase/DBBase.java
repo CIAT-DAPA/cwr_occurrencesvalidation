@@ -28,7 +28,7 @@ import java.util.ArrayList;
  * @author Steven Sotelo - stevenbetancurt@hotmail.com
  */
 public abstract class DBBase 
-{    
+{   
     /*Members Class*/
     private String server;
     private String bd;
