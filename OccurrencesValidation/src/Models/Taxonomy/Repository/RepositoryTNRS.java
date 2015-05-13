@@ -32,7 +32,7 @@ import org.json.simple.JSONValue;
  */
 public class RepositoryTNRS {
     /*Const*/
-    public final static String HEADER = "group|acceptedName|acceptedAuthor|nameSubmitted|url|nameScientific|scientificScore|matchedFamily|matchedFamilyScore|authorAttributed|family|genus|genusScore|speciesMatched|speciesMatchedScore|infraspecific1Rank|infraspecific1Epithet|infraspecific1EpithetScore|infraspecific2Rank|infraspecific2Epithet|infraspecific2EpithetScore|author|authorScore|annotation|unmatched|overall|epithet|epithetScore|acceptance|familySubmitted|selected|acceptedNameUrl|";
+    public final static String HEADER = "TNRS_Group|TNRS_AcceptedName|TNRS_AcceptedAuthor|TNRS_NameSubmitted|TNRS_Url|TNRS_NameScientific|TNRS_ScientificScore|TNRS_MatchedFamily|TNRS_MatchedFamilyScore|TNRS_AuthorAttributed|TNRS_Family|TNRS_Genus|TNRS_GenusScore|TNRS_SpeciesMatched|TNRS_SpeciesMatchedScore|TNRS_Infraspecific1Rank|TNRS_Infraspecific1Epithet|TNRS_Infraspecific1EpithetScore|TNRS_Infraspecific2Rank|TNRS_Infraspecific2Epithet|TNRS_Infraspecific2EpithetScore|TNRS_Author|TNRS_AuthorScore|TNRS_Annotation|TNRS_Unmatched|TNRS_Overall|TNRS_Epithet|TNRS_EpithetScore|TNRS_Acceptance|TNRS_FamilySubmitted|TNRS_Selected|TNRS_AcceptedNameUrl|";
     
     /*Members class*/
     public static HashMap db=null;    

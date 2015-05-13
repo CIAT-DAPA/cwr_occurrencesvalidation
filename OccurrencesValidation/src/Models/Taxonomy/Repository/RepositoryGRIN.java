@@ -16,7 +16,7 @@ import java.net.URL;
  */
 public class RepositoryGRIN {
     
-    public final static String HEADER="Grin|";
+    public final static String HEADER="GR_Taxon|";
     
     /**
      * Method that search into database of GRIN the name of taxon

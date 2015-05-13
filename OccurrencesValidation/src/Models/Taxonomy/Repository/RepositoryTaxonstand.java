@@ -34,7 +34,7 @@ import org.xml.sax.InputSource;
  */
 public class RepositoryTaxonstand {    
     /*Const*/
-    public final static String HEADER="Genus|Species|Abbrev|Infraspecific|ID|Plant_Name_Index|TPL_version|Taxonomic_status|Family|New_Genus|New_Hybrid_marker|New_Species|New_Infraspecific|Authority|New_ID|Typo|WFormat|";
+    public final static String HEADER="TXST_Genus|TXST_Species|TXST_Abbrev|TXST_Infraspecific|TXST_ID|TXST_Plant_Name_Index|TXST_TPL_version|TXST_Taxonomic_status|TXST_Family|TXST_New_Genus|TXST_New_Hybrid_marker|TXST_New_Species|TXST_New_Infraspecific|TXST_Authority|TXST_New_ID|TXST_Typo|TXST_WFormat|";
     /*Member Class*/
     public static HashMap db=null;
     
