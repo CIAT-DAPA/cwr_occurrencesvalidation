@@ -76,8 +76,8 @@ public class FixData {
      */
     public static String deleteAccent(String input)
     {
-        String original = "áàäéèëíìïóòöúùuñÁÀÄÉÈËÍÌÏÓÒÖÚÙÜÑçÇ";
-        String ascii =    "aaaeeeiiiooouuunAAAEEEIIIOOOUUUNcC";
+        String original = Configuration.getParameter("conf_re_accents_er");
+        String ascii = Configuration.getParameter("conf_re_accents_ok");
         String output = input;
         for (int i=0; i<original.length(); i++)
             output = output.replace(original.charAt(i), ascii.charAt(i));       

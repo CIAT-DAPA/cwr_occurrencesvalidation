@@ -26,7 +26,6 @@ import Tools.Configuration;
 import Tools.FixData;
 import Tools.Log;
 import Tools.TypeLog;
-import com.sun.org.apache.bcel.internal.Repository;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -153,7 +152,7 @@ public abstract class BaseController {
             }
             catch(Exception e)
             {
-                Log.register(log,TypeLog.REGISTER_ERROR,String.valueOf(row) + "|" + e + "|" + line, false,prefixLog,Configuration.getParameter("log_ext_review"));
+                Log.register(log,TypeLog.REGISTER_ERROR,String.valueOf(row) + "|" + e + "|" + line, true,prefixLog,Configuration.getParameter("log_ext_review"));
                 if(result!=null)
                     Log.register(log,TypeLog.QUERY_ERROR,result.getQuery(), true,prefixLog,Configuration.getParameter("log_ext_sql"));
                 errors+=1;
@@ -197,7 +196,7 @@ public abstract class BaseController {
             }
             catch(Exception e)
             {
-                Log.register(log,TypeLog.REGISTER_ERROR,String.valueOf(row) + "|" + e + "|" + line, false,prefixLog,Configuration.getParameter("log_ext_review"));
+                Log.register(log,TypeLog.REGISTER_ERROR,String.valueOf(row) + "|" + e + "|" + line, true,prefixLog,Configuration.getParameter("log_ext_review"));
                 if(result!=null)
                     Log.register(log,TypeLog.QUERY_ERROR,result.getQuery(), true,prefixLog,Configuration.getParameter("log_ext_sql"));
                 errors+=1;
@@ -228,7 +227,7 @@ public abstract class BaseController {
             }
             catch(Exception ex)
             {
-                Log.register(log,TypeLog.REGISTER_ERROR,String.valueOf(i) + "|" + ex + "|" + bu.toString(), false,prefixLog,Configuration.getParameter("log_ext_review"));
+                Log.register(log,TypeLog.REGISTER_ERROR,String.valueOf(i) + "|" + ex + "|" + bu.toString(), true,prefixLog,Configuration.getParameter("log_ext_review"));
             }
             i+=1;
             System.out.println("Update: " + i + " of " + updates.size());
