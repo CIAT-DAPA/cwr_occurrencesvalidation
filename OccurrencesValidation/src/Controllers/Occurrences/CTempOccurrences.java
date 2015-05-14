@@ -87,6 +87,7 @@ public class CTempOccurrences extends BaseController {
         GEO_EW=FixData.valueParameterSplit(Configuration.getParameter("validation_content_ew"));
         REGEXP_COORDS=Configuration.getParameter("validation_content_regexp_coords");
         CONTENT_CULT=FixData.valueParameterSplit(Configuration.getParameter("validation_content_cult"));
+        CONTENT_ORIGIN=FixData.valueParameterSplit(Configuration.getParameter("validation_content_origin"));
     }
     
     /**
@@ -218,6 +219,7 @@ public class CTempOccurrences extends BaseController {
                             content_field=list_field.split("@")[0];
                             if(!FixData.containsValue(entity.getString(content_field), FixData.toArrayList(list_field.split("@")[1].split(","))))
                                 content_error += content_field + " not correct: " + FixData.getValue(entity.get(content_field)) + ",";
+                            
                         }
                         if(!content_error.equals(""))
                             throw new Exception("Errors: " + content_error);
@@ -473,7 +475,7 @@ public class CTempOccurrences extends BaseController {
                         else if(!FixData.hideRankSP(taxon_temp_final).equals(taxon_tnrs_final) && FixData.hideRank(taxon_temp_final).equals(taxon_taxstand_final))
                             throw new Exception("Traffic light yellow. TNRS is different. Taxon: " + FixData.hideRankSP(taxon_temp_final) + " TNRS: " +  taxon_tnrs_final);
                         else if(FixData.hideRank(taxon_tnrs_final).equals(taxon_taxstand_final) && !taxon_temp_final.equals(taxon_tnrs_final))
-                            throw new Exception("Traffic light Orange. Taxonstand and TNRS are equals, but taxon_final is different. Taxondstand: " + taxon_taxstand_final + " TNRS: " +  taxon_tnrs_final + " Taxon Temp:" + taxon_temp_final);
+                            throw new Exception("Traffic light Orange. Taxonstand and TNRS are equals but taxon_final is different. Taxondstand: " + taxon_taxstand_final + " TNRS: " +  taxon_tnrs_final + " Taxon Temp: " + taxon_temp_final);
                         else
                             throw new Exception("Traffic light Red. All differents. Taxon: " + taxon_temp_final + " TNRS: " +  taxon_tnrs_final + " Taxstand: " + taxon_taxstand_final + " Grin: " + taxon_grin_final);
                     }

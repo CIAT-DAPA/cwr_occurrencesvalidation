@@ -7,12 +7,13 @@ currie_table_countries=temp_countries
 currie_user=
 currie_password=
 validation_fields_mandatory=filename,username,provider_institute_id,field_collected_data,data_public_access,citation,source
-validation_fields_content=availability@0,1,null|source@G,H|origin_stat@native,non-native,introduced,null|is_hybrid@0,1,null
+validation_fields_content=availability@0,1,null|source@G,H|is_hybrid@0,1,null
 validation_content_cult=weedy,cultivated,wild,null
+validation_content_origin=native,naturalised,naturalized,non-native,introduced,null
 validation_content_ns=N,n,S,s,null
 validation_content_ew=E,e,W,w,null
 validation_content_regexp_coords=(-)?(\d)+(.(\d)+)?
-validation_translate_origin=introduced|non-native
+validation_translate_origin=introduced|non-native,naturalised|non-native,naturalized|non-native
 geocoding_threshold=5000
 geocoding_google_url_send_xml=https://maps.googleapis.com/maps/api/geocode/xml?sensor=false&
 geocoding_google_url_send_json=https://maps.googleapis.com/maps/api/geocode/json?sensor=true&
