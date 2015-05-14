@@ -245,7 +245,7 @@ public class CTempOccurrences extends BaseController {
                         if(tnrs==null)
                             tnrs=RepositoryTNRS.get(name, false);
                         if(tnrs==null)
-                            throw new Exception("Taxon not found in tnrs");
+                            throw new Exception("Taxon not found in TNRS: " + name);
                         for(TNRS t:tnrs)
                         {
                             if(t.finalTaxon!=null && !t.finalTaxon.equals(""))
@@ -267,7 +267,7 @@ public class CTempOccurrences extends BaseController {
                         name=generateName(entity," ");
                         taxonstand=RepositoryTaxonstand.get(name);
                         if(taxonstand==null)
-                            throw new Exception("Taxon not found in taxonstand");
+                            throw new Exception("Taxon not found in taxonstand: " + name);
                         else
                         {
                             review_data+=taxonstand.toString();
@@ -275,7 +275,7 @@ public class CTempOccurrences extends BaseController {
                             query.add("taxstand_family", taxonstand.family.replaceAll(" ", "_"));
                             query.add("taxstand_final_taxon", FixData.toCapitalLetter(FixData.concatenate(new String[]{ taxonstand.genus,
                                                                                         taxonstand.species,
-                                                                                        taxonstand.species2}," ").replaceAll(" ", "_")));
+                                                                                        taxonstand.species2},"_")));
                             query.add("taxstand_genus", FixData.toCapitalLetter(taxonstand.genus));
                             query.add("taxstand_sp1", taxonstand.species);
                             query.add("taxstand_sp2", taxonstand.species2);
