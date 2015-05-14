@@ -231,7 +231,7 @@ public class CTempOccurrences extends BaseController {
                     //Group Check Part 2
                     //3.4
                     else if(p.getTypePolicy()==TypePolicy.FINAL_CULT)
-                        query.add("final_cult_stat", ((entity.getString("cult_stat") != null && FixData.containsValue(entity.getString("cult_stat"), FixData.toArrayList(CONTENT_CULT))) ? FixData.fixToQuery(entity.getString("cult_stat")) : FixData.NULL_DATABASE));
+                        query.add("final_cult_stat", ((entity.getString("cult_stat") != null && FixData.containsValue(entity.getString("cult_stat"), FixData.toArrayList(CONTENT_CULT))) ? entity.getString("cult_stat") : FixData.NULL_DATABASE));
                     //Group TNRS
                     //4.4
                     else if(p.getTypePolicy()==TypePolicy.TNRS_QUERY)

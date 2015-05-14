@@ -63,11 +63,11 @@ public class FixData {
      * Method that delete all '
      * @param input String to cleaner
      * @return
-     */
+     *//*
     public static String fixToQuery(String input)
     {
         return input.replace("'", "");
-    }
+    }*/
     
     /**
      * Method that delete all accent so leave the string only with ascii characters
@@ -76,8 +76,8 @@ public class FixData {
      */
     public static String deleteAccent(String input)
     {
-        String original = Configuration.getParameter("conf_re_accents_er");
-        String ascii = Configuration.getParameter("conf_re_accents_ok");
+        String original = "áàäéèëíìïóòöúùuñÁÀÄÉÈËÍÌÏÓÒÖÚÙÜÑçÇ";
+        String ascii =    "aaaeeeiiiooouuunAAAEEEIIIOOOUUUNcC";
         String output = input;
         for (int i=0; i<original.length(); i++)
             output = output.replace(original.charAt(i), ascii.charAt(i));       

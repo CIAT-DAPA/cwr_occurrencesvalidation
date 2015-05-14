@@ -80,7 +80,7 @@ public abstract class BaseController {
                 row+=1;
                 System.out.println("Row: " + row);
                 //Fix data for query
-                line=FixData.fixToQuery(line);
+                line=FixData.fixedValueToQuery(line);
                 if(clean)
                     line=FixData.deleteAccent(line);
                 //Save into database

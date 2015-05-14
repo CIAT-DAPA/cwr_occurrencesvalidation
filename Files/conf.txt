@@ -44,5 +44,3 @@ origin_stat_database_table=distribution
 origin_stat_native=native
 origin_stat_non-native=introduced
 grin_url_base=http://www.ars-grin.gov/~sbmljw/cgi-bin/tax_dave.pl?
-conf_re_accents_er=áàäéèëíìïóòöúùuñÁÀÄÉÈËÍÌÏÓÒÖÚÙÜÑçÇ
-conf_re_accents_ok=aaaeeeiiiooouuunAAAEEEIIIOOOUUUNcC
