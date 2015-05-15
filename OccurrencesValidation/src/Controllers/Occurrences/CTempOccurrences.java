@@ -610,6 +610,12 @@ public class CTempOccurrences extends BaseController {
         return a;
     }
     
+    /**
+     * Method that generate taxon name from all parts that its built
+     * @param entity TempOccurrences from take the information
+     * @param union String for add 
+     * @return 
+     */
     private String generateName(TempOccurrences entity, String union)
     {
         String value1=FixData.validateRank(entity.getString("x1_rank1"));

@@ -24,7 +24,6 @@ import Tools.Configuration;
 import Views.Desktop.FrmConf;
 import Views.Desktop.FrmReport;
 import Views.Desktop.FrmUpdate;
-import Views.Desktop.FrmUpdateFields;
 import java.io.IOException;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -48,7 +47,7 @@ public class App {
             FrmDataValidation frmData;
             FrmConf frmConf;
             FrmUpdate frmUpdate;
-            FrmUpdateFields frmUpdateFields;
+            FrmUpdate frmUpdateFields;
             FrmReport frmReport;
             do
             {   
@@ -99,15 +98,8 @@ public class App {
                             message("Type don't support");
                         message("Update finished!!!");
                     }
-                }
-                else if(option == 4)
-                {
-                    frmConf=new FrmConf(new JFrame(),true);
-                    frmConf.setVisible(true);
-                }
-                else if(option == 5)
-                {
-                    frmUpdateFields=new FrmUpdateFields(new JFrame(),true);
+                    
+                    /*frmUpdateFields=new FrmUpdate(new JFrame(),true);
                     frmUpdateFields.setVisible(true);                    
                     if(frmUpdateFields.isExit())
                     {
@@ -119,9 +111,14 @@ public class App {
                         else
                             message("Type don't support");
                         message("Update finished!!!");
-                    }
+                    }*/
                 }
-                else if(option == 6)
+                else if(option == 4)
+                {
+                    frmConf=new FrmConf(new JFrame(),true);
+                    frmConf.setVisible(true);
+                }
+                else if(option == 5)
                 {
                     frmReport=new FrmReport(new JFrame(), true);
                     frmReport.setVisible(true);                    
