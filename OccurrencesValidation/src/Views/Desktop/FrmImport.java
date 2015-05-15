@@ -74,6 +74,7 @@ public class FrmImport extends javax.swing.JDialog {
         for(TypeImports value: TypeImports.values())
             cboTypeImport.addItem(value);
         txtLog.setText(Configuration.DIRECTORY_DEFAULT);
+        txtSource.setText(Configuration.DIRECTORY_DEFAULT);
     }
     
     /**
