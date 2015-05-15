@@ -22,6 +22,9 @@ import Controllers.Tools.TypePolicy;
 import Models.Complements.Repository.RepositoryOriginStatDistribution;
 import Models.Complements.Source.OriginStatDistribution;
 import Models.DataBase.BaseUpdate;
+import Models.DataBase.DBFile;
+import Models.DataBase.Field;
+import Models.DataBase.ResultQuery;
 import Models.DataBase.UpdateQuery;
 import Models.Geographic.Repository.RepositoryWaterBody;
 import Models.Geographic.Repository.RepositoryGeolocate;
@@ -54,8 +57,9 @@ public class CTempOccurrences extends BaseController {
     private final String PREFIX_IMPORT = "TO_IMPORT_";
     private final String PREFIX_CROSSCHECK = "TO_CROSSCHECK_";
     private final String PREFIX_UPDATE = "TO_UPDATE_";
+    private final String PREFIX_UPDATE_FILE = "TO_UPDATE_FILE_";
     private final String PREFIX_REPORT_SUMMARY = "TO_REPORT_SUMMARY_";
-    private final String PREFIX_REPORT_COMPARE = "TO_REPORT_COMPARE";
+    private final String PREFIX_REPORT_COMPARE = "TO_REPORT_COMPARE_";
     private final String PREFIX_UPDATE_QUERY = "TO_UPDATE_QUERY_";
     /*Members Class*/
     private String[] FIELDS_MANDATORY;
@@ -79,7 +83,8 @@ public class CTempOccurrences extends BaseController {
     /**
      * Method Construct
      */
-    public CTempOccurrences() {
+    public CTempOccurrences() 
+    {
         super(new RepositoryTempOccurrences());
         FIELDS_MANDATORY=FixData.valueParameterSplit(Configuration.getParameter("validation_fields_mandatory"));
         FIELDS_CONTENT=FixData.valueParameterSplit(Configuration.getParameter("validation_fields_content"),"\\|");        
@@ -100,7 +105,8 @@ public class CTempOccurrences extends BaseController {
      * @throws SQLException
      * @throws Exception
      */
-    public long importFile(String filePath, String fileSplit, boolean clean, String log) throws SQLException, Exception{
+    public long importFile(String filePath, String fileSplit, boolean clean, String log) throws SQLException, Exception
+    {
         return super.importFile(filePath, fileSplit, clean, new TempOccurrences(), log, PREFIX_IMPORT);
     }
     
@@ -113,8 +119,73 @@ public class CTempOccurrences extends BaseController {
      * @throws SQLException
      * @throws Exception
      */
-    public long updateFile(String filePath, String fileSplit, String log) throws SQLException, Exception{
-        return super.updateFile(filePath, fileSplit, new TempOccurrences(), log, PREFIX_UPDATE, "id");
+    public long updateFile(String filePath, String fileSplit, String log, boolean isTaxonFile) throws SQLException, Exception
+    {
+        if(!isTaxonFile)
+            return super.updateFile(filePath, fileSplit, new TempOccurrences(), log, PREFIX_UPDATE_FILE, "id");
+        else
+        {
+            DBFile dbFile=new DBFile(fileSplit, filePath);
+            long row=0,errors=0;
+            String line;
+            ArrayList<String> fields;
+            ResultQuery result=null;
+            //Load Header
+            dbFile.open();
+            if(dbFile.isOpen())
+                fields=dbFile.readLineSplit();
+            else
+                throw new Exception("Error when it tryed to open file. Path: " + filePath );
+            //Validation fields
+            ArrayList<Field> finalFields=repository.validateFields(fields); 
+            // Add methods of taxa
+            finalFields.add(new Field("f_x1_genus","varchar"));
+            finalFields.add(new Field("f_x1_sp1","varchar"));
+            finalFields.add(new Field("f_x1_rank1","varchar"));
+            finalFields.add(new Field("f_x1_sp2","varchar"));
+            finalFields.add(new Field("f_x1_rank2","varchar"));
+            finalFields.add(new Field("f_x1_sp3","varchar"));
+            TempOccurrences entity;
+            String taxonFinal, lineComplement;
+            String[] taxonFinalSplit;
+            ArrayList<String>  lineCurrentData;            
+            System.out.println("Start process to update");
+            while((line=dbFile.readLine()) != null)
+            {
+                try
+                {
+                    row+=1;
+                    System.out.println("Row: " + row);
+                    entity=new TempOccurrences();
+                    lineCurrentData=FixData.lineSplit(line,dbFile.getSplit());
+                    //Split to taxon
+                    taxonFinalSplit=lineCurrentData.get(1).split("_");
+                    lineCurrentData.add(FixData.toCapitalLetter(FixData.fixGapsInTaxon(taxonFinalSplit, 0)));//f_x1_genus
+                    lineCurrentData.add(FixData.getValue(FixData.fixGapsInTaxon(taxonFinalSplit, 1)).toLowerCase());//f_x1_sp1
+                    lineCurrentData.add(FixData.getValue(FixData.fixGapsInTaxon(taxonFinalSplit, 2)).toLowerCase());//f_x1_rank1
+                    lineCurrentData.add(FixData.getValue(FixData.fixGapsInTaxon(taxonFinalSplit, 3)).toLowerCase());//f_x1_sp2
+                    lineCurrentData.add(FixData.getValue(FixData.fixGapsInTaxon(taxonFinalSplit, 4)).toLowerCase());//f_x1_rank2
+                    lineCurrentData.add(FixData.getValue(FixData.fixGapsInTaxon(taxonFinalSplit, 5)).toLowerCase());//f_x1_sp3
+                    //Save into database
+                    entity.load(finalFields, lineCurrentData);
+                    result=repository.update(entity, "id");
+                    if(result.getAffected() > 0)
+                        Log.register(log,TypeLog.REGISTER_OK,result.getQuery(), true,PREFIX_UPDATE_FILE,Configuration.getParameter("log_ext_review"));
+                    else
+                        throw new Exception("Rows not affected");
+                }
+                catch(Exception e)
+                {
+                    Log.register(log,TypeLog.REGISTER_ERROR,String.valueOf(row) + "|" + e + "|" + line, true,PREFIX_UPDATE_FILE,Configuration.getParameter("log_ext_review"));
+                    if(result!=null)
+                        Log.register(log,TypeLog.QUERY_ERROR,result.getQuery(), true,PREFIX_UPDATE_FILE,Configuration.getParameter("log_ext_sql"));
+                    errors+=1;
+                    System.out.println("Error register: " + row + " " + e);
+                }
+            }
+            System.out.println("End process");
+            return errors;
+        }
     }
     
     /**
@@ -148,7 +219,8 @@ public class CTempOccurrences extends BaseController {
      * @return
      * @throws SQLException
      */
-    public long crossCheck(int step,ArrayList<Policy> policies, String log, boolean reviewdata) throws SQLException{
+    public long crossCheck(int step,ArrayList<Policy> policies, String log, boolean reviewdata) throws SQLException
+    {
         int a=0;
         String header="Update " + getRepository().getTable() + " set";
         UpdateQuery query;

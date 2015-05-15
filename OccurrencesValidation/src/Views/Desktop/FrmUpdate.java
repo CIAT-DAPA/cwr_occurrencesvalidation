@@ -9,6 +9,7 @@ import Controllers.Occurrences.BaseController;
 import Controllers.Occurrences.CMetadata;
 import Controllers.Occurrences.CTempOccurrences;
 import Controllers.Tools.TypeImports;
+import Controllers.Tools.TypeUpdate;
 import Models.DataBase.BaseUpdate;
 import Tools.Configuration;
 import Tools.FixData;
@@ -26,6 +27,7 @@ public class FrmUpdate extends javax.swing.JDialog {
     private boolean exit;
     private BaseController cBase;
     private ArrayList<BaseUpdate> updates;
+    private TypeUpdate typeUpdate;
     
     /**
      * Creates new form FrmUpdateFields
@@ -71,6 +73,8 @@ public class FrmUpdate extends javax.swing.JDialog {
         rbtClearQuery = new javax.swing.JRadioButton();
         rbtFields = new javax.swing.JRadioButton();
         chkTaxonFinal = new javax.swing.JCheckBox();
+        txtSplit = new javax.swing.JTextField();
+        lblSplit = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Update directly");
@@ -158,62 +162,74 @@ public class FrmUpdate extends javax.swing.JDialog {
 
         chkTaxonFinal.setText("Taxon Final");
 
+        txtSplit.setText("\\|");
+        txtSplit.setToolTipText("");
+
+        lblSplit.setText("Split:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(32, 32, 32)
-                        .addComponent(rbtClearQuery)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(rbtFields)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 99, Short.MAX_VALUE)
-                        .addComponent(chkTaxonFinal)
-                        .addGap(36, 36, 36))
-                    .addComponent(jSeparator1)
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jSeparator1)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblLog)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txtLog)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cmdLog))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblTypeImport)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(cboTypeImport, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(102, 102, 102)
+                                .addComponent(cmdRunByFile, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addComponent(jSeparator2, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblFile)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(rbtClearQuery)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(rbtFields)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(lblSplit)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(txtSplit, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(chkTaxonFinal)
+                                        .addGap(0, 43, Short.MAX_VALUE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(txtFile)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(cmdSearch))))))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblLog)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtLog)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cmdLog))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblFile)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(txtFile)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cmdSearch))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(lblTypeImport)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(cboTypeImport, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(102, 102, 102)
-                        .addComponent(cmdRunByFile, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(jSeparator2, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addGap(110, 110, 110)
+                        .addComponent(cmdRunByField, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(lblDesConfiguration1)
-                        .addGap(124, 124, 124))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(lblDesConfiguration)
-                        .addGap(163, 163, 163))))
+                .addComponent(lblDesConfiguration1)
+                .addGap(124, 124, 124))
             .addGroup(layout.createSequentialGroup()
-                .addGap(110, 110, 110)
-                .addComponent(cmdRunByField, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(152, 152, 152)
+                        .addComponent(lblDesConfiguration2, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(163, 163, 163)
+                        .addComponent(lblDesConfiguration)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lblDesConfiguration2)
-                .addGap(150, 150, 150))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -240,12 +256,14 @@ public class FrmUpdate extends javax.swing.JDialog {
                     .addComponent(cmdSearch))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblSplit)
+                    .addComponent(txtSplit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(rbtClearQuery)
                     .addComponent(rbtFields)
                     .addComponent(chkTaxonFinal))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cmdRunByFile)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
                 .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblDesConfiguration2)
@@ -267,6 +285,7 @@ public class FrmUpdate extends javax.swing.JDialog {
             TypeImports tImport=(TypeImports)cboTypeImport.getSelectedItem();
             if(JOptionPane.showConfirmDialog(this, "confirm that you want to make changes in database?","Alert",JOptionPane.YES_NO_OPTION)== JOptionPane.YES_OPTION)
             {
+                typeUpdate = TypeUpdate.QUERY_FIELDS;
                 cBase=tImport==TypeImports.TEMP_OCCURRENCES ? new CTempOccurrences() : 
                     (tImport==TypeImports.METADATA ? new CMetadata() : null);
                 updates=new ArrayList<>();                 
@@ -324,11 +343,14 @@ public class FrmUpdate extends javax.swing.JDialog {
         // TODO add your handling code here:
         try
         {
-            TypeImports tImport=(TypeImports)cboTypeImport.getSelectedItem();
-            cBase=tImport==TypeImports.TEMP_OCCURRENCES ? new CTempOccurrences() :
-                (tImport==TypeImports.METADATA ? new CMetadata() : null);
-            this.exit=true;
-            this.setVisible(false);
+            if(JOptionPane.showConfirmDialog(this, "confirm that you want to make changes in database?","Alert",JOptionPane.YES_NO_OPTION)== JOptionPane.YES_OPTION)
+            {
+                TypeImports tImport=(TypeImports)cboTypeImport.getSelectedItem();
+                cBase=tImport==TypeImports.TEMP_OCCURRENCES ? new CTempOccurrences() :
+                    (tImport==TypeImports.METADATA ? new CMetadata() : null);
+                this.exit=true;
+                this.setVisible(false);
+            }
         }
         catch(Exception ex)
         {
@@ -337,6 +359,9 @@ public class FrmUpdate extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_cmdRunByFileActionPerformed
 
+    /**
+     * Method that add all radio buttons to a group
+     */
     private void generateGroupRBT(){
         rbtGroup.add(rbtClearQuery);
         rbtGroup.add(rbtFields);
@@ -356,6 +381,7 @@ public class FrmUpdate extends javax.swing.JDialog {
     private javax.swing.JLabel lblDesConfiguration2;
     private javax.swing.JLabel lblFile;
     private javax.swing.JLabel lblLog;
+    private javax.swing.JLabel lblSplit;
     private javax.swing.JLabel lblTypeImport;
     private javax.swing.JRadioButton rbtClearQuery;
     private javax.swing.JRadioButton rbtFields;
@@ -363,6 +389,7 @@ public class FrmUpdate extends javax.swing.JDialog {
     private javax.swing.JTable tblUpdates;
     private javax.swing.JTextField txtFile;
     private javax.swing.JTextField txtLog;
+    private javax.swing.JTextField txtSplit;
     // End of variables declaration//GEN-END:variables
 
     /**
@@ -398,5 +425,26 @@ public class FrmUpdate extends javax.swing.JDialog {
      */
     public String getFile(){
         return txtFile.getText();
+    }
+    
+    /**
+     * @return Split pattern
+     */
+    public String getSplit(){
+        return txtSplit.getText();
+    }
+
+    /**
+     * @return the typeUpdate
+     */
+    public TypeUpdate getTypeUpdate() {
+        return typeUpdate;
+    }
+    
+    /**
+     * @return If the update process is for taxon information
+     */
+    public boolean isTaxonUpdate(){
+        return chkTaxonFinal.isSelected();
     }
 }

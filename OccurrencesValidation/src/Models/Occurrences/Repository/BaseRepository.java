@@ -118,7 +118,7 @@ public abstract class BaseRepository {
         {
             fields+=f + ",";
             temp=entity.get(f);
-            values += temp == null || temp.toString().equals("NULL") || temp.toString().equals("null") ? "null," : "'" + FixData.fixedValueToQuery(temp.toString().trim()) + "',";
+            values += temp == null || temp.toString().equals("NULL") || temp.toString().equals("null") ? FixData.NULL_DATABASE + "," : "'" + FixData.fixedValueToQuery(temp.toString().trim()) + "',";
         }
         query+=fields.substring(0, fields.length()-1) + ") values (";
         query+=values.substring(0, values.length()-1) + ")";
@@ -139,7 +139,7 @@ public abstract class BaseRepository {
             if(!f.equals(field))
             {
                 temp=entity.get(f);
-                query += f + "=" + (temp == null ? "null" : "'" +  temp.toString().trim() + "'") + ",";
+                query += f + "=" + (temp == null || temp.equals(FixData.NULL_DATABASE) ? FixData.NULL_DATABASE : "'" + FixData.fixedValueToQuery(temp.toString().trim()) + "'") + ",";
             }            
         }
         query=query.substring(0, query.length()-1) + " where " + field + "='" +entity.get(field) + "'";

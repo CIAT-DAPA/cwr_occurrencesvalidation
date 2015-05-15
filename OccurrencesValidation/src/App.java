@@ -20,6 +20,7 @@ import Views.Desktop.FrmDataValidation;
 import Controllers.Occurrences.CMetadata;
 import Controllers.Occurrences.CTempOccurrences;
 import Controllers.Tools.TypeReport;
+import Controllers.Tools.TypeUpdate;
 import Tools.Configuration;
 import Views.Desktop.FrmConf;
 import Views.Desktop.FrmReport;
@@ -92,26 +93,17 @@ public class App {
                         changeDirectory(frmUpdate.getLog());
                         if(frmUpdate.getCBase() instanceof CTempOccurrences){
                             cTempOccurrences=(CTempOccurrences)frmUpdate.getCBase();
-                            cTempOccurrences.updateFileQuery(frmUpdate.getFile(), frmUpdate.getLog());
+                            if(frmUpdate.getTypeUpdate() == TypeUpdate.FILE_QUERY_CLEAR)
+                                cTempOccurrences.updateFileQuery(frmUpdate.getFile(), frmUpdate.getLog());
+                            else if(frmUpdate.getTypeUpdate() == TypeUpdate.QUERY_FIELDS)
+                                cTempOccurrences.updateFields(frmUpdate.getUpdates(), frmUpdate.getLog());
+                            else
+                                cTempOccurrences.updateFile(frmUpdate.getFile(),frmUpdate.getSplit(),frmUpdate.getLog(),frmUpdate.isTaxonUpdate());
+                            message("Update finished!!!");
                         }
                         else
                             message("Type don't support");
-                        message("Update finished!!!");
                     }
-                    
-                    /*frmUpdateFields=new FrmUpdate(new JFrame(),true);
-                    frmUpdateFields.setVisible(true);                    
-                    if(frmUpdateFields.isExit())
-                    {
-                        changeDirectory(frmUpdateFields.getLog());
-                        if(frmUpdateFields.getCBase() instanceof CTempOccurrences){
-                            cTempOccurrences=(CTempOccurrences)frmUpdateFields.getCBase();
-                            cTempOccurrences.updateFields(frmUpdateFields.getUpdates(), frmUpdateFields.getLog());
-                        }
-                        else
-                            message("Type don't support");
-                        message("Update finished!!!");
-                    }*/
                 }
                 else if(option == 4)
                 {
