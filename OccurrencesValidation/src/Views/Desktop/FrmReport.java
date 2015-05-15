@@ -6,7 +6,7 @@
 package Views.Desktop;
 
 import Controllers.Occurrences.CTempOccurrences;
-import Controllers.Tools.Reports.TypeReport;
+import Controllers.Tools.TypeReport;
 import Tools.Configuration;
 import java.io.File;
 import javax.swing.JFileChooser;

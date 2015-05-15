@@ -14,7 +14,7 @@
 * See <http://www.gnu.org/licenses/>.
 */
 
-package Controllers.Tools.Validation;
+package Controllers.Tools;
 
 /**
  *

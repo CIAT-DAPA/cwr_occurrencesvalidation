@@ -19,7 +19,7 @@ import Views.Desktop.FrmOptions;
 import Views.Desktop.FrmDataValidation;
 import Controllers.Occurrences.CMetadata;
 import Controllers.Occurrences.CTempOccurrences;
-import Controllers.Tools.Reports.TypeReport;
+import Controllers.Tools.TypeReport;
 import Tools.Configuration;
 import Views.Desktop.FrmConf;
 import Views.Desktop.FrmReport;

@@ -17,9 +17,9 @@
 package Views.Desktop;
 
 import Controllers.Occurrences.CTempOccurrences;
-import Controllers.Tools.Validation.Policy;
-import Controllers.Tools.Validation.TypePolicy;
-import Controllers.Tools.Validation.TypeDataValidation;
+import Controllers.Tools.Policy;
+import Controllers.Tools.TypePolicy;
+import Controllers.Tools.TypeDataValidation;
 import Tools.Configuration;
 import java.io.File;
 import java.util.ArrayList;

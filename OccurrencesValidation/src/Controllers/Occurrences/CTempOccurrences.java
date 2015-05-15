@@ -16,9 +16,9 @@
 
 package Controllers.Occurrences;
 
-import Controllers.Tools.Reports.TypeReport;
-import Controllers.Tools.Validation.Policy;
-import Controllers.Tools.Validation.TypePolicy;
+import Controllers.Tools.TypeReport;
+import Controllers.Tools.Policy;
+import Controllers.Tools.TypePolicy;
 import Models.Complements.Repository.RepositoryOriginStatDistribution;
 import Models.Complements.Source.OriginStatDistribution;
 import Models.DataBase.BaseUpdate;
