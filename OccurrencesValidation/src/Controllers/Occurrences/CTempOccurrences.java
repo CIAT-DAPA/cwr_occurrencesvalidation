@@ -146,7 +146,6 @@ public class CTempOccurrences extends BaseController {
             finalFields.add(new Field("f_x1_rank2","varchar"));
             finalFields.add(new Field("f_x1_sp3","varchar"));
             TempOccurrences entity;
-            String taxonFinal, lineComplement;
             String[] taxonFinalSplit;
             ArrayList<String>  lineCurrentData;            
             System.out.println("Start process to update");
@@ -236,7 +235,7 @@ public class CTempOccurrences extends BaseController {
         String fullAddress;
         String value1, value2;
         String name,taxon_temp_final,taxon_tnrs_final,taxon_taxstand_final, taxon_grin_final;
-        String[] taxon_grin_split;
+        String[] taxon_split;
         
         RepositoryWaterBody rWater;
         String water;
@@ -520,13 +519,13 @@ public class CTempOccurrences extends BaseController {
                         if(!taxon_grin_final.equals(""))
                         {
                             query.add("taxon_final",  taxon_grin_final.replaceAll("_x_", "_x"));
-                            taxon_grin_split=taxon_grin_final.split("_");
-                            query.add("f_x1_genus", FixData.toCapitalLetter(FixData.fixGapsInTaxon(taxon_grin_split, 0)));
-                            query.add("f_x1_sp1", FixData.getValue(FixData.fixGapsInTaxon(taxon_grin_split, 1)).toLowerCase());
-                            query.add("f_x1_rank1", FixData.getValue(FixData.fixGapsInTaxon(taxon_grin_split, 2)).toLowerCase());
-                            query.add("f_x1_sp2", FixData.getValue(FixData.fixGapsInTaxon(taxon_grin_split, 3)).toLowerCase());
-                            query.add("f_x1_rank2", FixData.getValue(FixData.fixGapsInTaxon(taxon_grin_split, 4)).toLowerCase());
-                            query.add("f_x1_sp3", FixData.getValue(FixData.fixGapsInTaxon(taxon_grin_split, 5)).toLowerCase());
+                            taxon_split=taxon_grin_final.split("_");
+                            query.add("f_x1_genus", FixData.toCapitalLetter(FixData.fixGapsInTaxon(taxon_split, 0)));
+                            query.add("f_x1_sp1", FixData.getValue(FixData.fixGapsInTaxon(taxon_split, 1)).toLowerCase());
+                            query.add("f_x1_rank1", FixData.getValue(FixData.fixGapsInTaxon(taxon_split, 2)).toLowerCase());
+                            query.add("f_x1_sp2", FixData.getValue(FixData.fixGapsInTaxon(taxon_split, 3)).toLowerCase());
+                            query.add("f_x1_rank2", FixData.getValue(FixData.fixGapsInTaxon(taxon_split, 4)).toLowerCase());
+                            query.add("f_x1_sp3", FixData.getValue(FixData.fixGapsInTaxon(taxon_split, 5)).toLowerCase());
                         }
                         else if(FixData.hideRankSP(taxon_temp_final).equals(taxon_tnrs_final) && FixData.hideRank(taxon_temp_final).equals(taxon_taxstand_final) )
                         {
@@ -547,7 +546,18 @@ public class CTempOccurrences extends BaseController {
                         else if(!FixData.hideRankSP(taxon_temp_final).equals(taxon_tnrs_final) && FixData.hideRank(taxon_temp_final).equals(taxon_taxstand_final))
                             throw new Exception("Traffic light yellow. TNRS is different. Taxon: " + FixData.hideRankSP(taxon_temp_final) + " TNRS: " +  taxon_tnrs_final);
                         else if(FixData.hideRank(taxon_tnrs_final).equals(taxon_taxstand_final) && !taxon_temp_final.equals(taxon_tnrs_final))
-                            throw new Exception("Traffic light Orange. Taxonstand and TNRS are equals but taxon_final is different. Taxondstand: " + taxon_taxstand_final + " TNRS: " +  taxon_tnrs_final + " Taxon Temp: " + taxon_temp_final);
+                        {
+                            //Before Orange Traffic light
+                            //throw new Exception("Traffic light Orange. Taxonstand and TNRS are equals but taxon_final is different. Taxondstand: " + taxon_taxstand_final + " TNRS: " +  taxon_tnrs_final + " Taxon Temp: " + taxon_temp_final);
+                            query.add("taxon_final",  taxon_taxstand_final.replaceAll("_x_", "_x"));
+                            taxon_split=taxon_taxstand_final.split("_");
+                            query.add("f_x1_genus", FixData.toCapitalLetter(FixData.fixGapsInTaxon(taxon_split, 0)));
+                            query.add("f_x1_sp1", FixData.getValue(FixData.fixGapsInTaxon(taxon_split, 1)).toLowerCase());
+                            query.add("f_x1_rank1", FixData.getValue(FixData.fixGapsInTaxon(taxon_split, 2)).toLowerCase());
+                            query.add("f_x1_sp2", FixData.getValue(FixData.fixGapsInTaxon(taxon_split, 3)).toLowerCase());
+                            query.add("f_x1_rank2", FixData.getValue(FixData.fixGapsInTaxon(taxon_split, 4)).toLowerCase());
+                            query.add("f_x1_sp3", FixData.getValue(FixData.fixGapsInTaxon(taxon_split, 5)).toLowerCase());
+                        }
                         else
                             throw new Exception("Traffic light Red. All differents. Taxon: " + taxon_temp_final + " TNRS: " +  taxon_tnrs_final + " Taxstand: " + taxon_taxstand_final + " Grin: " + taxon_grin_final);
                     }
