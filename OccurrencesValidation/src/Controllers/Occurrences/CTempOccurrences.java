@@ -661,7 +661,7 @@ public class CTempOccurrences extends BaseController {
                         else if(!origin_stat_found && !origin_stat_value.equals(""))
                             query.add("final_origin_stat", Configuration.getParameter("origin_stat_non-native"));
                         else
-                            throw new Exception("Not found value for field final_origin_stat. Values: Origin=" + FixData.getValue(entity.get("origin_stat")) + " Search=" + origin_stat_value);
+                            throw new Exception("Not found value for field final_origin_stat. Values: Origin=" + FixData.getValue(entity.get("origin_stat")) + " Search=" + FixData.getValue(origin_stat_value) + " Taxon: " + FixData.getValue(entity.get("taxon_final")));
                     }
                 }
                 catch(Exception e)
