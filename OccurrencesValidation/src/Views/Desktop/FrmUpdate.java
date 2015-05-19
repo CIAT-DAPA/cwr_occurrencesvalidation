@@ -334,6 +334,7 @@ public class FrmUpdate extends javax.swing.JDialog {
         {
             if(JOptionPane.showConfirmDialog(this, "confirm that you want to make changes in database?","Alert",JOptionPane.YES_NO_OPTION)== JOptionPane.YES_OPTION)
             {
+                typeUpdate = rbtClearQuery.isSelected() ? TypeUpdate.FILE_QUERY_CLEAR : TypeUpdate.FILE_FIELDS;
                 TypeImports tImport=(TypeImports)cboTypeImport.getSelectedItem();
                 cBase=tImport==TypeImports.TEMP_OCCURRENCES ? new CTempOccurrences() :
                     (tImport==TypeImports.METADATA ? new CMetadata() : null);

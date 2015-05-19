@@ -121,7 +121,7 @@ public abstract class BaseRepository {
             values += temp == null || temp.toString().equals("NULL") || temp.toString().equals("null") ? FixData.NULL_DATABASE + "," : "'" + FixData.fixedValueToQuery(temp.toString().trim()) + "',";
         }
         query+=fields.substring(0, fields.length()-1) + ") values (";
-        query+=values.substring(0, values.length()-1) + ")";
+        query+=values.substring(0, values.length()-1) + ");";
         return new ResultQuery(query, db.update(query));
     }
     
@@ -142,7 +142,7 @@ public abstract class BaseRepository {
                 query += f + "=" + (temp == null || temp.equals(FixData.NULL_DATABASE) ? FixData.NULL_DATABASE : "'" + FixData.fixedValueToQuery(temp.toString().trim()) + "'") + ",";
             }            
         }
-        query=query.substring(0, query.length()-1) + " where " + field + "='" +entity.get(field) + "'";
+        query=query.substring(0, query.length()-1) + " where " + field + "='" +entity.get(field) + "';";
         return new ResultQuery(query, db.update(query));
     }
     
@@ -153,7 +153,7 @@ public abstract class BaseRepository {
      * @throws SQLException 
      */
     public ResultQuery update(BaseUpdate change) throws SQLException{
-        String query="update " + getTable() + " set " + change.getField() + "=" + change.getValue() + " " + (change.getCondition().equals("") ? "": "where " + change.getCondition());
+        String query="update " + getTable() + " set " + change.getField() + "=" + change.getValue() + " " + (change.getCondition().equals("") ? "": "where " + change.getCondition() + ";");
         return new ResultQuery(query, db.update(query));
     }
     
@@ -165,7 +165,7 @@ public abstract class BaseRepository {
      * @throws SQLException 
      */
     public ResultQuery delete(String field,String value) throws SQLException{
-        String query="Delete from " + getTable() + " where " + field + "='" + value + "'";
+        String query="Delete from " + getTable() + " where " + field + "='" + value + "';";
         return new ResultQuery(query, db.update(query));
     }
     

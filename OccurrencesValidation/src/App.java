@@ -48,7 +48,6 @@ public class App {
             FrmDataValidation frmData;
             FrmConf frmConf;
             FrmUpdate frmUpdate;
-            FrmUpdate frmUpdateFields;
             FrmReport frmReport;
             do
             {   
