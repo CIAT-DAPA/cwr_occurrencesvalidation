@@ -707,10 +707,10 @@ public class CTempOccurrences extends BaseController {
         a[1]=FixData.toCapitalLetter(FixData.fixGapsInTaxon(taxon_split, 0));//f_x1_genus
         a[2]=FixData.getValue(FixData.fixGapsInTaxon(taxon_split, 1)).toLowerCase();//f_x1_sp1
         rank=FixData.validateRank(FixData.fixGapsInTaxon(taxon_split, 2));//f_x1_rank1
-        a[3]=FixData.getValue(rank==null || rank.equals("") ? null : rank).toLowerCase();
+        a[3]=FixData.getValue(rank==null || rank.equals("") ? FixData.NULL_DATABASE : rank).toLowerCase();
         a[4]=FixData.getValue(FixData.fixGapsInTaxon(taxon_split, 3)).toLowerCase();//f_x1_sp2
         rank=FixData.validateRank(FixData.fixGapsInTaxon(taxon_split, 4));
-        a[5]=FixData.getValue(rank==null || rank.equals("") ? null : rank).toLowerCase();//f_x1_rank2
+        a[5]=FixData.getValue(rank==null || rank.equals("") ? FixData.NULL_DATABASE : rank).toLowerCase();//f_x1_rank2
         a[6]=FixData.getValue(FixData.fixGapsInTaxon(taxon_split, 5)).toLowerCase();//f_x1_sp3
         return a;
     }
