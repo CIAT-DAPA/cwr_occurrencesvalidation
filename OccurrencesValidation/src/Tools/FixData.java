@@ -219,7 +219,7 @@ public class FixData {
         {
             String r=rank.toLowerCase().trim();
             return r.startsWith("subs") || r.equals("ssp") || r.equals("ssp.") || r.equals("subsp-") || r.equals("subsp.") ? "subsp." :
-                    (r.equals("v") || r.equals("v.") || r.equals("var-") || r.equals("var.") ? "var." :
+                    (r.startsWith("var") || r.equals("v") || r.equals("v.") ? "var." :
                     (r.startsWith("conv") || r.equals("conv.") || r.equals("convar-") || r.equals("convar.") ? "convar." :
                     (r.startsWith("for") || r.equals("forma.") || r.equals("for.") || r.equals("f-") || r.equals("f.") ? "f." : "")));
         }

@@ -512,54 +512,35 @@ public class CTempOccurrences extends BaseController {
                     //4.6
                     else if(p.getTypePolicy()==TypePolicy.POSTCHECK_VALIDATE_TAXON)
                     {
-                        taxon_temp_final=generateName(entity,"_");
+                        taxon_split=null;
+                        taxon_temp_final=FixData.removePatternEnd(generateName(entity,"_"),"_");
                         taxon_tnrs_final= entity.getString("tnrs_final_taxon") == null ? "" : FixData.removePatternEnd(entity.getString("tnrs_final_taxon"),"_");
                         taxon_taxstand_final= entity.getString("taxstand_final_taxon") == null ? "" : FixData.removePatternEnd(entity.getString("taxstand_final_taxon"),"_");
                         taxon_grin_final = entity.getString("grin_final_taxon") == null ? "" : FixData.removePatternEnd(entity.getString("grin_final_taxon"),"_");
                         if(!taxon_grin_final.equals(""))
-                        {
-                            query.add("taxon_final",  taxon_grin_final.replaceAll("_x_", "_x"));
-                            taxon_split=taxon_grin_final.split("_");
-                            query.add("f_x1_genus", FixData.toCapitalLetter(FixData.fixGapsInTaxon(taxon_split, 0)));
-                            query.add("f_x1_sp1", FixData.getValue(FixData.fixGapsInTaxon(taxon_split, 1)).toLowerCase());
-                            query.add("f_x1_rank1", FixData.getValue(FixData.fixGapsInTaxon(taxon_split, 2)).toLowerCase());
-                            query.add("f_x1_sp2", FixData.getValue(FixData.fixGapsInTaxon(taxon_split, 3)).toLowerCase());
-                            query.add("f_x1_rank2", FixData.getValue(FixData.fixGapsInTaxon(taxon_split, 4)).toLowerCase());
-                            query.add("f_x1_sp3", FixData.getValue(FixData.fixGapsInTaxon(taxon_split, 5)).toLowerCase());
-                        }
+                            taxon_split=generateTaxonFinal(taxon_grin_final);
                         else if(FixData.hideRankSP(taxon_temp_final).equals(taxon_tnrs_final) && FixData.hideRank(taxon_temp_final).equals(taxon_taxstand_final) )
-                        {
-                            query.add("taxon_final", taxon_temp_final);
-                            //4.1
-                            value1=FixData.validateRank(entity.getString("x1_rank1"));
-                            query.add("f_x1_rank1", value1==null ? "null" : value1.equals("") ? "" : value1.toLowerCase() );
-                            value2=FixData.validateRank(entity.getString("x1_rank2"));
-                            query.add("f_x1_rank2", value2==null ? "null" : value2.equals("") ? "" : value2.toLowerCase() );
-                            //4.2 4.3
-                            query.add("f_x1_genus", FixData.toCapitalLetter(FixData.getValue(entity.get("x1_genus"))));
-                            query.add("f_x1_sp1", FixData.getValue(entity.get("x1_sp1")).toLowerCase());
-                            query.add("f_x1_sp2", FixData.getValue(entity.get("x1_sp2")).toLowerCase());
-                            query.add("f_x1_sp3", FixData.getValue(entity.get("x1_sp3")).toLowerCase());
-                        }                                                
+                            taxon_split=generateTaxonFinal(taxon_temp_final);                        
+                        else if(FixData.hideRank(taxon_tnrs_final).equals(FixData.hideRankSP(taxon_taxstand_final)) && !FixData.hideRankSP(taxon_temp_final).equals(taxon_tnrs_final))//Before Orange Traffic light                            
+                            taxon_split=generateTaxonFinal(taxon_tnrs_final);
                         else if(FixData.hideRankSP(taxon_temp_final).equals(taxon_tnrs_final) && !FixData.hideRank(taxon_temp_final).equals(taxon_taxstand_final))
                             throw new Exception("Traffic light yellow. Taxstand is different. Taxon Temp: " + FixData.hideRank(FixData.hideRankSP(taxon_temp_final)) + " Taxstand: " +  taxon_taxstand_final);
                         else if(!FixData.hideRankSP(taxon_temp_final).equals(taxon_tnrs_final) && FixData.hideRank(taxon_temp_final).equals(taxon_taxstand_final))
                             throw new Exception("Traffic light yellow. TNRS is different. Taxon: " + FixData.hideRankSP(taxon_temp_final) + " TNRS: " +  taxon_tnrs_final);
-                        else if(FixData.hideRank(taxon_tnrs_final).equals(taxon_taxstand_final) && !taxon_temp_final.equals(taxon_tnrs_final))
-                        {
-                            //Before Orange Traffic light
-                            //throw new Exception("Traffic light Orange. Taxonstand and TNRS are equals but taxon_final is different. Taxondstand: " + taxon_taxstand_final + " TNRS: " +  taxon_tnrs_final + " Taxon Temp: " + taxon_temp_final);
-                            query.add("taxon_final",  taxon_taxstand_final.replaceAll("_x_", "_x"));
-                            taxon_split=taxon_taxstand_final.split("_");
-                            query.add("f_x1_genus", FixData.toCapitalLetter(FixData.fixGapsInTaxon(taxon_split, 0)));
-                            query.add("f_x1_sp1", FixData.getValue(FixData.fixGapsInTaxon(taxon_split, 1)).toLowerCase());
-                            query.add("f_x1_rank1", FixData.getValue(FixData.fixGapsInTaxon(taxon_split, 2)).toLowerCase());
-                            query.add("f_x1_sp2", FixData.getValue(FixData.fixGapsInTaxon(taxon_split, 3)).toLowerCase());
-                            query.add("f_x1_rank2", FixData.getValue(FixData.fixGapsInTaxon(taxon_split, 4)).toLowerCase());
-                            query.add("f_x1_sp3", FixData.getValue(FixData.fixGapsInTaxon(taxon_split, 5)).toLowerCase());
-                        }
                         else
                             throw new Exception("Traffic light Red. All differents. Taxon: " + taxon_temp_final + " TNRS: " +  taxon_tnrs_final + " Taxstand: " + taxon_taxstand_final + " Grin: " + taxon_grin_final);
+                        if(taxon_split != null)
+                        {
+                            query.add("taxon_final",  taxon_split[0]);
+                            query.add("f_x1_genus", taxon_split[1]);
+                            query.add("f_x1_sp1", taxon_split[2]);
+                            query.add("f_x1_rank1", taxon_split[3]);
+                            query.add("f_x1_sp2", taxon_split[4]);
+                            query.add("f_x1_rank2", taxon_split[5]);
+                            query.add("f_x1_sp3", taxon_split[6]);
+                        }
+                        else
+                            throw new Exception("Traffic light Red. Not found taxon. taxon split null. Taxon: " + taxon_temp_final + " TNRS: " +  taxon_tnrs_final + " Taxstand: " + taxon_taxstand_final + " Grin: " + taxon_grin_final);
                     }
                     //4.6.3
                     else if(p.getTypePolicy()==TypePolicy.POSTCHECK_VALIDATE_TAXON_MANDATORY && (entity.getString("taxon_final") == null || entity.getString("taxon_final").equals("")))
@@ -708,6 +689,30 @@ public class CTempOccurrences extends BaseController {
                             entity.getString("x1_sp2"),
                             value2,
                             entity.getString("x1_sp3")},union));
+    }
+    
+    /**
+     * Method that generate the taxon final
+     * @param taxon
+     * @return 
+     */
+    private String[] generateTaxonFinal(String taxon)
+    {
+        String[] a = new String[7];
+        String rank, taxon_work;
+        taxon_work=taxon.replaceAll("_x_", "_x");
+        a[0]=taxon_work;//taxon_final
+        //4.1
+        String[] taxon_split=taxon_work.split("_");
+        a[1]=FixData.toCapitalLetter(FixData.fixGapsInTaxon(taxon_split, 0));//f_x1_genus
+        a[2]=FixData.getValue(FixData.fixGapsInTaxon(taxon_split, 1)).toLowerCase();//f_x1_sp1
+        rank=FixData.validateRank(FixData.fixGapsInTaxon(taxon_split, 2));//f_x1_rank1
+        a[3]=FixData.getValue(rank==null || rank.equals("") ? null : rank).toLowerCase();
+        a[4]=FixData.getValue(FixData.fixGapsInTaxon(taxon_split, 3)).toLowerCase();//f_x1_sp2
+        rank=FixData.validateRank(FixData.fixGapsInTaxon(taxon_split, 4));
+        a[5]=FixData.getValue(rank==null || rank.equals("") ? null : rank).toLowerCase();//f_x1_rank2
+        a[6]=FixData.getValue(FixData.fixGapsInTaxon(taxon_split, 5)).toLowerCase();//f_x1_sp3
+        return a;
     }
     
     /**
