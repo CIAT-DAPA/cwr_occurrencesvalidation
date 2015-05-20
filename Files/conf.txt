@@ -17,8 +17,8 @@ validation_translate_origin=introduced|non-native,naturalised|non-native,natural
 geocoding_threshold=5000
 geocoding_google_url_send_xml=https://maps.googleapis.com/maps/api/geocode/xml?sensor=false&
 geocoding_google_url_send_json=https://maps.googleapis.com/maps/api/geocode/json?sensor=true&
-geocoding_google_key=Qcx8oSMdJjJzPgNHcy_91yErynY=
-geocoding_google_client=gme-centrointernacional
+geocoding_google_key=
+geocoding_google_client=
 geocoding_database_world=waterbody.db
 geocoding_database_world_conf=conf
 geocoding_database_world_max_column=1000
