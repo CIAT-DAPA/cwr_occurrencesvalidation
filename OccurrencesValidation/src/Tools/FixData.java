@@ -385,4 +385,18 @@ public class FixData {
     {
         return value.contains("'") ? value.replaceAll("'", "''") : value;
     }
+    
+    /**
+     * Method that Generate a key from Hashmap
+     * @param values
+     * @return 
+     */
+    public static String generateKey(String[] values)
+    {
+        String a="";
+        for(int i=0;i<values.length;i++)
+            if(values[i] != null && !values[i].equals(""))
+                a+=FixData.deleteAccent(values[i]).trim().replaceAll(" ", "_") + "_";        
+        return FixData.removePatternEnd(a, "_").toLowerCase();
+    }
 }

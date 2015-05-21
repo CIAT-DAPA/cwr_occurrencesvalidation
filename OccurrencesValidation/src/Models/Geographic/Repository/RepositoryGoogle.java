@@ -47,8 +47,10 @@ import org.xml.sax.SAXException;
  * @author Steven Sotelo - stevenbetancurt@hotmail.com
  */
 public class RepositoryGoogle {
-/*Const*/
+
     public final static String HEADER ="group|latitude|longitude|text|value";
+    
+    private static HashMap db;
     
     /**
      * Create a string URL with the corresponding signature code and client id.
@@ -108,7 +110,13 @@ public class RepositoryGoogle {
     public static Location georenferencing(String country,String adm1, String adm2, String adm3,String local_area,String locality,double uncertainty)
     {
         Location a=null;
+        String key;
         try {
+            key=FixData.generateKey(new String[]{country,adm1,adm2,adm3,local_area,locality});
+            if(RepositoryGoogle.db==null)
+                RepositoryGoogle.db=new HashMap();
+            if(RepositoryGoogle.db.containsKey(key))
+                return (Location)RepositoryGoogle.db.get(key);
             String data=(!country.equals("") ? country + "+,+" : "")+(!adm1.equals("") ? adm1 + "+,+" : "")+(!adm2.equals("") ? adm2 + "+,+" : "")+(!adm3.equals("") ? adm3 + "+,+" : "")+(!local_area.equals("") ? local_area + "+,+" : "")+(!locality.equals("") ? locality : "");
             URL url = new URL(Configuration.getParameter("geocoding_google_url_send_xml") + "address=" + data.replace(" ","%20").replace(".","").replace(";",""));
             URL file_url = new URL(url.getProtocol() + "://" + url.getHost() + signRequest(url.getPath(), url.getQuery()));
@@ -172,14 +180,16 @@ public class RepositoryGoogle {
                     double distance = FixData.getDistance(coordValuesNortheast, coordValuesSouthwest); 
                     // Distance - km between Northeast and Southeast                    
                     if (distance <= uncertainty) 
-                    { 
                         a=new Location(coordValues[0], coordValues[1], distance);
-                    } 
                     else
+                    {
+                        RepositoryGoogle.db.put(key, a);
                         throw new Exception("Exceede uncertainty. " + "Uncertainty: " + distance + " THRESHOLD: " + Configuration.getParameter("geocoding_threshold"));
+                    }
                         
                 } 
-            }
+            }            
+            RepositoryGoogle.db.put(key, a);
         } catch (NoSuchAlgorithmException | InvalidKeyException | URISyntaxException | IOException | ParserConfigurationException | SAXException ex ) {
             System.out.println(ex);
         } catch (Exception ex) {

@@ -19,13 +19,15 @@ package Models.Geographic.Repository;
 import Models.DataBase.Geocoding.Geolocatesvc;
 import Models.DataBase.Geocoding.GeorefResultSet;
 import Models.Geographic.Source.Location;
+import Tools.FixData;
+import java.util.HashMap;
 
 /**
  *
  * @author Steven Sotelo - stevenbetancurt@hotmail.com
  */
 public class RepositoryGeolocate {
-    
+    private static HashMap db;
     /**
      * Method that geocoding a address from geolocate api
      * @param country
@@ -42,19 +44,26 @@ public class RepositoryGeolocate {
         boolean f=false, t=true;
         Geolocatesvc client=new Geolocatesvc() ;
         GeorefResultSet result;
+        String key;
         try {
+            key=FixData.generateKey(new String[]{country,adm1,adm2,adm3,local_area,locality});
+            if(RepositoryGeolocate.db==null)
+                RepositoryGeolocate.db=new HashMap();
+            if(RepositoryGeolocate.db.containsKey(key))
+                return (Location)RepositoryGeolocate.db.get(key);
             result = client.getGeolocatesvcSoap().georef2(country, adm1, adm2, adm3 + "," + local_area + "," + locality, f, f, f, t, t, f, f, 0);
             if(result.getResultSet().size()>0)
             {
                 a=new Location(result.getResultSet().get(0).getWGS84Coordinate().getLatitude(),
                                         result.getResultSet().get(0).getWGS84Coordinate().getLongitude(),
-                                        Double.parseDouble(result.getResultSet().get(0).getUncertaintyRadiusMeters()));
+                                        Double.parseDouble(result.getResultSet().get(0).getUncertaintyRadiusMeters()));                
             }
+            RepositoryGeolocate.db.put(key, a);
         }
         catch(Exception ex)
         {
             System.out.println(ex);
-        }
+        }            
         return a;
     }
 }
