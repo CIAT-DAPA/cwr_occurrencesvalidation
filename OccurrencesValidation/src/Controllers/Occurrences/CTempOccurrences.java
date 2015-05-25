@@ -523,10 +523,12 @@ public class CTempOccurrences extends BaseController {
                             taxon_split=generateTaxonFinal(taxon_temp_final);                        
                         else if(FixData.hideRank(taxon_tnrs_final).equals(FixData.hideRankSP(taxon_taxstand_final)) && !FixData.hideRankSP(taxon_temp_final).equals(taxon_tnrs_final))//Before Orange Traffic light                            
                             taxon_split=generateTaxonFinal(taxon_tnrs_final);
-                        else if(FixData.hideRankSP(taxon_temp_final).equals(taxon_tnrs_final) && !FixData.hideRank(taxon_temp_final).equals(taxon_taxstand_final))
-                            throw new Exception("Traffic light yellow. Taxstand is different. Taxon Temp: " + FixData.hideRank(FixData.hideRankSP(taxon_temp_final)) + " Taxstand: " +  taxon_taxstand_final);
-                        else if(!FixData.hideRankSP(taxon_temp_final).equals(taxon_tnrs_final) && FixData.hideRank(taxon_temp_final).equals(taxon_taxstand_final))
-                            throw new Exception("Traffic light yellow. TNRS is different. Taxon: " + FixData.hideRankSP(taxon_temp_final) + " TNRS: " +  taxon_tnrs_final);
+                        else if(FixData.hideRankSP(taxon_temp_final).equals(taxon_tnrs_final) && !FixData.hideRank(taxon_temp_final).equals(taxon_taxstand_final))//Before Yellow
+                            taxon_split=generateTaxonFinal(taxon_temp_final);
+                            //throw new Exception("Traffic light yellow. Taxstand is different. Taxon Temp: " + FixData.hideRank(FixData.hideRankSP(taxon_temp_final)) + " Taxstand: " +  taxon_taxstand_final);
+                        else if(!FixData.hideRankSP(taxon_temp_final).equals(taxon_tnrs_final) && FixData.hideRank(taxon_temp_final).equals(taxon_taxstand_final))//Before Yellow
+                            taxon_split=generateTaxonFinal(taxon_temp_final);
+                            //throw new Exception("Traffic light yellow. TNRS is different. Taxon: " + FixData.hideRankSP(taxon_temp_final) + " TNRS: " +  taxon_tnrs_final);
                         else
                             throw new Exception("Traffic light Red. All differents. Taxon: " + taxon_temp_final + " TNRS: " +  taxon_tnrs_final + " Taxstand: " + taxon_taxstand_final + " Grin: " + taxon_grin_final);
                         if(taxon_split != null)
