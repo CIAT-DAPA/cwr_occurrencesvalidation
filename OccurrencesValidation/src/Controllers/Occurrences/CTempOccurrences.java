@@ -584,31 +584,23 @@ public class CTempOccurrences extends BaseController {
                                 query.add("comments", (comments.equals("") ? "" : comments + ". ") + "Point in the country centroid");
                                 throw new Exception("Point in the country centroid. " + " Lat: " + String.valueOf(lat) + " Lon: " + String.valueOf(lon) + " Country ISO 2: " + entity.getString("final_iso2"));
                             }
-                            else if(origin)
+                            // It validate that always it has final_country or step 6
+                            if(origin || (!origin && entity.get("final_country")==null))
                             {
                                 googleReverse=RepositoryGoogle.reverse(lat, lon);
-                                if(googleReverse == null || !googleReverse.get("status").toString().equals("OK") || !FixData.getValue(googleReverse.get("iso")).toLowerCase().equals(FixData.getValue(entity.get("final_iso2")).toLowerCase()))
-                                {
-                                    query.add("coord_source", (origin ? "original" : "georef"));
-                                    query.add("final_lat", String.valueOf(lat));
-                                    query.add("final_lon", String.valueOf(lon));
+                                if(googleReverse == null || !googleReverse.get("status").toString().equals("OK") || !FixData.getValue(googleReverse.get("iso")).toLowerCase().equals(FixData.getValue(entity.get("final_iso2")).toLowerCase()))                                    
                                     query.add("comments", (comments.equals("") ? "" : comments + ". ") + "Coordinates do not match to country in source data");
-                                }
-                                else
+                                if(entity.get("final_country")==null && googleReverse != null)
                                 {
-                                    query.add("coord_source", "original");
-                                    query.add("final_lat", String.valueOf(lat));
-                                    query.add("final_lon", String.valueOf(lon));
+                                    query.add("final_country", googleReverse.get("country").toString());
+                                    query.add("final_iso2", googleReverse.get("iso").toString()); 
                                 }
                             }
-                            else if(!origin)
-                            {
-                                query.add("coord_source", "georef");
-                                query.add("final_lat", String.valueOf(lat));
-                                query.add("final_lon", String.valueOf(lon));
-                            }
-                            else
-                                throw new Exception("Error. " + water);
+                            query.add("coord_source", origin ? "original": "georef");
+                            query.add("final_lat", String.valueOf(lat));
+                            query.add("final_lon", String.valueOf(lon));
+                                
+                            
                         }
                     }
                     else if(p.getTypePolicy()==TypePolicy.POSTCHECK_ORIGIN_STAT)
