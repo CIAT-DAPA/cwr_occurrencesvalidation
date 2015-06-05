@@ -28,6 +28,7 @@ import java.util.HashMap;
  */
 public class RepositoryGeolocate {
     private static HashMap db;
+    private static Geolocatesvc client;
     /**
      * Method that geocoding a address from geolocate api
      * @param country
@@ -41,16 +42,17 @@ public class RepositoryGeolocate {
     public static Location georenferencing(String country,String adm1, String adm2, String adm3,String local_area,String locality)
     {
         Location a=null;
-        boolean f=false, t=true;
-        Geolocatesvc client=new Geolocatesvc() ;
+        boolean f=false, t=true;        
         GeorefResultSet result;
         String key;
-        try {
+        try {            
             key=FixData.generateKey(new String[]{country,adm1,adm2,adm3,local_area,locality});
             if(RepositoryGeolocate.db==null)
                 RepositoryGeolocate.db=new HashMap();
             if(RepositoryGeolocate.db.containsKey(key))
                 return (Location)RepositoryGeolocate.db.get(key);
+            if(client == null)
+                client=new Geolocatesvc();
             result = client.getGeolocatesvcSoap().georef2(country, adm1, adm2, adm3 + "," + local_area + "," + locality, f, f, f, t, t, f, f, 0);
             if(result.getResultSet().size()>0)
             {
