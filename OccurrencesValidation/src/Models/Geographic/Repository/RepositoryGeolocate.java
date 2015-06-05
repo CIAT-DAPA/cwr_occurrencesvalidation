@@ -51,9 +51,9 @@ public class RepositoryGeolocate {
                 RepositoryGeolocate.db=new HashMap();
             if(RepositoryGeolocate.db.containsKey(key))
                 return (Location)RepositoryGeolocate.db.get(key);
-            if(client == null)
-                client=new Geolocatesvc();
-            result = client.getGeolocatesvcSoap().georef2(country, adm1, adm2, adm3 + "," + local_area + "," + locality, f, f, f, t, t, f, f, 0);
+            if(RepositoryGeolocate.client == null)
+                RepositoryGeolocate.client=new Geolocatesvc();
+            result = RepositoryGeolocate.client.getGeolocatesvcSoap().georef2(country, adm1, adm2, adm3 + "," + local_area + "," + locality, f, f, f, t, t, f, f, 0);
             if(result.getResultSet().size()>0)
             {
                 a=new Location(result.getResultSet().get(0).getWGS84Coordinate().getLatitude(),
