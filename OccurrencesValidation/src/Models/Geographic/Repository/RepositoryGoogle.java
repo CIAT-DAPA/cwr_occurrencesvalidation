@@ -51,6 +51,7 @@ public class RepositoryGoogle {
     public final static String HEADER ="group|latitude|longitude|text|value";
     
     private static HashMap db;
+    private static Mac mac;
     
     /**
      * Create a string URL with the corresponding signature code and client id.
@@ -63,17 +64,20 @@ public class RepositoryGoogle {
      * @throws URISyntaxException
      */
     private static String signRequest(String path, String query)throws NoSuchAlgorithmException, InvalidKeyException,UnsupportedEncodingException, URISyntaxException, IOException {
-        byte[] key= Base64.decode(Configuration.getParameter("geocoding_google_key").replace('-', '+').replace('_', '/'));
+        if(RepositoryGoogle.mac==null){
+            // key
+            byte[] key= Base64.decode(Configuration.getParameter("geocoding_google_key").replace('-', '+').replace('_', '/'));
+            // Get an HMAC-SHA1 signing key from the raw key bytes
+            SecretKeySpec sha1Key = new SecretKeySpec(key, "HmacSHA1");
+            // Get an HMAC-SHA1 Mac instance and initialize it with the HMAC-SHA1
+            
+            RepositoryGoogle.mac = Mac.getInstance("HmacSHA1");
+            RepositoryGoogle.mac.init(sha1Key);
+        }
         // Retrieve the proper URL components to sign
-        String resource = path + '?' + query + "&client="+Configuration.getParameter("geocoding_google_client");
-        // Get an HMAC-SHA1 signing key from the raw key bytes
-        SecretKeySpec sha1Key = new SecretKeySpec(key, "HmacSHA1");
-        // Get an HMAC-SHA1 Mac instance and initialize it with the HMAC-SHA1
-        // key
-        Mac mac = Mac.getInstance("HmacSHA1");
-        mac.init(sha1Key);
+        String resource = path + '?' + query + "&client="+Configuration.getParameter("geocoding_google_client");        
         // compute the binary signature for the request
-        byte[] sigBytes = mac.doFinal(resource.getBytes());
+        byte[] sigBytes = RepositoryGoogle.mac.doFinal(resource.getBytes());
         // base 64 encode the binary signature
         String signature = Base64.encodeBytes(sigBytes);
         // convert the signature to 'web safe' base 64
