@@ -368,7 +368,7 @@ public class CTempOccurrences extends BaseController {
                     //5.1
                     else if(p.getTypePolicy()==TypePolicy.GEOCODING_VALIDATE_COUNTRY)
                     {
-                        country=searchCountry(entity);
+                        country=searchCountry(entity,rTCountries);
                         if(country != null)
                             query.add("final_country", country.getString("name"));
                         else
@@ -377,7 +377,7 @@ public class CTempOccurrences extends BaseController {
                     //5.2
                     else if(p.getTypePolicy()==TypePolicy.GEOCODING_VALIDATE_ISO2)
                     {
-                        country=searchCountry(entity);
+                        country=searchCountry(entity,rTCountries);
                         if(country != null)
                             query.add("final_iso2", country.getString("iso2"));
                         else
@@ -428,7 +428,7 @@ public class CTempOccurrences extends BaseController {
                     //5.4
                     else if(p.getTypePolicy()==TypePolicy.GEOCODING_INITIAL)
                     {
-                        country=searchCountry(entity);
+                        country=searchCountry(entity,rTCountries);
                         temp_country=country!=null ? country.getString("name") : "";                        
                         temp_adm1=FixData.getValueImaginary(entity.getString("adm1"));
                         temp_adm2=FixData.getValueImaginary(entity.getString("adm2"));
@@ -665,10 +665,9 @@ public class CTempOccurrences extends BaseController {
      * @param entity
      * @return 
      */
-    private TempCountries searchCountry(TempOccurrences entity){  
+    private TempCountries searchCountry(TempOccurrences entity,RepositoryTempCountries rTCountries){  
         TempCountries country=null;
         HashMap googleReverse;
-        RepositoryTempCountries rTCountries=new RepositoryTempCountries();
         if(entity.get("iso")!=null)
             country=rTCountries.searchIso3(entity.getString("iso"));
         if(country==null && entity.get("country")!=null)
