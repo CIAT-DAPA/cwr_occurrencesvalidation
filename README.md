@@ -2,6 +2,8 @@
 
 This project contains tools for validate occurrences of Crop Wild Relative. All rights are of CIAT
 
+![Logo](https://github.com/CIAT-DAPA/cwr_occurrencesvalidation/blob/master/Wiki/logo.png)
+
 ### What is this repository for? ###
 
 * Quick summary
