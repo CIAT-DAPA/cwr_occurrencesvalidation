@@ -503,7 +503,7 @@ public class CTempOccurrences extends BaseController {
                     //5.3.6 - 5.3.7 - 5.4.1
                     else if(p.getTypePolicy()==TypePolicy.POSTCHECK_GEOCODING_CROSCHECK_COORDS || p.getTypePolicy()==TypePolicy.POSTCHECK_GEOCODING_CROSCHECK_GEOREF)
                     {
-                        if(entity.getString("coord_source") != null)
+                        if(entity.get("coord_source") != null)
                             System.out.println("The record has already been crosschecked. coord_source: " + entity.getString("coord_source"));
                         else
                         {
