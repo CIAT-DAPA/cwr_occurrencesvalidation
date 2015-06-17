@@ -543,7 +543,7 @@ public class CTempOccurrences extends BaseController {
                                 googleReverse=RepositoryGoogle.reverse(lat, lon);
                                 if(googleReverse == null || !googleReverse.get("status").toString().equals("OK") || !FixData.getValue(googleReverse.get("iso")).toLowerCase().equals(FixData.getValue(entity.get("final_iso2")).toLowerCase()))                                    
                                     query.add("comments", (comments.equals("") ? "" : comments + ". ") + "Coordinates do not match to country in source data");
-                                if(entity.get("final_country")==null && googleReverse != null)
+                                if(entity.get("final_country")==null && googleReverse != null && googleReverse.get("status").toString().equals("OK"))
                                 {
                                     query.add("final_country", googleReverse.get("country").toString());
                                     query.add("final_iso2", googleReverse.get("iso").toString()); 
