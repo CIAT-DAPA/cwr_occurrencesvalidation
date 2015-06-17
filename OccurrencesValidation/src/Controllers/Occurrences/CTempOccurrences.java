@@ -511,11 +511,15 @@ public class CTempOccurrences extends BaseController {
                             comments = FixData.getValueImaginary(entity.get("comments"));
                             if(origin)
                             {
+                                if(entity.get("latitude")==null || entity.get("longitude")==null)
+                                    throw new Exception("Doesn't have coordinates in origin");
                                 lat=entity.getDouble("latitude");
                                 lon=entity.getDouble("longitude");
                             }
                             else
                             {
+                                if(entity.get("latitude_georef")==null || entity.get("longitude_georef")==null)
+                                    throw new Exception("Doesn't have coordinates in georef");
                                 lat=entity.getDouble("latitude_georef");
                                 lon=entity.getDouble("longitude_georef");
                             }
@@ -589,6 +593,19 @@ public class CTempOccurrences extends BaseController {
                         else
                             throw new Exception("Not found value for field final_origin_stat. Values: Origin=" + FixData.getValue(entity.get("origin_stat")) + " Search=" + FixData.getValue(origin_stat_value) + " Taxon: " + FixData.getValue(entity.get("taxon_final")));
                     }
+                }
+                catch(NullPointerException e)
+                {
+                    a+=1;
+                    lGoogle=null;
+                    lGeolocate=null;
+                    googleReverse=null;
+                    StackTraceElement[] frames = e.getStackTrace();
+                    String msgE="";
+                    for(StackTraceElement frame : frames)
+                        msgE += frame.getClassName() + "-" + frame.getMethodName() + "-" + String.valueOf(frame.getLineNumber());
+                    System.out.println(e + msgE);
+                    Log.register(log, TypeLog.REGISTER_ERROR, entity.getString("id") + "|" + e.toString() + "|" + msgE, true, PREFIX_CROSSCHECK + String.valueOf(step),Configuration.getParameter("log_ext_review") );
                 }
                 catch(Exception e)
                 {
