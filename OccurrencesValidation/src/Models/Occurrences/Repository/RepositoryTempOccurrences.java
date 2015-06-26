@@ -67,7 +67,7 @@ public class RepositoryTempOccurrences extends BaseRepository {
                     "comments, " +
                     "grin_final_taxon " +
                     "From " + super.getTable() + " " +
-                    condition != null && !condition.equals("") ? "Where " + condition : "");
+                    (condition != null && !condition.equals("") ? "Where " + condition : ""));
     }
     
     /**

@@ -314,8 +314,10 @@ public class CTempOccurrences extends BaseController {
                         tnrs=RepositoryTNRS.get(name, true);
                         if(tnrs==null)
                             tnrs=RepositoryTNRS.get(name, false);
-                        if(tnrs==null)
+                        if(tnrs==null){
+                            review_data +="||||||||||||||||||||||||||||||||";
                             throw new Exception("Taxon not found in TNRS: " + name);
+                        }
                         for(TNRS t:tnrs)
                         {
                             if(t.finalTaxon!=null && !t.finalTaxon.equals(""))
@@ -336,8 +338,10 @@ public class CTempOccurrences extends BaseController {
                     {
                         name=generateName(entity," ");
                         taxonstand=RepositoryTaxonstand.get(name);
-                        if(taxonstand==null)
+                        if(taxonstand==null){
+                            review_data +="|||||||||||||||||";
                             throw new Exception("Taxon not found in taxonstand: " + name);
+                        }
                         else
                         {
                             review_data+=taxonstand.toString();
