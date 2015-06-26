@@ -48,7 +48,7 @@ public class RepositoryTempOccurrences extends BaseRepository {
      * Query for bring the fields mandatory for cross check process
      * @throws SQLException 
      */
-    public void listCrossCheck() throws SQLException{
+    public void listCrossCheck(String condition) throws SQLException{
         db.getResults("Select id,old_id,availability,cult_stat,source,origin_stat,is_hybrid,filename, " +
                     "country,adm1,adm2,adm3,local_area,locality, " +
                     "iso, " +
@@ -66,7 +66,8 @@ public class RepositoryTempOccurrences extends BaseRepository {
                     "latitude_georef,longitude_georef, " +
                     "comments, " +
                     "grin_final_taxon " +
-                    "From " + super.getTable() + " ");
+                    "From " + super.getTable() + " " +
+                    condition != null && !condition.equals("") ? "Where " + condition : "");
     }
     
     /**

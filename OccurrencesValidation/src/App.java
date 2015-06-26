@@ -79,7 +79,7 @@ public class App {
                     {
                         changeDirectory(frmData.getLog());
                         cTempOccurrences=frmData.getCTO();
-                        cTempOccurrences.crossCheck(frmData.getStep(), frmData.getPolicies(), frmData.getLog(),frmData.getReviewData());
+                        cTempOccurrences.crossCheck(frmData.getStep(), frmData.getPolicies(), frmData.getLog(),frmData.getReviewData(), frmData.getCondition());
                         message("Validation finished!!!");
                     }
                 }

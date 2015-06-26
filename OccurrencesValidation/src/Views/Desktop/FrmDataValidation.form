@@ -35,9 +35,9 @@
                       <Component id="txtLog" min="-2" pref="186" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="cmdLog" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="chkReviewData" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
+                      <Component id="chkReviewData" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Component id="cmdCountries" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="1" attributes="0">
@@ -54,6 +54,11 @@
                       <Component id="cmdSelect" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
                       <Component id="cmdStart" min="-2" pref="97" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="lblCondition" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="txtCondition" max="32767" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
@@ -78,8 +83,13 @@
                   <Component id="cmdCountries" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="chkReviewData" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
+              <EmptySpace max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="lblCondition" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="txtCondition" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="scpPolicies" pref="276" max="32767" attributes="0"/>
+              <Component id="scpPolicies" min="-2" pref="315" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="cmdSelect" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -193,6 +203,13 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Review data"/>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblCondition">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Condition:"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="txtCondition">
     </Component>
   </SubComponents>
 </Form>

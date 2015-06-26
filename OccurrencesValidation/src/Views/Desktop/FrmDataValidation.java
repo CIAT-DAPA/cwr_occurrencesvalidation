@@ -85,6 +85,13 @@ public class FrmDataValidation extends javax.swing.JDialog {
     }
     
     /**
+     * @return get the condition for the query
+     */
+    public String getCondition(){
+        return txtCondition.getText();
+    }
+    
+    /**
      * @return list of policies selected
      */
     public ArrayList<Policy> getPolicies(){
@@ -120,6 +127,8 @@ public class FrmDataValidation extends javax.swing.JDialog {
         cmdStart = new javax.swing.JButton();
         cmdSelect = new javax.swing.JButton();
         chkReviewData = new javax.swing.JCheckBox();
+        lblCondition = new javax.swing.JLabel();
+        txtCondition = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Data Validation");
@@ -191,6 +200,8 @@ public class FrmDataValidation extends javax.swing.JDialog {
 
         chkReviewData.setText("Review data");
 
+        lblCondition.setText("Condition:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -205,9 +216,9 @@ public class FrmDataValidation extends javax.swing.JDialog {
                         .addComponent(txtLog, javax.swing.GroupLayout.PREFERRED_SIZE, 186, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(cmdLog)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(chkReviewData)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(chkReviewData)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(cmdCountries))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
@@ -221,7 +232,11 @@ public class FrmDataValidation extends javax.swing.JDialog {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(cmdSelect)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(cmdStart, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(cmdStart, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lblCondition)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtCondition)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -240,8 +255,12 @@ public class FrmDataValidation extends javax.swing.JDialog {
                     .addComponent(cmdLog)
                     .addComponent(cmdCountries)
                     .addComponent(chkReviewData))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblCondition)
+                    .addComponent(txtCondition, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(scpPolicies, javax.swing.GroupLayout.DEFAULT_SIZE, 276, Short.MAX_VALUE)
+                .addComponent(scpPolicies, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cmdSelect)
@@ -395,11 +414,13 @@ public class FrmDataValidation extends javax.swing.JDialog {
     private javax.swing.JButton cmdLog;
     private javax.swing.JButton cmdSelect;
     private javax.swing.JButton cmdStart;
+    private javax.swing.JLabel lblCondition;
     private javax.swing.JLabel lblLog;
     private javax.swing.JLabel lblSource;
     private javax.swing.JLabel lblStep;
     private javax.swing.JScrollPane scpPolicies;
     private javax.swing.JTable tblPolicies;
+    private javax.swing.JTextField txtCondition;
     private javax.swing.JTextField txtLog;
     // End of variables declaration//GEN-END:variables
     

@@ -218,7 +218,7 @@ public class CTempOccurrences extends BaseController {
      * @return
      * @throws SQLException
      */
-    public long crossCheck(int step,ArrayList<Policy> policies, String log, boolean reviewdata) throws SQLException
+    public long crossCheck(int step,ArrayList<Policy> policies, String log, boolean reviewdata, String condition) throws SQLException
     {
         int a=0;
         String header="Update " + getRepository().getTable() + " set";
@@ -258,7 +258,7 @@ public class CTempOccurrences extends BaseController {
                     (step==3 || step==6 || step==7 ? "id|" + RepositoryGoogle.HEADER : ""), false,PREFIX_CROSSCHECK + String.valueOf(step),Configuration.getParameter("log_ext_review"));
         rWater=new RepositoryWaterBody(Configuration.getParameter("geocoding_database_world"));
         countRows=repository.count();
-        getRepository().listCrossCheck();
+        getRepository().listCrossCheck(condition);
         while((entity=(TempOccurrences)getRepository().hasNext(entity)) != null)
         {
             review_data = entity.getString("id") + "|";
