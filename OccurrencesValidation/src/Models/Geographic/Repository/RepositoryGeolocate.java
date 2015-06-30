@@ -17,8 +17,10 @@
 package Models.Geographic.Repository;
 
 import Models.DataBase.Geocoding.Geolocatesvc;
+import Models.DataBase.Geocoding.GeorefResult;
 import Models.DataBase.Geocoding.GeorefResultSet;
 import Models.Geographic.Source.Location;
+import Tools.Configuration;
 import Tools.FixData;
 import java.util.HashMap;
 
@@ -56,9 +58,13 @@ public class RepositoryGeolocate {
             result = RepositoryGeolocate.client.getGeolocatesvcSoap().georef2(country, adm1, adm2, adm3 + "," + local_area + "," + locality, f, f, f, t, t, f, f, 0);
             if(result.getResultSet().size()>0)
             {
-                a=new Location(result.getResultSet().get(0).getWGS84Coordinate().getLatitude(),
-                                        result.getResultSet().get(0).getWGS84Coordinate().getLongitude(),
-                                        Double.parseDouble(result.getResultSet().get(0).getUncertaintyRadiusMeters()));                
+                for(GeorefResult gr : result.getResultSet()){
+                    if(Double.parseDouble(gr.getUncertaintyRadiusMeters()) <= Double.parseDouble(Configuration.getParameter("geocoding_threshold"))){
+                        a=new Location(gr.getWGS84Coordinate().getLatitude(),gr.getWGS84Coordinate().getLongitude(),Double.parseDouble(gr.getUncertaintyRadiusMeters()));
+                        break;
+                    }
+                }
+                
             }
             RepositoryGeolocate.db.put(key, a);
         }
