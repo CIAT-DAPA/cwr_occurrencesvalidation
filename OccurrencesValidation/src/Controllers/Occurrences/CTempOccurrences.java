@@ -549,14 +549,25 @@ public class CTempOccurrences extends BaseController {
                             if(origin || (!origin && entity.get("final_country")==null))
                             {
                                 googleReverse=RepositoryGoogle.reverse(lat, lon);
-                                if(googleReverse == null || !googleReverse.get("status").toString().equals("OK") || !FixData.getValue(googleReverse.get("iso")).toLowerCase().equals(FixData.getValue(entity.get("final_iso2")).toLowerCase()))                                    
-                                    query.add("comments", (comments.equals("") ? "" : comments + ". ") + "Coordinates do not match to country in source data");
-                                if(entity.get("final_country")==null && googleReverse != null && googleReverse.get("status").toString().equals("OK"))
+                                if(googleReverse == null)
+                                    comments+=". Coordinates not found country for final_country";
+                                else
                                 {
-                                    query.add("final_country", googleReverse.get("country").toString());
-                                    query.add("final_iso2", googleReverse.get("iso").toString()); 
+                                    if(!googleReverse.get("status").toString().equals("OK") || !FixData.getValue(googleReverse.get("iso")).toLowerCase().equals(FixData.getValue(entity.get("final_iso2")).toLowerCase()))
+                                        comments+=". Coordinates do not match to country in source data";
+                                    if(entity.get("final_country")==null){
+                                        if(googleReverse.get("status").toString().equals("OK"))
+                                        {
+                                            query.add("final_country", googleReverse.get("country").toString());
+                                            query.add("final_iso2", googleReverse.get("iso").toString()); 
+                                        }
+                                        else
+                                            comments+=". Not found a country in reverser geocoding";
+                                    }
                                 }
+                                
                             }
+                            query.add("comments", comments);
                             query.add("coord_source", origin ? "original": "georef");
                             query.add("final_lat", String.valueOf(lat));
                             query.add("final_lon", String.valueOf(lon));
