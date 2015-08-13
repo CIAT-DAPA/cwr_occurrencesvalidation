@@ -59,7 +59,7 @@ public class RepositoryGeolocate {
             if(result.getResultSet().size()>0)
             {
                 for(GeorefResult gr : result.getResultSet()){
-                    if(Double.parseDouble(gr.getUncertaintyRadiusMeters()) <= Double.parseDouble(Configuration.getParameter("geocoding_threshold"))){
+                    if(gr != null && gr.getWGS84Coordinate() != null && Double.parseDouble(gr.getUncertaintyRadiusMeters()) <= Double.parseDouble(Configuration.getParameter("geocoding_threshold")) && gr.getWGS84Coordinate().getLatitude() != 0 && gr.getWGS84Coordinate().getLongitude() != 0){
                         a=new Location(gr.getWGS84Coordinate().getLatitude(),gr.getWGS84Coordinate().getLongitude(),Double.parseDouble(gr.getUncertaintyRadiusMeters()));
                         break;
                     }
