@@ -448,19 +448,19 @@ public class CTempOccurrences extends BaseController {
                             fullAddress=temp_country + "-" + temp_adm1 + "-" + temp_adm2 + "-" + temp_adm3 + "-" + temp_local_area + "-" + temp_locality;
                             review_data+= lGoogle != null ? "0|" + lGoogle.toString() + " Google " + fullAddress +"||" + (lGeolocate==null?"":"\n") :"" ;
                             review_data+= lGeolocate != null ? (lGoogle==null? "" : entity.getString("id") + "|" ) + "2|" + lGeolocate.toString() + " Geolocate " + fullAddress + "||":"";
-                        }
+                        }                        
                         
-                        if(lGoogle != null)
-                        {
-                            query.add("latitude_georef",  String.valueOf(lGoogle.getLatitude()));
-                            query.add("longitude_georef",  String.valueOf(lGoogle.getLongitude()));
-                            query.add("distance_georef",  String.valueOf(lGoogle.getUncertainty()));
-                        }
-                        else if(lGeolocate != null)
+                        if(lGeolocate != null)
                         {
                             query.add("latitude_georef",  String.valueOf(lGeolocate.getLatitude()));
                             query.add("longitude_georef",  String.valueOf(lGeolocate.getLongitude()));
                             query.add("distance_georef",  String.valueOf(lGeolocate.getUncertainty()));
+                        }
+                        else if(lGoogle != null)
+                        {
+                            query.add("latitude_georef",  String.valueOf(lGoogle.getLatitude()));
+                            query.add("longitude_georef",  String.valueOf(lGoogle.getLongitude()));
+                            query.add("distance_georef",  String.valueOf(lGoogle.getUncertainty()));
                         }
                         else
                             throw new Exception("Can't geocode record " + temp_country + "," + temp_adm1 + "," + temp_adm2 + "," + temp_adm3 + "," + temp_local_area + "," + temp_locality);
@@ -645,7 +645,7 @@ public class CTempOccurrences extends BaseController {
             if(reviewdata && !review_data.equals("") && !review_data.equals(entity.getString("id") + "|") && (step==2 || step == 3 || step == 6 || step == 7))
                 Log.register(log, TypeLog.REVIEW_DATA, review_data, false,PREFIX_CROSSCHECK + String.valueOf(step),Configuration.getParameter("log_ext_review"));
             //Percent of progress
-            System.out.println(FixData.toPercent(countRows, row) + "% row " + row + " of " + countRows);
+            System.out.println(FixData.toPercent(countRows, row) + "% row " + row + " of " + countRows + " id = " + entity.getString("id"));
         }
         return a;
     }

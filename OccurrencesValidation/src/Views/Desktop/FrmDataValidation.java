@@ -332,8 +332,8 @@ public class FrmDataValidation extends javax.swing.JDialog {
         // TODO add your handling code here:
         int row = tblPolicies.rowAtPoint(evt.getPoint());
         int col = tblPolicies.columnAtPoint(evt.getPoint());
-        if(col==0)
-            cboStep.setSelectedIndex(0);
+        /*if(col==0)
+            cboStep.setSelectedIndex(0);*/
     }//GEN-LAST:event_tblPoliciesMouseClicked
     
     /**

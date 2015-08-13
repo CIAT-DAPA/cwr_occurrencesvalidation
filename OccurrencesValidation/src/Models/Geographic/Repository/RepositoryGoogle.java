@@ -121,7 +121,7 @@ public class RepositoryGoogle {
                 RepositoryGoogle.db=new HashMap();
             if(RepositoryGoogle.db.containsKey(key))
                 return (Location)RepositoryGoogle.db.get(key);
-            String data=(!country.equals("") ? country + "+,+" : "")+(!adm1.equals("") ? adm1 + "+,+" : "")+(!adm2.equals("") ? adm2 + "+,+" : "")+(!adm3.equals("") ? adm3 + "+,+" : "")+(!local_area.equals("") ? local_area + "+,+" : "")+(!locality.equals("") ? locality : "");
+            String data=(!locality.equals("") ? locality : "") + (!local_area.equals("") ? local_area + "+,+" : "") +(!adm3.equals("") ? adm3 + "+,+" : "") +(!adm2.equals("") ? adm2 + "+,+" : "") +(!adm1.equals("") ? adm1 + "+,+" : "") + (!country.equals("") ? country + "+,+" : "");
             URL url = new URL(Configuration.getParameter("geocoding_google_url_send_xml") + "address=" + data.replace(" ","%20").replace(".","").replace(";",""));
             URL file_url = new URL(url.getProtocol() + "://" + url.getHost() + signRequest(url.getPath(), url.getQuery()));
             // Get information from URL
