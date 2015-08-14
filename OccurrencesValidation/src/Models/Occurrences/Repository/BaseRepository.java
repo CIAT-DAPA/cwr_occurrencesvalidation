@@ -188,6 +188,25 @@ public abstract class BaseRepository {
         return a;
     }
     
+    /**
+     * Method that return count register in the table
+     * @return count of register into table, if it return -1 exist a error
+     */
+    public long count(String condition) {
+        long a=-1;
+        try
+        {
+            db.getResults("Select count(id) From " + getTable() + " Where " + condition);
+            while(this.db.getRecordSet().next())
+                a=this.db.getRecordSet().getLong(1);
+        }
+        catch (SQLException ex)
+        {
+            System.out.println("Error in count register " + ex);
+        }
+        return a;
+    }
+    
     
     /**
      * Method that establish if the record set has more rows.

@@ -257,7 +257,10 @@ public class CTempOccurrences extends BaseController {
             Log.register(log,TypeLog.REVIEW_DATA, step==2? "id|x1_genus|x1_sp1|x1_rank1|x1_sp2|x1_rank2|x1_sp3|" + RepositoryTNRS.HEADER + RepositoryTaxonstand.HEADER + RepositoryGRIN.HEADER :
                     (step==3 || step==6 || step==7 ? "id|" + RepositoryGoogle.HEADER : ""), false,PREFIX_CROSSCHECK + String.valueOf(step),Configuration.getParameter("log_ext_review"));
         rWater=new RepositoryWaterBody(Configuration.getParameter("geocoding_database_world"));
-        countRows=repository.count();
+        if(condition == null || condition.equals(""))
+            countRows=repository.count();
+        else
+            countRows=repository.count(condition);
         getRepository().listCrossCheck(condition);
         while((entity=(TempOccurrences)getRepository().hasNext(entity)) != null)
         {
