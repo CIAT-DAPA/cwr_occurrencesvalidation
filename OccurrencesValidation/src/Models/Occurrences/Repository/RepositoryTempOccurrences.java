@@ -65,7 +65,8 @@ public class RepositoryTempOccurrences extends BaseRepository {
                     "coord_source, " +
                     "latitude_georef,longitude_georef, " +
                     "comments, " +
-                    "grin_final_taxon " +
+                    "grin_final_taxon, " +
+                    "iso2, " +
                     "From " + super.getTable() + " " +
                     (condition != null && !condition.equals("") ? "Where " + condition : ""));
     }
