@@ -233,7 +233,7 @@ public class CTempOccurrences extends BaseController {
         
         HashMap googleReverse;
         String fullAddress;
-        String name,taxon_temp_final,taxon_tnrs_final,taxon_taxstand_final, taxon_grin_final;
+        String name,taxon_temp_final,taxon_tnrs_final,taxon_taxstand_final, taxon_grin_final, taxon_source;
         String[] taxon_split;
         
         RepositoryWaterBody rWater;
@@ -380,18 +380,28 @@ public class CTempOccurrences extends BaseController {
                         taxon_tnrs_final= entity.getString("tnrs_final_taxon") == null ? "" : FixData.removePatternEnd(entity.getString("tnrs_final_taxon"),"_");
                         taxon_taxstand_final= entity.getString("taxstand_final_taxon") == null ? "" : FixData.removePatternEnd(entity.getString("taxstand_final_taxon"),"_");
                         taxon_grin_final = entity.getString("grin_final_taxon") == null ? "" : FixData.removePatternEnd(entity.getString("grin_final_taxon"),"_");
-                        if(!taxon_grin_final.equals(""))
+                        if(!taxon_grin_final.equals("")){
                             taxon_split=generateTaxonFinal(taxon_grin_final);
-                        else if(FixData.hideRankSP(taxon_temp_final).equals(taxon_tnrs_final) && FixData.hideRank(taxon_temp_final).equals(taxon_taxstand_final) )
-                            taxon_split=generateTaxonFinal(taxon_temp_final);                        
-                        else if(FixData.hideRank(taxon_tnrs_final).equals(FixData.hideRankSP(taxon_taxstand_final)) && !FixData.hideRankSP(taxon_temp_final).equals(taxon_tnrs_final))//Before Orange Traffic light                            
+                            taxon_source="grin";
+                        }
+                        else if(FixData.hideRankSP(taxon_temp_final).equals(taxon_tnrs_final) && FixData.hideRank(taxon_temp_final).equals(taxon_taxstand_final) ){
+                            taxon_split=generateTaxonFinal(taxon_tnrs_final);                        
+                            taxon_source="tnrs";
+                        }
+                        else if(FixData.hideRank(taxon_tnrs_final).equals(FixData.hideRankSP(taxon_taxstand_final)) && !FixData.hideRankSP(taxon_temp_final).equals(taxon_tnrs_final)){//Before Orange Traffic light                            
                             taxon_split=generateTaxonFinal(taxon_tnrs_final);
-                        else if(FixData.hideRankSP(taxon_temp_final).equals(taxon_tnrs_final) && !FixData.hideRank(taxon_temp_final).equals(taxon_taxstand_final))//Before Yellow
-                            taxon_split=generateTaxonFinal(taxon_temp_final);
+                            taxon_source="tnrs";
+                        }
+                        else if(FixData.hideRankSP(taxon_temp_final).equals(taxon_tnrs_final) && !FixData.hideRank(taxon_temp_final).equals(taxon_taxstand_final)){//Before Yellow
+                            taxon_split=generateTaxonFinal(taxon_tnrs_final);
+                            taxon_source="tnrs";
                             //throw new Exception("Traffic light yellow. Taxstand is different. Taxon Temp: " + FixData.hideRank(FixData.hideRankSP(taxon_temp_final)) + " Taxstand: " +  taxon_taxstand_final);
-                        else if(!FixData.hideRankSP(taxon_temp_final).equals(taxon_tnrs_final) && FixData.hideRank(taxon_temp_final).equals(taxon_taxstand_final))//Before Yellow
+                        }
+                        else if(!FixData.hideRankSP(taxon_temp_final).equals(taxon_tnrs_final) && FixData.hideRank(taxon_temp_final).equals(taxon_taxstand_final)){//Before Yellow
                             taxon_split=generateTaxonFinal(taxon_temp_final);
+                            taxon_source="taxstand";
                             //throw new Exception("Traffic light yellow. TNRS is different. Taxon: " + FixData.hideRankSP(taxon_temp_final) + " TNRS: " +  taxon_tnrs_final);
+                        }
                         else
                             throw new Exception("Traffic light Red. All differents. Taxon: " + taxon_temp_final + " TNRS: " +  taxon_tnrs_final + " Taxstand: " + taxon_taxstand_final + " Grin: " + taxon_grin_final);
                         if(taxon_split != null)
@@ -403,6 +413,7 @@ public class CTempOccurrences extends BaseController {
                             query.add("f_x1_sp2", taxon_split[4]);
                             query.add("f_x1_rank2", taxon_split[5]);
                             query.add("f_x1_sp3", taxon_split[6]);
+                            query.add("taxon_source", taxon_source);
                         }
                         else
                             throw new Exception("Traffic light Red. Not found taxon. taxon split null. Taxon: " + taxon_temp_final + " TNRS: " +  taxon_tnrs_final + " Taxstand: " + taxon_taxstand_final + " Grin: " + taxon_grin_final);
