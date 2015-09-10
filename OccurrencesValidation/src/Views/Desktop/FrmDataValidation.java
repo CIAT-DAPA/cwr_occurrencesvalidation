@@ -138,7 +138,7 @@ public class FrmDataValidation extends javax.swing.JDialog {
 
         lblStep.setText("Step:");
 
-        cboStep.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Step 0: Custom", "Step 1: Cross check data", "Step 2: Taxonomy checks part 1", "Step 3: Geographic checks part 1", "Step 4: Taxonomy checks part 2", "Step 5: Taxonomy checks part 3", "Step 6: Geographic checks coords", "Step 7: Geographic checks georef", "Step 8: Compare origin stat " }));
+        cboStep.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Step 0: Custom", "Step 1: Cross check data", "Step 2: Taxonomy checks part 1", "Step 3: Taxonomy checks part 2", "Step 4: Taxonomy checks part 3", "Step 5: Geographic checks part 1", "Step 6: Geographic checks coords", "Step 7: Geographic checks georef", "Step 8: Compare origin stat " }));
         cboStep.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cboStepActionPerformed(evt);
@@ -352,18 +352,18 @@ public class FrmDataValidation extends javax.swing.JDialog {
             //Step 2: Taxonomy checks part 1
             case 2:
                 setStatusTable(4, 6, true);
-                break;
-            //Step 3: Geographic checks part 1
-            case 3:
-                setStatusTable(7, 12, true);
-                break;
+                break;            
             //Step 4: Taxonomy checks part 2
-            case 4:
-                setStatusTable(13, 13, true);
+            case 3:
+                setStatusTable(7, 7, true);
                 break;
             //Step 5: Taxonomy checks part 3
+            case 4:
+                setStatusTable(8, 8, true);
+                break;
+            //Step 3: Geographic checks part 1
             case 5:
-                setStatusTable(14, 14, true);
+                setStatusTable(9, 14, true);
                 break;
             //Step 6: Geographic checks coords
             case 6:

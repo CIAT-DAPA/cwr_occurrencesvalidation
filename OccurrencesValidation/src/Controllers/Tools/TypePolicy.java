@@ -27,15 +27,15 @@ public enum TypePolicy {
     FINAL_CULT,                                     //3    
     TNRS_QUERY,                                     //4    
     TAXONDSTAND_QUERY,                              //5
-    GRIN_QUERY,                                     //6
-    GEOCODING_VALIDATE_COUNTRY,                     //7
-    GEOCODING_VALIDATE_ISO2,                        //8
-    GEOCODING_VALIDATE_COORDS_GRADS,                //9
-    GEOCODING_VALIDATE_NS_EW,                       //10
-    GEOCODING_VALIDATE_COORDS_LAT_LON,              //11  
-    GEOCODING_INITIAL,                              //12
-    POSTCHECK_VALIDATE_TAXON,                       //13    
-    POSTCHECK_VALIDATE_TAXON_MANDATORY,             //14
+    GRIN_QUERY,                                     //6    
+    POSTCHECK_VALIDATE_TAXON,                       //7    
+    POSTCHECK_VALIDATE_TAXON_MANDATORY,             //8
+    GEOCODING_VALIDATE_COUNTRY,                     //9
+    GEOCODING_VALIDATE_ISO2,                        //10
+    GEOCODING_VALIDATE_COORDS_GRADS,                //11
+    GEOCODING_VALIDATE_NS_EW,                       //12
+    GEOCODING_VALIDATE_COORDS_LAT_LON,              //13  
+    GEOCODING_INITIAL,                              //14
     POSTCHECK_GEOCODING_CROSCHECK_COORDS,           //15
     POSTCHECK_GEOCODING_CROSCHECK_GEOREF,           //16
     POSTCHECK_ORIGIN_STAT,                          //17

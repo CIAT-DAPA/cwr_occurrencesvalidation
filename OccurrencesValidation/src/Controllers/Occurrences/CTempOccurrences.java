@@ -370,7 +370,46 @@ public class CTempOccurrences extends BaseController {
                             review_data+=grin+"|";
                             query.add("grin_final_taxon", FixData.toCapitalLetter(grin.trim().replaceAll(" ", "_")));
                         }
+                    }                    
+                    //Group POST CHECK
+                    //4.6
+                    else if(p.getTypePolicy()==TypePolicy.POSTCHECK_VALIDATE_TAXON)
+                    {
+                        taxon_split=null;
+                        taxon_temp_final=FixData.removePatternEnd(generateName(entity,"_"),"_");
+                        taxon_tnrs_final= entity.getString("tnrs_final_taxon") == null ? "" : FixData.removePatternEnd(entity.getString("tnrs_final_taxon"),"_");
+                        taxon_taxstand_final= entity.getString("taxstand_final_taxon") == null ? "" : FixData.removePatternEnd(entity.getString("taxstand_final_taxon"),"_");
+                        taxon_grin_final = entity.getString("grin_final_taxon") == null ? "" : FixData.removePatternEnd(entity.getString("grin_final_taxon"),"_");
+                        if(!taxon_grin_final.equals(""))
+                            taxon_split=generateTaxonFinal(taxon_grin_final);
+                        else if(FixData.hideRankSP(taxon_temp_final).equals(taxon_tnrs_final) && FixData.hideRank(taxon_temp_final).equals(taxon_taxstand_final) )
+                            taxon_split=generateTaxonFinal(taxon_temp_final);                        
+                        else if(FixData.hideRank(taxon_tnrs_final).equals(FixData.hideRankSP(taxon_taxstand_final)) && !FixData.hideRankSP(taxon_temp_final).equals(taxon_tnrs_final))//Before Orange Traffic light                            
+                            taxon_split=generateTaxonFinal(taxon_tnrs_final);
+                        else if(FixData.hideRankSP(taxon_temp_final).equals(taxon_tnrs_final) && !FixData.hideRank(taxon_temp_final).equals(taxon_taxstand_final))//Before Yellow
+                            taxon_split=generateTaxonFinal(taxon_temp_final);
+                            //throw new Exception("Traffic light yellow. Taxstand is different. Taxon Temp: " + FixData.hideRank(FixData.hideRankSP(taxon_temp_final)) + " Taxstand: " +  taxon_taxstand_final);
+                        else if(!FixData.hideRankSP(taxon_temp_final).equals(taxon_tnrs_final) && FixData.hideRank(taxon_temp_final).equals(taxon_taxstand_final))//Before Yellow
+                            taxon_split=generateTaxonFinal(taxon_temp_final);
+                            //throw new Exception("Traffic light yellow. TNRS is different. Taxon: " + FixData.hideRankSP(taxon_temp_final) + " TNRS: " +  taxon_tnrs_final);
+                        else
+                            throw new Exception("Traffic light Red. All differents. Taxon: " + taxon_temp_final + " TNRS: " +  taxon_tnrs_final + " Taxstand: " + taxon_taxstand_final + " Grin: " + taxon_grin_final);
+                        if(taxon_split != null)
+                        {
+                            query.add("taxon_final",  taxon_split[0]);
+                            query.add("f_x1_genus", taxon_split[1]);
+                            query.add("f_x1_sp1", taxon_split[2]);
+                            query.add("f_x1_rank1", taxon_split[3]);
+                            query.add("f_x1_sp2", taxon_split[4]);
+                            query.add("f_x1_rank2", taxon_split[5]);
+                            query.add("f_x1_sp3", taxon_split[6]);
+                        }
+                        else
+                            throw new Exception("Traffic light Red. Not found taxon. taxon split null. Taxon: " + taxon_temp_final + " TNRS: " +  taxon_tnrs_final + " Taxstand: " + taxon_taxstand_final + " Grin: " + taxon_grin_final);
                     }
+                    //4.6.3
+                    else if(p.getTypePolicy()==TypePolicy.POSTCHECK_VALIDATE_TAXON_MANDATORY && (entity.getString("taxon_final") == null || entity.getString("taxon_final").equals("")))
+                        throw new Exception("Taxon final miss");
                     //Group Geocoding
                     //5.1
                     else if(p.getTypePolicy()==TypePolicy.GEOCODING_VALIDATE_COUNTRY)
@@ -468,45 +507,6 @@ public class CTempOccurrences extends BaseController {
                         else
                             throw new Exception("Can't geocode record " + temp_country + "," + temp_adm1 + "," + temp_adm2 + "," + temp_adm3 + "," + temp_local_area + "," + temp_locality);
                     }
-                    //Group POST CHECK
-                    //4.6
-                    else if(p.getTypePolicy()==TypePolicy.POSTCHECK_VALIDATE_TAXON)
-                    {
-                        taxon_split=null;
-                        taxon_temp_final=FixData.removePatternEnd(generateName(entity,"_"),"_");
-                        taxon_tnrs_final= entity.getString("tnrs_final_taxon") == null ? "" : FixData.removePatternEnd(entity.getString("tnrs_final_taxon"),"_");
-                        taxon_taxstand_final= entity.getString("taxstand_final_taxon") == null ? "" : FixData.removePatternEnd(entity.getString("taxstand_final_taxon"),"_");
-                        taxon_grin_final = entity.getString("grin_final_taxon") == null ? "" : FixData.removePatternEnd(entity.getString("grin_final_taxon"),"_");
-                        if(!taxon_grin_final.equals(""))
-                            taxon_split=generateTaxonFinal(taxon_grin_final);
-                        else if(FixData.hideRankSP(taxon_temp_final).equals(taxon_tnrs_final) && FixData.hideRank(taxon_temp_final).equals(taxon_taxstand_final) )
-                            taxon_split=generateTaxonFinal(taxon_temp_final);                        
-                        else if(FixData.hideRank(taxon_tnrs_final).equals(FixData.hideRankSP(taxon_taxstand_final)) && !FixData.hideRankSP(taxon_temp_final).equals(taxon_tnrs_final))//Before Orange Traffic light                            
-                            taxon_split=generateTaxonFinal(taxon_tnrs_final);
-                        else if(FixData.hideRankSP(taxon_temp_final).equals(taxon_tnrs_final) && !FixData.hideRank(taxon_temp_final).equals(taxon_taxstand_final))//Before Yellow
-                            taxon_split=generateTaxonFinal(taxon_temp_final);
-                            //throw new Exception("Traffic light yellow. Taxstand is different. Taxon Temp: " + FixData.hideRank(FixData.hideRankSP(taxon_temp_final)) + " Taxstand: " +  taxon_taxstand_final);
-                        else if(!FixData.hideRankSP(taxon_temp_final).equals(taxon_tnrs_final) && FixData.hideRank(taxon_temp_final).equals(taxon_taxstand_final))//Before Yellow
-                            taxon_split=generateTaxonFinal(taxon_temp_final);
-                            //throw new Exception("Traffic light yellow. TNRS is different. Taxon: " + FixData.hideRankSP(taxon_temp_final) + " TNRS: " +  taxon_tnrs_final);
-                        else
-                            throw new Exception("Traffic light Red. All differents. Taxon: " + taxon_temp_final + " TNRS: " +  taxon_tnrs_final + " Taxstand: " + taxon_taxstand_final + " Grin: " + taxon_grin_final);
-                        if(taxon_split != null)
-                        {
-                            query.add("taxon_final",  taxon_split[0]);
-                            query.add("f_x1_genus", taxon_split[1]);
-                            query.add("f_x1_sp1", taxon_split[2]);
-                            query.add("f_x1_rank1", taxon_split[3]);
-                            query.add("f_x1_sp2", taxon_split[4]);
-                            query.add("f_x1_rank2", taxon_split[5]);
-                            query.add("f_x1_sp3", taxon_split[6]);
-                        }
-                        else
-                            throw new Exception("Traffic light Red. Not found taxon. taxon split null. Taxon: " + taxon_temp_final + " TNRS: " +  taxon_tnrs_final + " Taxstand: " + taxon_taxstand_final + " Grin: " + taxon_grin_final);
-                    }
-                    //4.6.3
-                    else if(p.getTypePolicy()==TypePolicy.POSTCHECK_VALIDATE_TAXON_MANDATORY && (entity.getString("taxon_final") == null || entity.getString("taxon_final").equals("")))
-                        throw new Exception("Taxon final miss");
                     //5.3.6 - 5.3.7 - 5.4.1
                     else if(p.getTypePolicy()==TypePolicy.POSTCHECK_GEOCODING_CROSCHECK_COORDS || p.getTypePolicy()==TypePolicy.POSTCHECK_GEOCODING_CROSCHECK_GEOREF)
                     {
@@ -558,7 +558,7 @@ public class CTempOccurrences extends BaseController {
                                 {
                                     if(!googleReverse.get("status").toString().equals("OK") || !FixData.getValue(googleReverse.get("iso")).toLowerCase().equals(FixData.getValue(entity.get("final_iso2")).toLowerCase()))
                                         comments+=". Coordinates do not match to country in source data";
-                                    if(entity.get("final_country")==null){
+                                    /*if(entity.get("final_country")==null){
                                         if(googleReverse.get("status").toString().equals("OK"))
                                         {
                                             query.add("final_country", googleReverse.get("country").toString());
@@ -566,14 +566,17 @@ public class CTempOccurrences extends BaseController {
                                         }
                                         else
                                             comments+=". Not found a country in reverser geocoding";
-                                    }
+                                    
+                                    }*/
                                 }
                                 
                             }
                             query.add("comments", comments);
-                            query.add("coord_source", origin ? "original": "georef");
-                            query.add("final_lat", String.valueOf(lat));
-                            query.add("final_lon", String.valueOf(lon));
+                            if(entity.get("final_iso2")!=null){
+                                query.add("coord_source", origin ? "original": "georef");
+                                query.add("final_lat", String.valueOf(lat));
+                                query.add("final_lon", String.valueOf(lon));
+                            }
                         }
                     }
                     else if(p.getTypePolicy()==TypePolicy.POSTCHECK_ORIGIN_STAT)
@@ -705,7 +708,9 @@ public class CTempOccurrences extends BaseController {
         HashMap googleReverse;
         if(entity.get("iso")!=null)
             country=rTCountries.searchIso3(entity.getString("iso"));
-        if(country==null && entity.get("country")!=null)
+        if(country==null && entity.get("iso2")!=null)
+            country=rTCountries.searchIso2(entity.getString("iso2"));
+        if(country==null && entity.get("country")!=null )
             country=rTCountries.searchByName(entity.getString("country"));
         if(country==null && entity.get("latitude") != null && entity.get("longitude") != null) 
         {

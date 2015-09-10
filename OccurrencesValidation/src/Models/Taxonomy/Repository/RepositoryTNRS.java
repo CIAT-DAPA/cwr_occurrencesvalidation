@@ -65,6 +65,7 @@ public class RepositoryTNRS {
         }
         catch(Exception ex)
         {
+            a=null;
             System.out.println("Error TNRS: " + ex);
         }
         return a;

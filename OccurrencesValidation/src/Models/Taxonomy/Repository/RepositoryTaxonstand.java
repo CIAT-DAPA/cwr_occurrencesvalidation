@@ -18,15 +18,9 @@ package Models.Taxonomy.Repository;
 
 import Models.Taxonomy.Source.Taxonstand;
 import Tools.Configuration;
-import java.io.ByteArrayInputStream;
 import java.util.HashMap;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import org.expr.rcaller.RCaller;
 import org.expr.rcaller.RCode;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 
 /**
  *
@@ -63,7 +57,7 @@ public class RepositoryTaxonstand {
         catch (Exception ex)
         {
             a=null;
-            System.out.println(ex);
+            System.out.println("Error Taxonstand: " +ex);
         }
         return a;
     }

@@ -58,7 +58,8 @@ public class RepositoryGRIN {
         }
         catch(Exception ex)
         {
-            System.out.println(ex);
+            a=null;
+            System.out.println("Error GRIN: " +ex);
         }
         return a;
     }
