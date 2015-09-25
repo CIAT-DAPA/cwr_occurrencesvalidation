@@ -29,7 +29,7 @@ save_table <- function(genus,data,path,connection,table){
 #variables
 
 #connection database
-cnn <- dbConnect(MySQL(),user = '',password = '',host = '',dbname='')
+cnn <- dbConnect(MySQL(),user = 'hsotelo',password = '783836@ciat',host = 'curie.ciat.cgiar.org',dbname='cwr_gapanalysis')
 
 
 #paths

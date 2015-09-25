@@ -550,44 +550,30 @@ public class CTempOccurrences extends BaseController {
                             //It is not earth
                             else if(!water.equals(Configuration.getParameter("geocoding_database_world_earth")))
                             {
-                                query.add("comments", (comments.equals("") ? "" : comments + ". ") + "Point in the water");
+                                query.add("comments", (comments.equals("") ? "" : comments + ". ") + (origin ? "original:": "georef:") + " Point in the water");
                                 throw new Exception("Point in the water or boundaries. " + water + " Lat: " + String.valueOf(lat) + " Lon: " + String.valueOf(lon));
                             }
-                            //Country centrois
+                            //Country centroids
                             else if(country != null && country.getDouble("lat")==lat && country.getDouble("lon")==lon)
                             {
-                                query.add("comments", (comments.equals("") ? "" : comments + ". ") + "Point in the country centroid");
+                                query.add("comments", (comments.equals("") ? "" : comments + ". ") + (origin ? "original:": "georef:") + " Point in the country centroid");
                                 throw new Exception("Point in the country centroid. " + " Lat: " + String.valueOf(lat) + " Lon: " + String.valueOf(lon) + " Country ISO 2: " + entity.getString("final_iso2"));
                             }
-                            // It validate that always it has final_country or step 6
-                            if(origin || (!origin && entity.get("final_country")==null))
-                            {
-                                googleReverse=RepositoryGoogle.reverse(lat, lon);
-                                if(googleReverse == null)
-                                    comments+=". Coordinates not found country for final_country";
-                                else
-                                {
-                                    if(!googleReverse.get("status").toString().equals("OK") || !FixData.getValue(googleReverse.get("iso")).toLowerCase().equals(FixData.getValue(entity.get("final_iso2")).toLowerCase()))
-                                        comments+=". Coordinates do not match to country in source data";
-                                    /*if(entity.get("final_country")==null){
-                                        if(googleReverse.get("status").toString().equals("OK"))
-                                        {
-                                            query.add("final_country", googleReverse.get("country").toString());
-                                            query.add("final_iso2", googleReverse.get("iso").toString()); 
-                                        }
-                                        else
-                                            comments+=". Not found a country in reverser geocoding";
-                                    
-                                    }*/
-                                }
-                                
+                            // It validates that the country match between original coordinates and country
+                            googleReverse=RepositoryGoogle.reverse(lat, lon);
+                            if(googleReverse == null){
+                                query.add("comments",(comments.equals("") ? "" : comments + ". ") + (origin ? "original:": "georef:") + " Coordinates not found to compare the country");
+                                throw new Exception("Coordinates not found country for final_country.");
                             }
-                            query.add("comments", comments);
-                            if(entity.get("final_iso2")!=null){
-                                query.add("coord_source", origin ? "original": "georef");
-                                query.add("final_lat", String.valueOf(lat));
-                                query.add("final_lon", String.valueOf(lon));
+                            else if(!googleReverse.get("status").toString().equals("OK") || !FixData.getValue(googleReverse.get("iso")).toLowerCase().equals(FixData.getValue(entity.get("final_iso2")).toLowerCase())){
+                                query.add("comments",(comments.equals("") ? "" : comments + ". ") + (origin ? "original:": "georef:") + " Coordinates does not match to country in source data");
+                                throw new Exception("Coordinates do not match to country in source data.");
                             }
+                            
+                            //Coordinates are good
+                            query.add("coord_source", origin ? "original": "georef");
+                            query.add("final_lat", String.valueOf(lat));
+                            query.add("final_lon", String.valueOf(lon));
                         }
                     }
                     else if(p.getTypePolicy()==TypePolicy.POSTCHECK_ORIGIN_STAT)
