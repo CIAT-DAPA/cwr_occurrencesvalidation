@@ -29,12 +29,10 @@ save_table <- function(genus,data,path,connection,table){
 #variables
 
 #connection database
-cnn <- dbConnect(MySQL(),user = 'hsotelo',password = '783836@ciat',host = 'curie.ciat.cgiar.org',dbname='cwr_gapanalysis')
+cnn <- dbConnect(MySQL(),user = '',password = '',host = '',dbname='')
 
 
 #paths
-#root_path <- "//DAPAdfs/workspace_cluster_6/CWR/CWR_PROJECT_CC_BD/occurrences/crosscheck/gbif_test"
-#root_path <- "//DAPAdfs/workspace_cluster_6/CWR/CWR_PROJECT_CC_BD/occurrences/crosscheck/gbif/data"
 root_path <- "/mnt/workspace_cluster_6/occurrences/crosscheck/gbif/data"
 root_scripts <- "script"
 #path log
