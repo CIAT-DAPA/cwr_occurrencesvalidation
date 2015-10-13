@@ -18,6 +18,7 @@ import Views.Desktop.FrmImport;
 import Views.Desktop.FrmOptions;
 import Views.Desktop.FrmDataValidation;
 import Controllers.Occurrences.CMetadata;
+import Controllers.Occurrences.CTempCountries;
 import Controllers.Occurrences.CTempOccurrences;
 import Controllers.Tools.TypeReport;
 import Controllers.Tools.TypeUpdate;
@@ -35,8 +36,10 @@ import javax.swing.JOptionPane;
  */
 public class App {
         
-    public static CMetadata cMetadata;
-    public static CTempOccurrences cTempOccurrences;    
+    private static CMetadata cMetadata;
+    private static CTempOccurrences cTempOccurrences;  
+    private static CTempCountries cTempCountries;
+    
     
     public static void main(String[] args) throws IOException
     {
@@ -65,6 +68,10 @@ public class App {
                         else if(frmImp.getCBase() instanceof CMetadata){
                             cMetadata=(CMetadata)frmImp.getCBase();
                             cMetadata.importFile(frmImp.getSource(), frmImp.getSplit(), frmImp.getClean(),frmImp.getLog());
+                        }
+                        else if(frmImp.getCBase() instanceof CTempCountries){
+                            cTempCountries=(CTempCountries)frmImp.getCBase();
+                            cTempCountries.importFile(frmImp.getSource(), frmImp.getSplit(), frmImp.getClean(),frmImp.getLog());
                         }
                         else
                             message("Type don't support");

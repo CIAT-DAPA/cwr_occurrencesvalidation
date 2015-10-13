@@ -22,5 +22,6 @@ package Controllers.Tools;
  */
 public enum TypeImports {
     TEMP_OCCURRENCES,
-    METADATA
+    METADATA,
+    TEMP_COUNTRIES
 }

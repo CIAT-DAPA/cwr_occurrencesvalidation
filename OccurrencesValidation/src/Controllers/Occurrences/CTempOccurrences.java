@@ -29,6 +29,8 @@ import Models.DataBase.UpdateQuery;
 import Models.Geographic.Repository.RepositoryWaterBody;
 import Models.Geographic.Repository.RepositoryGeolocate;
 import Models.Geographic.Repository.RepositoryGoogle;
+import Models.Geographic.Repository.RepositoryOverlapCountry;
+import Models.Geographic.Source.Country;
 import Models.Geographic.Source.Location;
 import Models.Occurrences.Repository.RepositoryTempCountries;
 import Models.Occurrences.Repository.RepositoryTempOccurrences;
@@ -230,8 +232,9 @@ public class CTempOccurrences extends BaseController {
         Location lGoogle,lGeolocate;
         RepositoryTempCountries rTCountries=new RepositoryTempCountries();
         TempCountries country;
+        Country country_to_check;
         
-        HashMap googleReverse;
+        //HashMap googleReverse;
         String fullAddress;
         String name,taxon_temp_final,taxon_tnrs_final,taxon_taxstand_final, taxon_grin_final, taxon_source;
         String[] taxon_split;
@@ -423,22 +426,16 @@ public class CTempOccurrences extends BaseController {
                         throw new Exception("Taxon final miss");
                     //Group Geocoding
                     //5.1
-                    else if(p.getTypePolicy()==TypePolicy.GEOCODING_VALIDATE_COUNTRY)
+                    else if(p.getTypePolicy()==TypePolicy.GEOCODING_VALIDATE_COUNTRY_ISO2)
                     {
                         country=searchCountry(entity,rTCountries);
-                        if(country != null)
+                        if(country != null){
                             query.add("final_country", country.getString("name"));
+                            //5.2
+                            query.add("final_iso2", country.getString("iso2"));
+                        }
                         else
                             throw new Exception("Country not found for country: iso=" + FixData.getValue(entity.get("iso")) + " country=" + FixData.getValue(entity.get("country")));
-                    }
-                    //5.2
-                    else if(p.getTypePolicy()==TypePolicy.GEOCODING_VALIDATE_ISO2)
-                    {
-                        country=searchCountry(entity,rTCountries);
-                        if(country != null)
-                            query.add("final_iso2", country.getString("iso2"));
-                        else
-                            throw new Exception("ISO 2 not found for country: iso=" + FixData.getValue(entity.get("iso")) + " country=" + FixData.getValue(entity.get("country")));
                     }
                     //5.3.1  5.3.4
                     else if(p.getTypePolicy()==TypePolicy.GEOCODING_VALIDATE_COORDS_GRADS)
@@ -523,7 +520,7 @@ public class CTempOccurrences extends BaseController {
                     {
                         if(entity.get("coord_source") != null)
                             System.out.println("The record has already been crosschecked. coord_source: " + entity.getString("coord_source"));
-                        else
+                        else if(entity.get("final_iso2") != null && !entity.getString("final_iso2").equals(""))
                         {
                             origin=p.getTypePolicy()==TypePolicy.POSTCHECK_GEOCODING_CROSCHECK_COORDS;                            
                             comments = FixData.getValueImaginary(entity.get("comments"));
@@ -560,7 +557,16 @@ public class CTempOccurrences extends BaseController {
                                 throw new Exception("Point in the country centroid. " + " Lat: " + String.valueOf(lat) + " Lon: " + String.valueOf(lon) + " Country ISO 2: " + entity.getString("final_iso2"));
                             }
                             // It validates that the country match between original coordinates and country
-                            googleReverse=RepositoryGoogle.reverse(lat, lon);
+                            country_to_check=RepositoryOverlapCountry.getIso(lat, lon);
+                            if(country_to_check == null){
+                                query.add("comments",(comments.equals("") ? "" : comments + ". ") + (origin ? "original:": "georef:") + " Coordinates not found to compare the country");
+                                throw new Exception("Coordinates not found country for final_country.");
+                            }
+                            else if(!country_to_check.getIso2().equals(entity.getString("final_iso2"))){
+                                query.add("comments",(comments.equals("") ? "" : comments + ". ") + (origin ? "original:": "georef:") + " Coordinates does not match to country in source data. search=" + entity.getString("final_iso2") + " found=" +country_to_check.getIso2() );
+                                throw new Exception("Coordinates do not match to country in source data.");
+                            }
+                            /*googleReverse=RepositoryGoogle.reverse(lat, lon);
                             if(googleReverse == null){
                                 query.add("comments",(comments.equals("") ? "" : comments + ". ") + (origin ? "original:": "georef:") + " Coordinates not found to compare the country");
                                 throw new Exception("Coordinates not found country for final_country.");
@@ -568,8 +574,7 @@ public class CTempOccurrences extends BaseController {
                             else if(!googleReverse.get("status").toString().equals("OK") || !FixData.getValue(googleReverse.get("iso")).toLowerCase().equals(FixData.getValue(entity.get("final_iso2")).toLowerCase())){
                                 query.add("comments",(comments.equals("") ? "" : comments + ". ") + (origin ? "original:": "georef:") + " Coordinates does not match to country in source data");
                                 throw new Exception("Coordinates do not match to country in source data.");
-                            }
-                            
+                            }*/
                             //Coordinates are good
                             query.add("coord_source", origin ? "original": "georef");
                             query.add("final_lat", String.valueOf(lat));
@@ -617,7 +622,8 @@ public class CTempOccurrences extends BaseController {
                     a+=1;
                     lGoogle=null;
                     lGeolocate=null;
-                    googleReverse=null;
+                    country_to_check=null;
+                    //googleReverse=null;
                     StackTraceElement[] frames = e.getStackTrace();
                     String msgE="";
                     for(StackTraceElement frame : frames)
@@ -630,7 +636,8 @@ public class CTempOccurrences extends BaseController {
                     a+=1;
                     lGoogle=null;
                     lGeolocate=null;
-                    googleReverse=null;
+                    country_to_check=null;
+                    //googleReverse=null;
                     StackTraceElement[] frames = e.getStackTrace();
                     String msgE="";
                     for(StackTraceElement frame : frames)
@@ -701,24 +708,18 @@ public class CTempOccurrences extends BaseController {
      * @return 
      */
     private TempCountries searchCountry(TempOccurrences entity,RepositoryTempCountries rTCountries){  
-        TempCountries country=null;
-        HashMap googleReverse;
-        if(entity.get("iso")!=null)
-            country=rTCountries.searchIso3(entity.getString("iso"));
-        if(country==null && entity.get("iso2")!=null)
+        TempCountries country=null;        
+        if(entity.get("iso2")!=null)
             country=rTCountries.searchIso2(entity.getString("iso2"));
-        if(country==null && entity.get("country")!=null )
-            country=rTCountries.searchByName(entity.getString("country"));
-        if(country==null && entity.get("latitude") != null && entity.get("longitude") != null) 
-        {
-            googleReverse=RepositoryGoogle.reverse(entity.getDouble("latitude"), entity.getDouble("longitude"));
-            if(googleReverse != null && googleReverse.get("status").toString().equals("OK")){
-                country=rTCountries.searchByName(googleReverse.get("country").toString());
-                if(country == null)
-                    country=rTCountries.searchIso2(googleReverse.get("iso").toString());
-                if(country == null)
-                    country=rTCountries.searchIso3(googleReverse.get("iso").toString());
-            }
+        else{
+            //First search. This search is for seek similar
+            if(country==null && entity.get("iso")!=null)
+                country=rTCountries.searchIso3(entity.getString("iso"));
+            if(country==null && entity.get("country")!=null)
+                country=rTCountries.searchByName(entity.getString("country"));
+            //Second search. This search is to take the original country
+            if(country!=null)
+                country=rTCountries.searchIso2(country.getString("iso2"));        
         }
         return country;       
     }

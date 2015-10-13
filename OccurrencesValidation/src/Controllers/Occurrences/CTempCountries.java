@@ -131,10 +131,17 @@ public class CTempCountries extends BaseController {
         Location l;
         ArrayList<BaseUpdate> updates= new ArrayList<BaseUpdate>();
         for(TempCountries tc: getRepository().list()){
-            l = RepositoryGoogle.georenferencing(tc.getString("name"),"","","","","",99999);
-            if(l != null){
-                updates.add(new BaseUpdate("lat", String.valueOf(l.getLatitude()),"id='" + tc.getString("id") + "'"));
-                updates.add(new BaseUpdate("lon", String.valueOf(l.getLongitude()),"id='" + tc.getString("id") + "'"));
+            try
+            {
+                l = RepositoryGoogle.georenferencing(tc.getString("name"),"","","","","",99999);
+                if(l != null){
+                    updates.add(new BaseUpdate("lat", String.valueOf(l.getLatitude()),"id='" + tc.getString("id") + "'"));
+                    updates.add(new BaseUpdate("lon", String.valueOf(l.getLongitude()),"id='" + tc.getString("id") + "'"));
+                }
+            }
+            catch(Exception ex)
+            {
+                System.out.println("Error find center point: " + tc.getString("name") + " - "  + ex);
             }
         }
         super.updateFields(updates, log, PREFIX_UPDATE);

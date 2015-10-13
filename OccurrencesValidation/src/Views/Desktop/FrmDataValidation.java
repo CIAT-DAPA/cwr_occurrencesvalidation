@@ -363,19 +363,19 @@ public class FrmDataValidation extends javax.swing.JDialog {
                 break;
             //Step 3: Geographic checks part 1
             case 5:
-                setStatusTable(9, 14, true);
+                setStatusTable(9, 13, true);
                 break;
             //Step 6: Geographic checks coords
             case 6:
-                setStatusTable(15, 15, true);
+                setStatusTable(14, 14, true);
                 break;
             //Step 7: Geographic checks georef
             case 7:
-                setStatusTable(16, 16, true);
+                setStatusTable(15, 15, true);
                 break;
             //Step 8: Geographic checks georef
             case 8:
-                setStatusTable(17, 17, true);
+                setStatusTable(16, 16, true);
                 break;
             default:
                 break;

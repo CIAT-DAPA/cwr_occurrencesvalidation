@@ -77,7 +77,7 @@ public class RepositoryTempCountries extends BaseRepository {
         TempCountries a=null;
         try 
         {            
-            this.db.getResults("Select id,name,iso2,iso3,lat,lon From temp_countries Where name like '%" + name + "%' order by id");
+            this.db.getResults("Select id,name,iso2,iso3,lat,lon From temp_countries Where name like '" + name + "%' order by id");
             if(db.getRecordSet().next())
             {
                 a=new TempCountries();
@@ -101,7 +101,7 @@ public class RepositoryTempCountries extends BaseRepository {
         TempCountries a=null;
         try 
         {            
-            db.getResults("Select id,name,iso2,iso3,lat,lon From temp_countries Where iso3 like '%" + iso + "%' order by id");
+            db.getResults("Select id,name,iso2,iso3,lat,lon From temp_countries Where iso3 like '" + iso + "%' order by id");
             if(db.getRecordSet().next())
             {
                 a=new TempCountries();
@@ -126,7 +126,7 @@ public class RepositoryTempCountries extends BaseRepository {
         try 
         {      
             // Always the query should order by id in this method
-            db.getResults("Select id,name,iso2,iso3,lat,lon From temp_countries Where iso2 like '%" + iso + "%' order by id");
+            db.getResults("Select id,name,iso2,iso3,lat,lon From temp_countries Where iso2 like '" + iso + "%' order by id");
             if(db.getRecordSet().next())
             {
                 a=new TempCountries();

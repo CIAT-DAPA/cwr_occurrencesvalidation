@@ -17,6 +17,7 @@ package Views.Desktop;
 
 import Controllers.Occurrences.BaseController;
 import Controllers.Occurrences.CMetadata;
+import Controllers.Occurrences.CTempCountries;
 import Controllers.Occurrences.CTempOccurrences;
 import Controllers.Tools.TypeImports;
 import Tools.Configuration;
@@ -226,7 +227,7 @@ public class FrmImport extends javax.swing.JDialog {
         {
             TypeImports tImport=(TypeImports)cboTypeImport.getSelectedItem();
             cBase=tImport==TypeImports.TEMP_OCCURRENCES ? new CTempOccurrences() : 
-                    (tImport==TypeImports.METADATA ? new CMetadata() : null);            
+                    (tImport==TypeImports.METADATA ? new CMetadata() : (tImport==TypeImports.TEMP_COUNTRIES ? new CTempCountries() : null));            
             this.exit=true;            
             this.setVisible(false);
         }
