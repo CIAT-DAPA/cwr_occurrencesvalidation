@@ -30,7 +30,6 @@ import Models.Geographic.Repository.RepositoryWaterBody;
 import Models.Geographic.Repository.RepositoryGeolocate;
 import Models.Geographic.Repository.RepositoryGoogle;
 import Models.Geographic.Repository.RepositoryOverlapCountry;
-import Models.Geographic.Source.Country;
 import Models.Geographic.Source.Location;
 import Models.Occurrences.Repository.RepositoryTempCountries;
 import Models.Occurrences.Repository.RepositoryTempOccurrences;
@@ -232,7 +231,7 @@ public class CTempOccurrences extends BaseController {
         Location lGoogle,lGeolocate;
         RepositoryTempCountries rTCountries=new RepositoryTempCountries();
         TempCountries country;
-        Country country_to_check;
+        String country_to_check;
         
         //HashMap googleReverse;
         String fullAddress;
@@ -557,13 +556,13 @@ public class CTempOccurrences extends BaseController {
                                 throw new Exception("Point in the country centroid. " + " Lat: " + String.valueOf(lat) + " Lon: " + String.valueOf(lon) + " Country ISO 2: " + entity.getString("final_iso2"));
                             }
                             // It validates that the country match between original coordinates and country
-                            country_to_check=RepositoryOverlapCountry.getIso(lat, lon);
+                            country_to_check=RepositoryOverlapCountry.getIso2(lat, lon);
                             if(country_to_check == null){
                                 query.add("comments",(comments.equals("") ? "" : comments + ". ") + (origin ? "original:": "georef:") + " Coordinates not found to compare the country");
                                 throw new Exception("Coordinates not found country for final_country.");
                             }
-                            else if(!country_to_check.getIso2().equals(entity.getString("final_iso2"))){
-                                query.add("comments",(comments.equals("") ? "" : comments + ". ") + (origin ? "original:": "georef:") + " Coordinates does not match to country in source data. search=" + entity.getString("final_iso2") + " found=" +country_to_check.getIso2() );
+                            else if(!country_to_check.equals(entity.getString("final_iso2"))){
+                                query.add("comments",(comments.equals("") ? "" : comments + ". ") + (origin ? "original:": "georef:") + " Coordinates does not match to country in source data. search=" + entity.getString("final_iso2") + " found=" +country_to_check );
                                 throw new Exception("Coordinates do not match to country in source data.");
                             }
                             /*googleReverse=RepositoryGoogle.reverse(lat, lon);

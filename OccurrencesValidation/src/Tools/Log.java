@@ -44,7 +44,7 @@ public class Log {
         PrintWriter writer = null;
         try 
         {
-            String split=System.getProperty("os.name").contains("indows") ? "\\" : "/";
+            String split=FixData.splitSO();
             String realPrefix=prefix.equals("") ? "" : prefix + "_";
             writer = new PrintWriter(new BufferedWriter(new FileWriter((path.endsWith(split) ? path+ realPrefix + type.name() : path + split + realPrefix + type.name()) + "." + ext, true)));
             writer.println((addDate ? FixData.getDateTime() + "|" : "") + line);

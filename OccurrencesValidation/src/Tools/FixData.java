@@ -399,4 +399,12 @@ public class FixData {
                 a+=FixData.deleteAccent(values[i]).trim().replaceAll(" ", "_") + "_";        
         return FixData.removePatternEnd(a, "_").toLowerCase();
     }
+    
+    /**
+     * Method that return the split character for every SO
+     * @return 
+     */
+    public static String splitSO(){
+        return System.getProperty("os.name").contains("indows") ? "\\" : "/";
+    }
 }
