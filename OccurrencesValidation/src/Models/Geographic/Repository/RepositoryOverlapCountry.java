@@ -21,7 +21,11 @@ import org.w3c.dom.Element;
 public class RepositoryOverlapCountry {
     /*Member Class*/
     
-    
+    /**
+     * Method that search the coordinates in shapefile and later return the iso2 code of the country
+     * @param latitude
+     * @param longitude
+     */
     public static String getIso2(double latitude,double longitude)
     {
         String a= null;
