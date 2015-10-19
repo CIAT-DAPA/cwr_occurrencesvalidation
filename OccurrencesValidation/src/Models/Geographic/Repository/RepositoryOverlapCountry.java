@@ -8,12 +8,6 @@ package Models.Geographic.Repository;
 import Tools.Configuration;
 import Tools.FixData;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.HashMap;
-import java.util.Map;
-import org.expr.rcaller.RCaller;
-import org.expr.rcaller.RCode;
-import org.expr.rcaller.exception.ExecutionException;
 import org.geotools.data.FileDataStore;
 import org.geotools.data.FileDataStoreFinder;
 import org.geotools.data.simple.SimpleFeatureCollection;
@@ -22,7 +16,6 @@ import org.geotools.feature.FeatureIterator;
 import org.geotools.filter.text.ecql.ECQL;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.filter.Filter;
-import org.w3c.dom.Element;
 
 /**
  *
@@ -43,6 +36,7 @@ public class RepositoryOverlapCountry {
     
     public static String getIso2(double latitude,double longitude)
     {
+        //Reference http://docs.geoserver.org/2.5.x/en/user/filter/ecql_reference.html#filter-ecql-reference
         String a=null;
         try{
             if(RepositoryOverlapCountry.file==null){
@@ -61,6 +55,7 @@ public class RepositoryOverlapCountry {
                 SimpleFeature feature=iterator.next();
                 a=feature.getAttribute("ISO2").toString();
             }
+            iterator.close();
             
         }
         catch (Exception ex)
