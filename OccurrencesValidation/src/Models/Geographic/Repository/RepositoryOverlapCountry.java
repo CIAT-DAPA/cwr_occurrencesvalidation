@@ -9,9 +9,19 @@ import Tools.Configuration;
 import Tools.FixData;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.HashMap;
+import java.util.Map;
 import org.expr.rcaller.RCaller;
 import org.expr.rcaller.RCode;
 import org.expr.rcaller.exception.ExecutionException;
+import org.geotools.data.FileDataStore;
+import org.geotools.data.FileDataStoreFinder;
+import org.geotools.data.simple.SimpleFeatureCollection;
+import org.geotools.data.simple.SimpleFeatureSource;
+import org.geotools.feature.FeatureIterator;
+import org.geotools.filter.text.ecql.ECQL;
+import org.opengis.feature.simple.SimpleFeature;
+import org.opengis.filter.Filter;
 import org.w3c.dom.Element;
 
 /**
@@ -20,43 +30,40 @@ import org.w3c.dom.Element;
  */
 public class RepositoryOverlapCountry {
     /*Member Class*/
+    private static File file;
+    private static FileDataStore dataStore;
+    private static String typeName;
+    private static SimpleFeatureSource simpleFeatureSource;
     
     /**
      * Method that search the coordinates in shapefile and later return the iso2 code of the country
      * @param latitude
      * @param longitude
      */
+    
     public static String getIso2(double latitude,double longitude)
     {
-        String a= null;
-        try
-        {
-            RCaller caller = new RCaller();
-            RCode code = new RCode();
-            caller.setRscriptExecutable(Configuration.getParameter("taxonstand_rscript_path"));
-            caller.redirectROutputToFile("overlap.txt", true);
-            code.addRCode("require(maptools)");
-            code.addRCode("require(shapefiles)");
-            code.addRCode("require(rgdal)");
-            code.addRCode("library(raster)");
-            File shp=new File(Configuration.PATH_FILE);
-            code.addRCode("path_to <- \"" +shp.getAbsolutePath().replaceAll(Configuration.PATH_FILE, "").replace(FixData.splitSO(), "/") + "\""); //P
-            code.addRCode("wrld<-shapefile(paste0(path_to,\"" + Configuration.getParameter("geocoding_overlap_name") + "/" + Configuration.getParameter("geocoding_overlap_name") +  ".shp\"))");//P            
-            code.addRCode("data <- data.frame(lat=c(" + String.valueOf(latitude) + "),lon=c(" + String.valueOf(longitude) + "))");//P
-            code.addRCode("points<-cbind(data$lon,data$lat)");
-            code.addRCode("points[,1]<-as.numeric(as.character(points[,1]))");
-            code.addRCode("points[,2]<-as.numeric(as.character(points[,2]))");
-            code.addRCode("points<-SpatialPoints(points)");
-            code.addRCode("proj4string(points)<-CRS(\"+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0\")");
-            code.addRCode("ov<-over(points,wrld)");
-            //code.addRCode("country <- data.frame(iso2=as.character(ov$ISO2),iso3=as.character(ov$ISO),name=as.character(ov$NAME_0))");
-            code.addRCode("country <- as.character(ov$ISO2)");
-            caller.setRCode(code);
-            caller.runAndReturnResult("country");
-            a=((Element)caller.getParser().getDocument().getElementsByTagName("variable").item(0)).getTextContent();
-            a=a.replace("\n", "").trim();
+        String a=null;
+        try{
+            if(RepositoryOverlapCountry.file==null){
+                File shp=new File(Configuration.PATH_FILE);
+                RepositoryOverlapCountry.file = new File(shp.getAbsolutePath().replaceAll(Configuration.PATH_FILE, "") + Configuration.getParameter("geocoding_overlap_name") + FixData.splitSO() + Configuration.getParameter("geocoding_overlap_name") + ".shp" );
+                RepositoryOverlapCountry.dataStore = FileDataStoreFinder.getDataStore(RepositoryOverlapCountry.file);
+                RepositoryOverlapCountry.typeName = RepositoryOverlapCountry.dataStore.getTypeNames()[0];
+                RepositoryOverlapCountry.simpleFeatureSource = dataStore.getFeatureSource(typeName);
+            }
+            
+            String point=String.valueOf(longitude) + " " + String.valueOf(latitude);
+            Filter filter = ECQL.toFilter("INTERSECTS(the_geom, POINT(" + point + "))");
+            SimpleFeatureCollection result = simpleFeatureSource.getFeatures(filter);
+            FeatureIterator<SimpleFeature> iterator=result.features();
+            if(iterator.hasNext()){
+                SimpleFeature feature=iterator.next();
+                a=feature.getAttribute("ISO2").toString();
+            }
+            
         }
-        catch (FileNotFoundException | ExecutionException ex)
+        catch (Exception ex)
         {
             a=null;
             System.out.println("Error Overlap country: " +ex);
