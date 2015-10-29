@@ -20,6 +20,7 @@ import Controllers.Occurrences.CTempOccurrences;
 import Controllers.Tools.Policy;
 import Controllers.Tools.TypePolicy;
 import Controllers.Tools.TypeDataValidation;
+import Controllers.Tools.TypeStep;
 import Tools.Configuration;
 import java.io.File;
 import java.util.ArrayList;
@@ -52,7 +53,9 @@ public class FrmDataValidation extends javax.swing.JDialog {
         for(int i=0;i<types.length;i++)
             model.addRow(new Object[]{false,types[i]});
         //Steps
-        setPoliciesByStep(cboStep.getSelectedIndex());
+        for(TypeStep value: TypeStep.values())
+            cboStep.addItem(value); 
+        setPoliciesByStep((TypeStep)cboStep.getSelectedItem());
     }
     
     /**
@@ -72,9 +75,9 @@ public class FrmDataValidation extends javax.swing.JDialog {
     /**
      * @return return the current step selected
      */
-    public int getStep()
+    public TypeStep getStep()
     {
-        return cboStep.getSelectedIndex() ;
+        return (TypeStep)cboStep.getSelectedItem();
     }
     
     /**
@@ -138,7 +141,6 @@ public class FrmDataValidation extends javax.swing.JDialog {
 
         lblStep.setText("Step:");
 
-        cboStep.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Step 0: Custom", "Step 1: Cross check data", "Step 2: Taxonomy checks part 1", "Step 3: Taxonomy checks part 2", "Step 4: Taxonomy checks part 3", "Step 5: Geographic checks part 1", "Step 6: Geographic checks coords", "Step 7: Geographic checks georef", "Step 8: Compare origin stat " }));
         cboStep.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cboStepActionPerformed(evt);
@@ -317,9 +319,9 @@ public class FrmDataValidation extends javax.swing.JDialog {
     
     private void cboStepActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cboStepActionPerformed
         // TODO add your handling code here:
-        int step=getStep();
-        chkReviewData.setSelected(step==2 || step == 3 || step == 6 || step == 7);
-        setPoliciesByStep(cboStep.getSelectedIndex());        
+        TypeStep step=getStep();
+        chkReviewData.setSelected(step==TypeStep.TAXONOMY_1 || step == TypeStep.GEOGRAPHIC_1 || step == TypeStep.GEOGRAPHIC_2 || step == TypeStep.GEOGRAPHIC_3);
+        setPoliciesByStep((TypeStep)cboStep.getSelectedItem());        
     }//GEN-LAST:event_cboStepActionPerformed
     
     private void cmdCountriesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdCountriesActionPerformed
@@ -331,55 +333,34 @@ public class FrmDataValidation extends javax.swing.JDialog {
     private void tblPoliciesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPoliciesMouseClicked
         // TODO add your handling code here:
         int row = tblPolicies.rowAtPoint(evt.getPoint());
-        int col = tblPolicies.columnAtPoint(evt.getPoint());
-        /*if(col==0)
-            cboStep.setSelectedIndex(0);*/
+        int col = tblPolicies.columnAtPoint(evt.getPoint());        
     }//GEN-LAST:event_tblPoliciesMouseClicked
     
     /**
      * Method that establish
      * @param step
      */
-    private void setPoliciesByStep(int step)
+    private void setPoliciesByStep(TypeStep step)
     {
         setPoliciesTable(false);
-        switch(step)
-        {
-            //Step 1: Cross check data
-            case 1:
-                setStatusTable(0, 3, true);
-                break;
-            //Step 2: Taxonomy checks part 1
-            case 2:
-                setStatusTable(4, 6, true);
-                break;            
-            //Step 4: Taxonomy checks part 2
-            case 3:
-                setStatusTable(7, 7, true);
-                break;
-            //Step 5: Taxonomy checks part 3
-            case 4:
-                setStatusTable(8, 8, true);
-                break;
-            //Step 3: Geographic checks part 1
-            case 5:
-                setStatusTable(9, 13, true);
-                break;
-            //Step 6: Geographic checks coords
-            case 6:
-                setStatusTable(14, 14, true);
-                break;
-            //Step 7: Geographic checks georef
-            case 7:
-                setStatusTable(15, 15, true);
-                break;
-            //Step 8: Geographic checks georef
-            case 8:
-                setStatusTable(16, 16, true);
-                break;
-            default:
-                break;
-        }
+        if(step==TypeStep.CROSS_CHECK_DATA)
+            setStatusTable(0, 3, true);
+        else if(step==TypeStep.TAXONOMY_1)
+            setStatusTable(4, 6, true);
+        else if(step==TypeStep.TAXONOMY_2)
+            setStatusTable(7, 7, true);
+        else if(step==TypeStep.TAXONOMY_3)
+            setStatusTable(8, 8, true);
+        else if(step==TypeStep.GEOGRAPHIC_1)
+            setStatusTable(9, 13, true);
+        else if(step==TypeStep.GEOGRAPHIC_2)
+            setStatusTable(14, 14, true);
+        else if(step==TypeStep.GEOGRAPHIC_3)
+            setStatusTable(15, 15, true);
+        else if(step==TypeStep.ORIGIN_STAT)
+            setStatusTable(16, 16, true);
+        else if(step==TypeStep.QUALITY)
+            setStatusTable(17, 17, true);
     }
     
     /**

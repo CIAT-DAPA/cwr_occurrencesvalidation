@@ -38,4 +38,5 @@ public enum TypePolicy {
     POSTCHECK_GEOCODING_CROSCHECK_COORDS,           //14
     POSTCHECK_GEOCODING_CROSCHECK_GEOREF,           //15
     POSTCHECK_ORIGIN_STAT,                          //16
+    QUALITY_REGISTER,                               //17
 }

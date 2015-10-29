@@ -19,6 +19,7 @@ package Controllers.Occurrences;
 import Controllers.Tools.TypeReport;
 import Controllers.Tools.Policy;
 import Controllers.Tools.TypePolicy;
+import Controllers.Tools.TypeStep;
 import Models.Complements.Repository.RepositoryOriginStatDistribution;
 import Models.Complements.Source.OriginStatDistribution;
 import Models.DataBase.BaseUpdate;
@@ -219,7 +220,7 @@ public class CTempOccurrences extends BaseController {
      * @return
      * @throws SQLException
      */
-    public long crossCheck(int step,ArrayList<Policy> policies, String log, boolean reviewdata, String condition) throws SQLException
+    public long crossCheck(TypeStep step,ArrayList<Policy> policies, String log, boolean reviewdata, String condition) throws SQLException
     {
         int a=0;
         String header="Update " + getRepository().getTable() + " set";
@@ -254,10 +255,13 @@ public class CTempOccurrences extends BaseController {
         boolean origin_stat_found;
         String origin_stat_value;
         
+        String[] quality_fields=null;
+        int quality_fields_count;
+        
         //Headers for log of review data
         if(reviewdata)
-            Log.register(log,TypeLog.REVIEW_DATA, step==2? "id|x1_genus|x1_sp1|x1_rank1|x1_sp2|x1_rank2|x1_sp3|" + RepositoryTNRS.HEADER + RepositoryTaxonstand.HEADER + RepositoryGRIN.HEADER :
-                    (step==3 || step==6 || step==7 ? "id|" + RepositoryGoogle.HEADER : ""), false,PREFIX_CROSSCHECK + String.valueOf(step),Configuration.getParameter("log_ext_review"));
+            Log.register(log,TypeLog.REVIEW_DATA, step==TypeStep.TAXONOMY_1? "id|x1_genus|x1_sp1|x1_rank1|x1_sp2|x1_rank2|x1_sp3|" + RepositoryTNRS.HEADER + RepositoryTaxonstand.HEADER + RepositoryGRIN.HEADER :
+                    (step==TypeStep.GEOGRAPHIC_1 || step==TypeStep.GEOGRAPHIC_2 || step==TypeStep.GEOGRAPHIC_3 ? "id|" + RepositoryGoogle.HEADER : ""), false,PREFIX_CROSSCHECK + String.valueOf(step),Configuration.getParameter("log_ext_review"));
         rWater=new RepositoryWaterBody(Configuration.getParameter("geocoding_database_world"));
         if(condition == null || condition.equals(""))
             countRows=repository.count();
@@ -565,15 +569,6 @@ public class CTempOccurrences extends BaseController {
                                 query.add("comments",(comments.equals("") ? "" : comments + ". ") + (origin ? "original:": "georef:") + " Coordinates does not match to country in source data. search=" + entity.getString("final_iso2") + " found=" +country_to_check );
                                 throw new Exception("Coordinates do not match to country in source data.");
                             }
-                            /*googleReverse=RepositoryGoogle.reverse(lat, lon);
-                            if(googleReverse == null){
-                                query.add("comments",(comments.equals("") ? "" : comments + ". ") + (origin ? "original:": "georef:") + " Coordinates not found to compare the country");
-                                throw new Exception("Coordinates not found country for final_country.");
-                            }
-                            else if(!googleReverse.get("status").toString().equals("OK") || !FixData.getValue(googleReverse.get("iso")).toLowerCase().equals(FixData.getValue(entity.get("final_iso2")).toLowerCase())){
-                                query.add("comments",(comments.equals("") ? "" : comments + ". ") + (origin ? "original:": "georef:") + " Coordinates does not match to country in source data");
-                                throw new Exception("Coordinates do not match to country in source data.");
-                            }*/
                             //Coordinates are good
                             query.add("coord_source", origin ? "original": "georef");
                             query.add("final_lat", String.valueOf(lat));
@@ -615,6 +610,15 @@ public class CTempOccurrences extends BaseController {
                         else
                             throw new Exception("Not found value for field final_origin_stat. Values: Origin=" + FixData.getValue(entity.get("origin_stat")) + " Search=" + FixData.getValue(origin_stat_value) + " Taxon: " + FixData.getValue(entity.get("taxon_final")));
                     }
+                    else if(p.getTypePolicy()==TypePolicy.QUALITY_REGISTER)
+                    {
+                        if(quality_fields == null)
+                            quality_fields=FixData.valueParameterSplit(Configuration.getParameter("quality_fields"));
+                        quality_fields_count=0;
+                        for(int k=0;k<quality_fields.length;k++)
+                            quality_fields_count+=entity.get(quality_fields[k])==null ? 0 : 1;
+                        query.add("quality_row", String.valueOf(quality_fields_count/quality_fields.length));
+                    }
                 }
                 catch(NullPointerException e)
                 {
@@ -651,7 +655,7 @@ public class CTempOccurrences extends BaseController {
                 Log.register(log, TypeLog.REGISTER_OK, query.toString(), false,PREFIX_CROSSCHECK + String.valueOf(step),Configuration.getParameter("log_ext_sql"));
             
             //Log for review data
-            if(reviewdata && !review_data.equals("") && !review_data.equals(entity.getString("id") + "|") && (step==2 || step == 3 || step == 6 || step == 7))
+            if(reviewdata && !review_data.equals("") && !review_data.equals(entity.getString("id") + "|") && (step==TypeStep.TAXONOMY_1 || step == TypeStep.GEOGRAPHIC_1 || step == TypeStep.GEOGRAPHIC_2 || step == TypeStep.GEOGRAPHIC_3))
                 Log.register(log, TypeLog.REVIEW_DATA, review_data, false,PREFIX_CROSSCHECK + String.valueOf(step),Configuration.getParameter("log_ext_review"));
             //Percent of progress
             System.out.println(FixData.toPercent(countRows, row) + "% row " + row + " of " + countRows + " id = " + entity.getString("id"));
