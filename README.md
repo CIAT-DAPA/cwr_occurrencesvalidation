@@ -42,8 +42,10 @@ and generate reports about of the current status
 * Configuration File (conf.txt)
 * Raster file of the world with the sea, land and coast or database already processed (waterbody.db)
 * Inventory Database, (if you want validate the origin of the every species) (origin_stat_inventory.db)
+* Shapefile validation, (It require all files of shape the main file is .shp) (VALIDATION_SHP.shp)
 * [R](http://www.r-project.org/)
 * [MySQL](http://dev.mysql.com/downloads/mysql/)
+* [Geotools](http://geotools.org/)
 
 ## Configuration ##
 
@@ -65,7 +67,7 @@ install.packages(Taxonstand);
     * [mysql jdbc](http://www.mysql.com/products/connector/).
     * [SQLite jdbc](https://bitbucket.org/xerial/sqlite-jdbc).
     * [RCaller](https://github.com/jbytecode/rcaller).
-
+	* [Geotools](http://geotools.org/)
 ## How to run ##
 
 ```
