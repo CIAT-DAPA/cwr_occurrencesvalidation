@@ -261,7 +261,7 @@ public class CTempOccurrences extends BaseController {
         //Headers for log of review data
         if(reviewdata)
             Log.register(log,TypeLog.REVIEW_DATA, step==TypeStep.TAXONOMY_1? "id|x1_genus|x1_sp1|x1_rank1|x1_sp2|x1_rank2|x1_sp3|" + RepositoryTNRS.HEADER + RepositoryTaxonstand.HEADER + RepositoryGRIN.HEADER :
-                    (step==TypeStep.GEOGRAPHIC_1 || step==TypeStep.GEOGRAPHIC_2 || step==TypeStep.GEOGRAPHIC_3 ? "id|" + RepositoryGoogle.HEADER : ""), false,PREFIX_CROSSCHECK + String.valueOf(step),Configuration.getParameter("log_ext_review"));
+                    (step==TypeStep.GEOGRAPHIC_1 || step==TypeStep.GEOGRAPHIC_2 || step==TypeStep.GEOGRAPHIC_3 ? "id|temp_country|adm1|adm2|adm3|local_area|locality|" + RepositoryGoogle.HEADER + RepositoryGeolocate.HEADER : ""), false,PREFIX_CROSSCHECK + String.valueOf(step.ordinal()),Configuration.getParameter("log_ext_review"));
         rWater=new RepositoryWaterBody(Configuration.getParameter("geocoding_database_world"));
         if(condition == null || condition.equals(""))
             countRows=repository.count();
@@ -496,11 +496,12 @@ public class CTempOccurrences extends BaseController {
                         lGeolocate = RepositoryGeolocate.georenferencing(temp_country,temp_adm1,temp_adm2,temp_adm3,temp_local_area,temp_locality);
                         //Review data
                         if(lGoogle == null && lGeolocate == null)
-                            review_data="";
+                            review_data="||||||||||||||||||";
                         else{
-                            fullAddress=temp_country + "-" + temp_adm1 + "-" + temp_adm2 + "-" + temp_adm3 + "-" + temp_local_area + "-" + temp_locality;
-                            review_data+= lGoogle != null ? "0|" + lGoogle.toString() + " Google " + fullAddress +"||" + (lGeolocate==null?"":"\n") :"" ;
-                            review_data+= lGeolocate != null ? (lGoogle==null? "" : entity.getString("id") + "|" ) + "2|" + lGeolocate.toString() + " Geolocate " + fullAddress + "||":"";
+                            fullAddress = temp_country + "," + temp_adm1 + "," + temp_adm2 + "," + temp_adm3 + "," + temp_local_area + "," + temp_locality + ",";
+                            review_data+= temp_country + "|" + temp_adm1 + "|" + temp_adm2 + "|" + temp_adm3 + "|" + temp_local_area + "|" + temp_locality + "|";
+                            review_data+= lGoogle != null ? "0|" +String.valueOf(lGoogle.getLatitude()) + "|" + String.valueOf(lGoogle.getLongitude())+ "|" + String.valueOf(lGoogle.getUncertainty()) + "|" + fullAddress +"||" :"||||||" ;
+                            review_data+= lGeolocate != null ? "2|" + String.valueOf(lGeolocate.getLatitude()) + "|" + String.valueOf(lGeolocate.getLongitude()) + "|" +  String.valueOf(lGeolocate.getUncertainty()) + "|" + fullAddress + "||":"||||||";                            
                         }                        
                         
                         if(lGeolocate != null)
@@ -632,7 +633,7 @@ public class CTempOccurrences extends BaseController {
                     for(StackTraceElement frame : frames)
                         msgE += frame.getClassName() + "-" + frame.getMethodName() + "-" + String.valueOf(frame.getLineNumber());
                     System.out.println(e + msgE);
-                    Log.register(log, TypeLog.REGISTER_ERROR, entity.getString("id") + "|" + e.toString() + "|" + msgE, true, PREFIX_CROSSCHECK + String.valueOf(step),Configuration.getParameter("log_ext_review") );
+                    Log.register(log, TypeLog.REGISTER_ERROR, entity.getString("id") + "|" + e.toString() + "|" + msgE, true, PREFIX_CROSSCHECK + String.valueOf(step.ordinal()),Configuration.getParameter("log_ext_review") );
                 }
                 catch(Exception e)
                 {
@@ -646,17 +647,17 @@ public class CTempOccurrences extends BaseController {
                     for(StackTraceElement frame : frames)
                         msgE += frame.getClassName() + "-" + frame.getMethodName() + "-" + String.valueOf(frame.getLineNumber());
                     System.out.println(e + msgE);
-                    Log.register(log, TypeLog.REGISTER_ERROR, entity.getString("id") + "|" + e.toString() + "|" + msgE, true, PREFIX_CROSSCHECK + String.valueOf(step),Configuration.getParameter("log_ext_review") );
+                    Log.register(log, TypeLog.REGISTER_ERROR, entity.getString("id") + "|" + e.toString() + "|" + msgE, true, PREFIX_CROSSCHECK + String.valueOf(step.ordinal()),Configuration.getParameter("log_ext_review") );
                 }
             }
             query.setWhere("Where id=" +entity.getString("id"));
             //Validate that have
             if(query.count() > 0)
-                Log.register(log, TypeLog.REGISTER_OK, query.toString(), false,PREFIX_CROSSCHECK + String.valueOf(step),Configuration.getParameter("log_ext_sql"));
+                Log.register(log, TypeLog.REGISTER_OK, query.toString(), false,PREFIX_CROSSCHECK + String.valueOf(step.ordinal()),Configuration.getParameter("log_ext_sql"));
             
             //Log for review data
             if(reviewdata && !review_data.equals("") && !review_data.equals(entity.getString("id") + "|") && (step==TypeStep.TAXONOMY_1 || step == TypeStep.GEOGRAPHIC_1 || step == TypeStep.GEOGRAPHIC_2 || step == TypeStep.GEOGRAPHIC_3))
-                Log.register(log, TypeLog.REVIEW_DATA, review_data, false,PREFIX_CROSSCHECK + String.valueOf(step),Configuration.getParameter("log_ext_review"));
+                Log.register(log, TypeLog.REVIEW_DATA, review_data, false,PREFIX_CROSSCHECK + String.valueOf(step.ordinal()),Configuration.getParameter("log_ext_review"));
             //Percent of progress
             System.out.println(FixData.toPercent(countRows, row) + "% row " + row + " of " + countRows + " id = " + entity.getString("id"));
         }

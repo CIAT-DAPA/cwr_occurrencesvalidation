@@ -29,6 +29,8 @@ import java.util.HashMap;
  * @author Steven Sotelo - stevenbetancurt@hotmail.com
  */
 public class RepositoryGeolocate {
+    
+    public final static String HEADER ="GEO_group|GEO_lat|GEO_lon|GEO_uncertain|GEO_text|GEO_value|";
     private static HashMap db;
     private static Geolocatesvc client;
     /**

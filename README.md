@@ -34,7 +34,7 @@ and generate reports about of the current status
 
 ## Version
 
-1.0.2
+1
 
 ## Summary of set up ##
 

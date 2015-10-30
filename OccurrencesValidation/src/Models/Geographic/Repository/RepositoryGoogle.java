@@ -48,7 +48,7 @@ import org.xml.sax.SAXException;
  */
 public class RepositoryGoogle {
 
-    public final static String HEADER ="group|latitude|longitude|text|value";
+    public final static String HEADER ="GOOGLE_group|GOOGLE_lat|GOOGLE_lon|GOOGLE_uncertain|GOOGLE_text|GOOGLE_value|";
     
     private static HashMap db;
     private static Mac mac;
