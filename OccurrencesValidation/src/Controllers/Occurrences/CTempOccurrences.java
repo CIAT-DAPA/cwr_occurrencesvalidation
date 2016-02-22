@@ -618,7 +618,7 @@ public class CTempOccurrences extends BaseController {
                         quality_fields_count=0;
                         for(int k=0;k<quality_fields.length;k++)
                             quality_fields_count+=entity.get(quality_fields[k])==null ? 0 : 1;
-                        query.add("quality_row", String.valueOf(quality_fields_count/quality_fields.length));
+                        query.add("quality_row", String.valueOf((double)quality_fields_count/((double)quality_fields.length)));
                     }
                 }
                 catch(NullPointerException e)
