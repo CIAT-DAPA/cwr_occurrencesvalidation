@@ -4,19 +4,19 @@ library(RMySQL)
 
 ###################### Configuration #######################
 
-# Varibles Global
+# Varibles Globalq
 work_folder <- ""
 # Fields to export 1=public, 2=all
-work_filter_fields <- 1
+work_filter_fields <- 2
 # Data to export 1 = public and visibility,  2 all, 3 Custom
-work_filter_condition <- 3
+work_filter_condition <- 1
 # Filter to export 0 = without condition, 1=Final Taxon, 2=Final Genus
 work_filter_type <- 0
 
 # Value to filter
-work_filter <- "Custom"
+work_filter <- ""
 # Data special filter
-work_filter_special <- " data_public_access='0' "
+work_filter_special <- ""
 
 # Variables Database Connection
 db_host <- ""
@@ -65,7 +65,7 @@ if(work_filter_condition == 1){
     db_query <- paste0(db_query," where ",work_filter_condition_public)
     print("Filter public data")    
 } else if(work_filter_condition == 2){
-    db_query <- paste0(db_query," where ")
+    db_query <- paste0(db_query)
     print("Filter all data")    
 } else if(work_filter_condition == 3){
     db_query <- paste0(db_query," where ",work_filter_special)
@@ -74,7 +74,7 @@ if(work_filter_condition == 1){
 
 if(work_filter_type == 0){ 
     if(grepl("and $", db_query)){
-        db_query <- substr(db_query, 1, nchar(db_query)-3)
+        db_query <- substr(db_query, 1, nchar(db_query)-4)
     }
     db_query <- paste0(db_query,";")
     print("Filter nothing")    
