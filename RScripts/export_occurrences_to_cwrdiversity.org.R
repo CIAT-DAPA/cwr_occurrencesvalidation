@@ -8,7 +8,9 @@ library(parallel)
 # Varibles Global
 work_folder <- ""
 # Options to export 1=Genus, 2=Taxon, 3=Country
-work_type_filter <- 1
+work_type_filter <- 2
+# Name of readme file
+work_readme <- "readme.txt"
 
 # Variables Database Connection
 db_host <- ""
@@ -66,6 +68,8 @@ process_item <- function(item){
     # Export data
     exp_filename <- paste0(work_folder,exp_dir,"/",item,work_export_extension)
     write.table(db_data_end,exp_filename,row.names=FALSE,sep=work_sep_field,dec=work_decimal,na=work_na, quote = F)
+    
+    zip(paste0(work_folder,exp_dir,"/",item,".zip"),files=c(exp_filename,paste0(work_folder,work_readme)),flags = "-j")
     
     # Close temp connection
     dbDisconnect(db_cnn_temp)
@@ -145,5 +149,3 @@ if(work_type_filter == 1){
 dbDisconnect(db_cnn)
 
 print("End process")
-
-
