@@ -196,3 +196,37 @@ CREATE TABLE `temp_countries` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2921 DEFAULT CHARSET=latin1;
 
+CREATE TABLE `metadata` (
+  `idmetadata` int(11) NOT NULL AUTO_INCREMENT,
+  `provider_institute_id` varchar(200) NOT NULL,
+  `organization` varchar(200) DEFAULT NULL,
+  `position` varchar(200) DEFAULT NULL,
+  `given` varchar(200) DEFAULT NULL,
+  `sur` varchar(200) DEFAULT NULL,
+  `emails` varchar(400) DEFAULT NULL,
+  `url` varchar(900) DEFAULT NULL,
+  `role` varchar(50) DEFAULT NULL,
+  `personnel` varchar(200) DEFAULT NULL,
+  `personnel_role` varchar(50) DEFAULT NULL,
+  `abstract` varchar(1500) DEFAULT NULL,
+  `provider_metadata` varchar(200) DEFAULT NULL,
+  `descriptor` varchar(200) DEFAULT NULL,
+  `contact` varchar(300) DEFAULT NULL,
+  `title` varchar(200) DEFAULT NULL,
+  `purpose` varchar(200) DEFAULT NULL,
+  `provider_email` varchar(200) DEFAULT NULL,
+  `creator` varchar(200) DEFAULT NULL,
+  `provider_url` varchar(900) DEFAULT NULL,
+  `keyword` varchar(1500) DEFAULT NULL,
+  `project` varchar(1500) DEFAULT NULL,
+  `geographic_description` varchar(1500) DEFAULT NULL,
+  `taxon_rank_name` varchar(200) DEFAULT NULL,
+  `metadata_language` varchar(10) DEFAULT NULL,
+  `citation` varchar(1500) DEFAULT NULL,
+  `intellectual_rights` varchar(1500) DEFAULT NULL,
+  `language` varchar(50) DEFAULT NULL,
+  `additional_info` varchar(1500) DEFAULT NULL,
+  `coverage` varchar(1500) DEFAULT NULL,
+  `number_of_record` int(11) DEFAULT NULL,
+  PRIMARY KEY (`idmetadata`)
+) ENGINE=InnoDB AUTO_INCREMENT=87 DEFAULT CHARSET=latin1;
